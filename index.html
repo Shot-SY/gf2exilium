@@ -1,28 +1,734 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>My First Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GF2 Exilium 캐릭터 필터</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      line-height: 1.6;
+      color: #e0e0e0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #121212;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: rgba(42, 42, 42, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    
+    h1 {
+      font-size: 2.5em;
+      color: #ff4081;
+      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
+      margin-bottom: 10px;
+    }
+    
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .character-box {
+      background-color: rgba(42, 42, 42, 0.8);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .character-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+    }
+    
+    .character-box.selected {
+      background-color: rgba(255, 64, 129, 0.2);
+      box-shadow: 0 5px 15px rgba(255, 64, 129, 0.6);
+      border: 1px solid rgba(255, 64, 129, 0.5);
+    }
+    
+    .character-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    
+    .character-korean {
+      font-size: 14px;
+      color: #bbb;
+      margin-bottom: 12px;
+    }
+    
+    .number-selector {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    
+    .number-btn {
+      width: 30px;
+      height: 30px;
+      background-color: #333;
+      border: 1px solid #555;
+      color: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      user-select: none;
+    }
+    
+    .number-btn:hover {
+      background-color: #444;
+    }
+    
+    .number-btn.active {
+      background-color: #ff4081;
+      border-color: #ff4081;
+      box-shadow: 0 0 8px rgba(255, 64, 129, 0.8);
+    }
+    
+    .filter-controls {
+      text-align: center;
+      margin: 30px 0;
+    }
+    
+    button#apply-filter {
+      padding: 15px 30px;
+      font-size: 18px;
+      background: linear-gradient(45deg, #ff4081, #f50057);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(255, 64, 129, 0.6);
+    }
+    
+    button#apply-filter:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 64, 129, 0.8);
+    }
+    
+    button#reset-filter {
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      margin-left: 15px;
+    }
+    
+    button#reset-filter:hover {
+      background-color: #555;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    .results-container {
+      background-color: rgba(42, 42, 42, 0.8);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      margin-bottom: 30px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .results-container h2 {
+      color: #ff4081;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+    
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .results-table th,
+    .results-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .results-table th {
+      background-color: rgba(0, 0, 0, 0.3);
+      color: #ff4081;
+      position: sticky;
+      top: 0;
+    }
+    
+    .results-table tbody tr {
+      transition: background-color 0.2s;
+    }
+    
+    .results-table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .char-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .char-item {
+      background-color: rgba(255, 64, 129, 0.15);
+      border-radius: 3px;
+      padding: 3px 8px;
+      font-size: 0.9em;
+    }
+    
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+    
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #ff4081;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .status-message {
+      text-align: center;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+    
+    .status-message.show {
+      opacity: 1;
+    }
+    
+    .status-message.error {
+      background-color: rgba(244, 67, 54, 0.2);
+      border: 1px solid #f44336;
+    }
+    
+    .status-message.success {
+      background-color: rgba(76, 175, 80, 0.2);
+      border: 1px solid #4CAF50;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 30px;
+      font-style: italic;
+      color: #aaa;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #777;
+      font-size: 0.9em;
+    }
+    
+    @media (max-width: 768px) {
+      .character-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      }
+      
+      .character-name {
+        font-size: 14px;
+      }
+      
+      .character-korean {
+        font-size: 12px;
+      }
+      
+      .number-selector {
+        gap: 3px;
+      }
+      
+      .number-btn {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+      }
+      
+      button#apply-filter {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+      
+      button#reset-filter {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>내 첫 웹사이트에 오신 것을 환영합니다!</h1>
-        <p>이것은 GitHub Pages로 만든 웹사이트입니다.</p>
+  <div class="loader" id="loader">
+    <div class="loader-spinner"></div>
+  </div>
+  
+  <header>
+    <h1>GF2 Exilium 캐릭터 필터</h1>
+    <p>원하는 캐릭터의 수량을 체크하면 해당 조건을 만족하는 키를 찾을 수 있습니다</p>
+  </header>
+  
+  <div class="status-message" id="statusMessage"></div>
+  
+  <div class="character-grid" id="characterGrid">
+    <!-- 캐릭터 박스가 여기에 동적으로 생성됩니다 -->
+  </div>
+  
+  <div class="filter-controls">
+    <button id="apply-filter">필터 적용</button>
+    <button id="reset-filter">필터 초기화</button>
+  </div>
+  
+  <div class="results-container">
+    <h2>검색 결과</h2>
+    <div id="results">
+      <p class="loading-text">데이터를 불러오는 중입니다...</p>
     </div>
+  </div>
+  
+  <footer>
+    <p>&copy; 2025 GF2 Exilium 필터 | Made by Exilium Community</p>
+  </footer>
+  
+  <script>
+    // 전역 변수
+    let characterData = []; // 캐릭터 데이터를 저장
+    let gameData = {}; // data.lua의 내용을 저장
+    
+    // DOM 요소
+    const characterGrid = document.getElementById('characterGrid');
+    const applyFilterBtn = document.getElementById('apply-filter');
+    const resetFilterBtn = document.getElementById('reset-filter');
+    const resultsDiv = document.getElementById('results');
+    const loader = document.getElementById('loader');
+    const statusMessage = document.getElementById('statusMessage');
+    
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 데이터 로드 및 UI 초기화
+        await Promise.all([loadCharacters(), loadGameData()]);
+        createCharacterBoxes();
+        hideLoader();
+        
+        // 초기 필터링 실행
+        filterData();
+      } catch (error) {
+        console.error('초기화 오류:', error);
+        showStatus(`데이터 로드 중 오류가 발생했습니다: ${error.message}`, true);
+        hideLoader();
+      }
+    });
+    
+    // 이벤트 리스너
+    applyFilterBtn.addEventListener('click', filterData);
+    resetFilterBtn.addEventListener('click', resetFilters);
+    
+    // Characters.txt 파일 불러오기
+    async function loadCharacters() {
+      try {
+        const response = await fetch('Characters.txt');
+        if (!response.ok) {
+          throw new Error(`Characters.txt 파일을 불러올 수 없습니다 (${response.status})`);
+        }
+        
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        
+        characterData = [];
+        
+        lines.forEach(line => {
+          const parts = line.trim().split(' ');
+          if (parts.length >= 2) {
+            const englishName = parts[0].trim();
+            const koreanName = parts.slice(1).join(' ').trim();
+            const code = englishName.substring(0, 2).toLowerCase();
+            
+            characterData.push({
+              code: code,
+              englishName: englishName,
+              koreanName: koreanName
+            });
+          }
+        });
+        
+        console.log(`${characterData.length}개의 캐릭터를 로드했습니다.`);
+      } catch (error) {
+        console.error('캐릭터 파일 로드 오류:', error);
+        showStatus('캐릭터 파일을 불러오는 데 실패했습니다. 페이지를 새로고침해 주세요.', true);
+        throw error;
+      }
+    }
+    
+    // data.lua 파일 불러오기
+    async function loadGameData() {
+      try {
+        const response = await fetch('data.lua');
+        if (!response.ok) {
+          throw new Error(`data.lua 파일을 불러올 수 없습니다 (${response.status})`);
+        }
+        
+        const text = await response.text();
+        gameData = parseLuaData(text);
+        
+        console.log(`${Object.keys(gameData).length}개의 게임 데이터를 로드했습니다.`);
+      } catch (error) {
+        console.error('게임 데이터 로드 오류:', error);
+        showStatus('data.lua 파일을 불러오는 데 실패했습니다. 페이지를 새로고침해 주세요.', true);
+        throw error;
+      }
+    }
+    
+    // Lua 데이터 파싱 함수
+    function parseLuaData(luaText) {
+      const result = {};
+      
+      // 정규식을 사용하여 데이터 파싱
+      const pattern = /\["([^"]+)"\]\s*=\s*{[\s\n]*value\s*=\s*"([^"]+)",[\s\n]*isRated\s*=\s*"([^"]+)",[\s\n]*timestamp\s*=\s*"([^"]+)"/g;
+      
+      let match;
+      while ((match = pattern.exec(luaText)) !== null) {
+        const [_, key, value, isRated, timestamp] = match;
+        result[key] = {
+          value: value,
+          isRated: isRated,
+          timestamp: timestamp
+        };
+      }
+      
+      return result;
+    }
+    
+    // 캐릭터 박스 생성
+    function createCharacterBoxes() {
+      characterGrid.innerHTML = '';
+      
+      characterData.forEach(character => {
+        const charBox = document.createElement('div');
+        charBox.className = 'character-box';
+        charBox.dataset.code = character.code;
+        
+        const namePart = document.createElement('div');
+        namePart.className = 'character-name';
+        namePart.textContent = character.englishName;
+        
+        const koreanPart = document.createElement('div');
+        koreanPart.className = 'character-korean';
+        koreanPart.textContent = character.koreanName;
+        
+        const numberSelector = document.createElement('div');
+        numberSelector.className = 'number-selector';
+        
+        // 0부터 10까지의 숫자 버튼 생성
+        for (let i = 0; i <= 10; i++) {
+          const numBtn = document.createElement('div');
+          numBtn.className = 'number-btn';
+          numBtn.textContent = i;
+          numBtn.dataset.value = i;
+          
+          if (i === 0) {
+            numBtn.classList.add('active');
+          }
+          
+          numBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectNumber(charBox, numBtn);
+          });
+          
+          numberSelector.appendChild(numBtn);
+        }
+        
+        charBox.appendChild(namePart);
+        charBox.appendChild(koreanPart);
+        charBox.appendChild(numberSelector);
+        
+        // 전체 캐릭터 박스 클릭 시 선택 토글
+        charBox.addEventListener('click', () => {
+          toggleCharacterBox(charBox);
+        });
+        
+        characterGrid.appendChild(charBox);
+      });
+    }
+    
+    // 캐릭터 박스 토글
+    function toggleCharacterBox(charBox) {
+      const isSelected = charBox.classList.toggle('selected');
+      
+      // 숫자 버튼 활성화 상태 조정
+      const numberBtns = charBox.querySelectorAll('.number-btn');
+      if (isSelected) {
+        // 선택되었다면 숫자 1 활성화
+        numberBtns.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.value === '1') {
+            btn.classList.add('active');
+          }
+        });
+      } else {
+        // 선택 해제되었다면 숫자 0 활성화
+        numberBtns.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.value === '0') {
+            btn.classList.add('active');
+          }
+        });
+      }
+    }
+    
+    // 숫자 선택
+    function selectNumber(charBox, selectedBtn) {
+      // 모든 숫자 버튼 비활성화
+      charBox.querySelectorAll('.number-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // 선택된 버튼 활성화
+      selectedBtn.classList.add('active');
+      
+      // 0이 아닌 숫자가 선택되었다면 캐릭터 박스 선택 상태로 변경
+      const value = parseInt(selectedBtn.dataset.value);
+      if (value > 0) {
+        charBox.classList.add('selected');
+      } else {
+        charBox.classList.remove('selected');
+      }
+    }
+    
+    // 필터 적용 함수
+    function filterData() {
+      showLoader();
+      
+      setTimeout(() => {
+        try {
+          // 선택된 캐릭터와 값 가져오기
+          const selectedChars = {};
+          document.querySelectorAll('.character-box').forEach(charBox => {
+            const code = charBox.dataset.code;
+            const activeBtn = charBox.querySelector('.number-btn.active');
+            if (activeBtn) {
+              const value = parseInt(activeBtn.dataset.value);
+              if (value > 0) {
+                selectedChars[code] = value;
+              }
+            }
+          });
+          
+          // 데이터 필터링
+          const filteredData = {};
+          for (const [key, data] of Object.entries(gameData)) {
+            const charCounts = parseValueString(data.value);
+            
+            // 모든 선택된 캐릭터 조건 확인
+            let isMatch = true;
+            for (const [charCode, minCount] of Object.entries(selectedChars)) {
+              if (!charCounts[charCode] || charCounts[charCode] < minCount) {
+                isMatch = false;
+                break;
+              }
+            }
+            
+            if (isMatch) {
+              filteredData[key] = {
+                ...data,
+                parsedCounts: charCounts
+              };
+            }
+          }
+          
+          // 결과 표시
+          displayResults(filteredData);
+          hideLoader();
+          
+        } catch (error) {
+          console.error('필터링 오류:', error);
+          showStatus('필터링 중 오류가 발생했습니다.', true);
+          hideLoader();
+        }
+      }, 100);
+    }
+    
+    // 값 문자열 파싱 (ex: "su1gy1to2sa1ks4ch3gr1ne3ca2na1ri1")
+    function parseValueString(valueString) {
+      const result = {};
+      const pattern = /([a-z]{2})(\d+)/g;
+      let match;
+      
+      while ((match = pattern.exec(valueString)) !== null) {
+        const [_, code, count] = match;
+        result[code] = parseInt(count);
+      }
+      
+      return result;
+    }
+    
+    // 결과 표시 함수
+    function displayResults(filteredData) {
+      const keys = Object.keys(filteredData);
+      
+      if (keys.length === 0) {
+        resultsDiv.innerHTML = '<div class="no-results">조건에 맞는 결과가 없습니다.</div>';
+        return;
+      }
+      
+      let tableHTML = `
+        <p>총 ${keys.length}개의 키가 조건에 맞습니다.</p>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>키</th>
+              <th>평가</th>
+              <th>등록 시간</th>
+              <th>캐릭터 구성</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      // 등록 시간 기준 최신순 정렬
+      keys.sort((a, b) => {
+        const timeA = new Date(filteredData[a].timestamp);
+        const timeB = new Date(filteredData[b].timestamp);
+        return timeB - timeA;
+      });
+      
+      keys.forEach(key => {
+        const data = filteredData[key];
+        const formattedComposition = formatCharacterComposition(data.parsedCounts);
+        
+        tableHTML += `
+          <tr>
+            <td>${key}</td>
+            <td>${data.isRated}</td>
+            <td>${data.timestamp}</td>
+            <td class="char-breakdown">${formattedComposition}</td>
+          </tr>
+        `;
+      });
+      
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+      
+      resultsDiv.innerHTML = tableHTML;
+    }
+    
+    // 캐릭터 구성 형식화
+    function formatCharacterComposition(counts) {
+      let result = '';
+      
+      // 코드별로 캐릭터 찾기
+      characterData.forEach(character => {
+        const count = counts[character.code];
+        if (count && count > 0) {
+          result += `<span class="char-item">${character.koreanName}: ${count}</span>`;
+        }
+      });
+      
+      return result;
+    }
+    
+    // 필터 초기화
+    function resetFilters() {
+      document.querySelectorAll('.character-box').forEach(charBox => {
+        charBox.classList.remove('selected');
+        
+        // 모든 숫자 버튼 초기화 (0 활성화)
+        const numberBtns = charBox.querySelectorAll('.number-btn');
+        numberBtns.forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.value === '0') {
+            btn.classList.add('active');
+          }
+        });
+      });
+      
+      // 결과 다시 표시
+      filterData();
+    }
+    
+    // 로딩 표시/숨기기 함수
+    function showLoader() {
+      loader.style.display = 'flex';
+    }
+    
+    function hideLoader() {
+      loader.style.display = 'none';
+    }
+    
+    // 상태 메시지 표시
+    function showStatus(message, isError) {
+      statusMessage.textContent = message;
+      statusMessage.className = 'status-message';
+      
+      if (isError) {
+        statusMessage.classList.add('error');
+      } else {
+        statusMessage.classList.add('success');
+      }
+      
+      statusMessage.classList.add('show');
+      
+      // 3초 후 메시지 숨기기
+      setTimeout(() => {
+        statusMessage.classList.remove('show');
+      }, 3000);
+    }
+  </script>
 </body>
 </html>
