@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GF2 Exilium 캐릭터 필터</title>
+  <title>GF2 Exilium Character Filter</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,7 +12,7 @@
     }
     
     body {
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'Noto Sans', sans-serif;
       line-height: 1.6;
       color: #e0e0e0;
       max-width: 1200px;
@@ -318,38 +318,38 @@
   </div>
   
   <header>
-    <h1>GF2 Exilium 캐릭터 필터</h1>
-    <p>원하는 캐릭터의 수량을 체크하면 해당 조건을 만족하는 키를 찾을 수 있습니다</p>
+    <h1>GF2 Exilium Character Filter</h1>
+    <p>Check the quantity of desired characters to find keys that meet the conditions</p>
   </header>
   
   <div class="status-message" id="statusMessage"></div>
   
   <div class="character-grid" id="characterGrid">
-    <!-- 캐릭터 박스가 여기에 동적으로 생성됩니다 -->
+    <!-- Character boxes will be dynamically created here -->
   </div>
   
   <div class="filter-controls">
-    <button id="apply-filter">필터 적용</button>
-    <button id="reset-filter">필터 초기화</button>
+    <button id="apply-filter">Apply Filter</button>
+    <button id="reset-filter">Reset Filter</button>
   </div>
   
   <div class="results-container">
-    <h2>검색 결과</h2>
+    <h2>Search Results</h2>
     <div id="results">
-      <p class="loading-text">데이터를 불러오는 중입니다...</p>
+      <p class="loading-text">Loading data...</p>
     </div>
   </div>
   
   <footer>
-    <p>&copy; 2025 GF2 Exilium 필터 | Made by Exilium Community</p>
+    <p>&copy; 2025 GF2 Exilium Filter | Made by Exilium Community</p>
   </footer>
   
   <script>
-    // 전역 변수
-    let characterData = []; // 캐릭터 데이터를 저장
-    let gameData = {}; // data.lua의 내용을 저장
+    // Global variables
+    let characterData = []; // Store character data
+    let gameData = {}; // Store data.lua content
     
-    // DOM 요소
+    // DOM elements
     const characterGrid = document.getElementById('characterGrid');
     const applyFilterBtn = document.getElementById('apply-filter');
     const resetFilterBtn = document.getElementById('reset-filter');
@@ -357,33 +357,33 @@
     const loader = document.getElementById('loader');
     const statusMessage = document.getElementById('statusMessage');
     
-    // 페이지 로드 시 실행
+    // Execute on page load
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        // 데이터 로드 및 UI 초기화
+        // Load data and initialize UI
         await Promise.all([loadCharacters(), loadGameData()]);
         createCharacterBoxes();
         hideLoader();
         
-        // 초기 필터링 실행
+        // Run initial filtering
         filterData();
       } catch (error) {
-        console.error('초기화 오류:', error);
-        showStatus(`데이터 로드 중 오류가 발생했습니다: ${error.message}`, true);
+        console.error('Initialization error:', error);
+        showStatus(`Error loading data: ${error.message}`, true);
         hideLoader();
       }
     });
     
-    // 이벤트 리스너
+    // Event listeners
     applyFilterBtn.addEventListener('click', filterData);
     resetFilterBtn.addEventListener('click', resetFilters);
     
-    // Characters.txt 파일 불러오기
+    // Load Characters.txt file
     async function loadCharacters() {
       try {
         const response = await fetch('Characters.txt');
         if (!response.ok) {
-          throw new Error(`Characters.txt 파일을 불러올 수 없습니다 (${response.status})`);
+          throw new Error(`Cannot load Characters.txt file (${response.status})`);
         }
         
         const text = await response.text();
@@ -406,38 +406,38 @@
           }
         });
         
-        console.log(`${characterData.length}개의 캐릭터를 로드했습니다.`);
+        console.log(`Loaded ${characterData.length} characters.`);
       } catch (error) {
-        console.error('캐릭터 파일 로드 오류:', error);
-        showStatus('캐릭터 파일을 불러오는 데 실패했습니다. 페이지를 새로고침해 주세요.', true);
+        console.error('Character file loading error:', error);
+        showStatus('Failed to load character file. Please refresh the page.', true);
         throw error;
       }
     }
     
-    // data.lua 파일 불러오기
+    // Load data.lua file
     async function loadGameData() {
       try {
         const response = await fetch('data.lua');
         if (!response.ok) {
-          throw new Error(`data.lua 파일을 불러올 수 없습니다 (${response.status})`);
+          throw new Error(`Cannot load data.lua file (${response.status})`);
         }
         
         const text = await response.text();
         gameData = parseLuaData(text);
         
-        console.log(`${Object.keys(gameData).length}개의 게임 데이터를 로드했습니다.`);
+        console.log(`Loaded ${Object.keys(gameData).length} game data.`);
       } catch (error) {
-        console.error('게임 데이터 로드 오류:', error);
-        showStatus('data.lua 파일을 불러오는 데 실패했습니다. 페이지를 새로고침해 주세요.', true);
+        console.error('Game data loading error:', error);
+        showStatus('Failed to load data.lua file. Please refresh the page.', true);
         throw error;
       }
     }
     
-    // Lua 데이터 파싱 함수
+    // Parse Lua data function
     function parseLuaData(luaText) {
       const result = {};
       
-      // 정규식을 사용하여 데이터 파싱
+      // Use regex to parse data
       const pattern = /\["([^"]+)"\]\s*=\s*{[\s\n]*value\s*=\s*"([^"]+)",[\s\n]*isRated\s*=\s*"([^"]+)",[\s\n]*timestamp\s*=\s*"([^"]+)"/g;
       
       let match;
@@ -453,7 +453,7 @@
       return result;
     }
     
-    // 캐릭터 박스 생성
+    // Create character boxes
     function createCharacterBoxes() {
       characterGrid.innerHTML = '';
       
@@ -473,7 +473,7 @@
         const numberSelector = document.createElement('div');
         numberSelector.className = 'number-selector';
         
-        // 0부터 7까지의 숫자 버튼 생성
+        // Create number buttons from 0 to 7
         for (let i = 0; i <= 7; i++) {
           const numBtn = document.createElement('div');
           numBtn.className = 'number-btn';
@@ -496,7 +496,7 @@
         charBox.appendChild(koreanPart);
         charBox.appendChild(numberSelector);
         
-        // 전체 캐릭터 박스 클릭 시 선택 토글
+        // Toggle selection when clicking the entire box
         charBox.addEventListener('click', () => {
           toggleCharacterBox(charBox);
         });
@@ -505,14 +505,14 @@
       });
     }
     
-    // 캐릭터 박스 토글
+    // Toggle character box
     function toggleCharacterBox(charBox) {
       const isSelected = charBox.classList.toggle('selected');
       
-      // 숫자 버튼 활성화 상태 조정
+      // Adjust number button active state
       const numberBtns = charBox.querySelectorAll('.number-btn');
       if (isSelected) {
-        // 선택되었다면 숫자 1 활성화
+        // If selected, activate number 1
         numberBtns.forEach(btn => {
           btn.classList.remove('active');
           if (btn.dataset.value === '1') {
@@ -520,7 +520,7 @@
           }
         });
       } else {
-        // 선택 해제되었다면 숫자 0 활성화
+        // If deselected, activate number 0
         numberBtns.forEach(btn => {
           btn.classList.remove('active');
           if (btn.dataset.value === '0') {
@@ -530,17 +530,17 @@
       }
     }
     
-    // 숫자 선택
+    // Select number
     function selectNumber(charBox, selectedBtn) {
-      // 모든 숫자 버튼 비활성화
+      // Deactivate all number buttons
       charBox.querySelectorAll('.number-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       
-      // 선택된 버튼 활성화
+      // Activate selected button
       selectedBtn.classList.add('active');
       
-      // 0이 아닌 숫자가 선택되었다면 캐릭터 박스 선택 상태로 변경
+      // If a number other than 0 is selected, set character box to selected state
       const value = parseInt(selectedBtn.dataset.value);
       if (value > 0) {
         charBox.classList.add('selected');
@@ -549,13 +549,13 @@
       }
     }
     
-    // 필터 적용 함수
+    // Apply filter function
     function filterData() {
       showLoader();
       
       setTimeout(() => {
         try {
-          // 선택된 캐릭터와 값 가져오기
+          // Get selected characters and values
           const selectedChars = {};
           document.querySelectorAll('.character-box').forEach(charBox => {
             const code = charBox.dataset.code;
@@ -568,12 +568,12 @@
             }
           });
           
-          // 데이터 필터링
+          // Filter data
           const filteredData = {};
           for (const [key, data] of Object.entries(gameData)) {
             const charCounts = parseValueString(data.value);
             
-            // 모든 선택된 캐릭터 조건 확인
+            // Check all selected character conditions
             let isMatch = true;
             for (const [charCode, minCount] of Object.entries(selectedChars)) {
               if (!charCounts[charCode] || charCounts[charCode] < minCount) {
@@ -590,19 +590,19 @@
             }
           }
           
-          // 결과 표시
+          // Display results
           displayResults(filteredData);
           hideLoader();
           
         } catch (error) {
-          console.error('필터링 오류:', error);
-          showStatus('필터링 중 오류가 발생했습니다.', true);
+          console.error('Filtering error:', error);
+          showStatus('Error occurred during filtering.', true);
           hideLoader();
         }
       }, 100);
     }
     
-    // 값 문자열 파싱 (ex: "su1gy1to2sa1ks4ch3gr1ne3ca2na1ri1")
+    // Parse value string (ex: "su1gy1to2sa1ks4ch3gr1ne3ca2na1ri1")
     function parseValueString(valueString) {
       const result = {};
       const pattern = /([a-z]{2})(\d+)/g;
@@ -616,30 +616,30 @@
       return result;
     }
     
-    // 결과 표시 함수
+    // Display results function
     function displayResults(filteredData) {
       const keys = Object.keys(filteredData);
       
       if (keys.length === 0) {
-        resultsDiv.innerHTML = '<div class="no-results">조건에 맞는 결과가 없습니다.</div>';
+        resultsDiv.innerHTML = '<div class="no-results">No results match the conditions.</div>';
         return;
       }
       
       let tableHTML = `
-        <p>총 ${keys.length}개의 키가 조건에 맞습니다.</p>
+        <p>Total ${keys.length} keys match the conditions.</p>
         <table class="results-table">
           <thead>
             <tr>
-              <th>키</th>
-              <th>평가</th>
-              <th>등록 시간</th>
-              <th>캐릭터 구성</th>
+              <th>Key</th>
+              <th>Rating</th>
+              <th>Timestamp</th>
+              <th>Character Composition</th>
             </tr>
           </thead>
           <tbody>
       `;
       
-      // 등록 시간 기준 최신순 정렬
+      // Sort by timestamp, newest first
       keys.sort((a, b) => {
         const timeA = new Date(filteredData[a].timestamp);
         const timeB = new Date(filteredData[b].timestamp);
@@ -668,27 +668,27 @@
       resultsDiv.innerHTML = tableHTML;
     }
     
-    // 캐릭터 구성 형식화
+    // Format character composition
     function formatCharacterComposition(counts) {
       let result = '';
       
-      // 코드별로 캐릭터 찾기
+      // Find characters by code
       characterData.forEach(character => {
         const count = counts[character.code];
         if (count && count > 0) {
-          result += `<span class="char-item">${character.koreanName}: ${count}</span>`;
+          result += `<span class="char-item">${character.englishName}: ${count}</span>`;
         }
       });
       
       return result;
     }
     
-    // 필터 초기화
+    // Reset filters
     function resetFilters() {
       document.querySelectorAll('.character-box').forEach(charBox => {
         charBox.classList.remove('selected');
         
-        // 모든 숫자 버튼 초기화 (0 활성화)
+        // Reset all number buttons (activate 0)
         const numberBtns = charBox.querySelectorAll('.number-btn');
         numberBtns.forEach(btn => {
           btn.classList.remove('active');
@@ -698,11 +698,11 @@
         });
       });
       
-      // 결과 다시 표시
+      // Display results again
       filterData();
     }
     
-    // 로딩 표시/숨기기 함수
+    // Show/hide loader functions
     function showLoader() {
       loader.style.display = 'flex';
     }
@@ -711,7 +711,7 @@
       loader.style.display = 'none';
     }
     
-    // 상태 메시지 표시
+    // Display status message
     function showStatus(message, isError) {
       statusMessage.textContent = message;
       statusMessage.className = 'status-message';
@@ -724,7 +724,7 @@
       
       statusMessage.classList.add('show');
       
-      // 3초 후 메시지 숨기기
+      // Hide message after 3 seconds
       setTimeout(() => {
         statusMessage.classList.remove('show');
       }, 3000);
