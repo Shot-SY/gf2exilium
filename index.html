@@ -745,9 +745,24 @@
                 loadCharacters()
             ]).then(([sortedText, luaText]) => {
                 sortedData = {};
-                sortedText.split('\n').forEach(line => { const [k,...v] = line.split(' '); if(k && v.length) sortedData[k]=v.join(' '); });
+                sortedText.split('\n').forEach(line => { 
+                    const [k,...v] = line.split(' '); 
+                    if(k && v.length) sortedData[k]=v.join(' '); 
+                });
+                
                 luaData = {};
-                luaText.split('\n').forEach(line => { const m = line.match(/\["(.+)"\]\s*=\s*"(.+)"/); if(m) luaData[m[1]] = m[2]; });
+                
+                // 개행을 공백으로 바꿔서 정규식 매칭을 쉽게 함
+                const allText = luaText.replace(/\n/g, ' ');
+                
+                // 새로운 테이블 형식에서 키와 value 값을 추출하는 정규식
+                const pattern = /\["(.+?)"\]\s*=\s*{\s*value\s*=\s*"(.+?)"/g;
+                
+                let match;
+                while ((match = pattern.exec(allText)) !== null) {
+                    luaData[match[1]] = match[2];
+                }
+                
                 console.log('데이터 로드됨:', sortedData, luaData);
             }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
