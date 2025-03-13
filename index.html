@@ -579,22 +579,31 @@
             return validGroups.join('');
         }
         
+        let itemDetailsMap = {}; // 아이템 상세 정보 저장용 맵
+        
         function loadData() {
             const ts = new Date().getTime();
-            // data.lua 대신 sorted_data_eng.txt 파일 로드
             return fetch(`sorted_data_eng.txt?t=${ts}`)
                 .then(r => r.text())
                 .then(text => {
                     luaData = {};
+                    itemDetailsMap = {}; // 아이템 상세 정보 초기화
                     
                     // 텍스트를 줄 단위로 분할
                     const lines = text.split('\n');
+                    let currentSection = null;
                     
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
                         
-                        // '='로 시작하지 않고 비어있지 않은 줄만 처리
-                        if (line && !line.startsWith('=')) {
+                        // 섹션 헤더 처리
+                        if (line.startsWith('===') && line.endsWith('===')) {
+                            currentSection = line.slice(4, -4).trim(); // === 제거
+                            continue;
+                        }
+                        
+                        // 제목 줄이 아니고 콘텐츠가 있는 줄만 처리
+                        if (line && !line.startsWith('===') && currentSection !== null) {
                             // 공백으로 분할
                             const parts = line.split(' ');
                             if (parts.length < 2) continue; // 충분한 부분이 없으면 건너뛰기
@@ -602,8 +611,20 @@
                             const key = parts[0]; // 첫 번째 부분이 키
                             let charString = '';
                             let j = 1;
+                            let itemDetails = {
+                                originalText: line,
+                                price: 0,
+                                guaranteed: line.includes('GUARANTEED'),
+                                displayText: ''
+                            };
                             
-                            // 숫자로 시작하는 단어를 만날 때까지 처리
+                            // '$' 기호를 찾아 가격 추출
+                            const priceMatch = line.match(/\$(\d+\.\d+)/);
+                            if (priceMatch) {
+                                itemDetails.price = parseFloat(priceMatch[1]);
+                            }
+                            
+                            // 캐릭터 정보 추출 (숫자로 시작하는 단어를 만나기 전까지)
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 // 캐릭터 정보 추출 (예: suomi1 -> su1)
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
@@ -617,36 +638,29 @@
                                 j++;
                             }
                             
+                            // Collapse 부분 찾기
+                            const collapseMatch = line.match(/(\d+)(Collapse)/i);
+                            if (collapseMatch) {
+                                itemDetails.collapseCount = collapseMatch[1];
+                                itemDetails.collapseText = collapseMatch[0];
+                            }
+                            
+                            // 표시 텍스트 설정 (키와 = 기호 제외)
+                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
+                            
                             // 필터링 된 캐릭터 문자열이 있을 경우만 저장
                             if (charString) {
                                 luaData[key] = charString;
+                                itemDetailsMap[key] = itemDetails;
                             }
                         }
                     }
                     
                     console.log('데이터 로드됨:', luaData);
+                    console.log('아이템 상세 정보:', itemDetailsMap);
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
-
-        function getTotalCharacterCount(charString) {
-            // 계산에서 제외할 캐릭터 코드 목록
-            const excludedChars = ['sa', 'pe', 'be', 'mo']; // sabrina, peritia, bepri, mosinnagang의 첫 2글자
-            
-            const charPattern = /([a-z]{2})(\d)/g;
-            let totalCount = 0;
-            let match;
-            
-            while ((match = charPattern.exec(charString)) !== null) {
-                const code = match[1];
-                // 제외 목록에 없는 캐릭터만 카운트
-                if (!excludedChars.includes(code)) {
-                    totalCount += parseInt(match[2]);
-                }
-            }
-            
-            return totalCount;
-        }
-
+        
         function filterData() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('filtering');
@@ -658,8 +672,9 @@
                     if(checkConditions(chars)) filtered[k] = v;
                 }
                 
+                // 가격 순으로 정렬 (높은 가격부터)
                 const sortedKeys = Object.keys(filtered).sort((a, b) => {
-                    return getTotalCharacterCount(filtered[b]) - getTotalCharacterCount(filtered[a]);
+                    return itemDetailsMap[b].price - itemDetailsMap[a].price;
                 });
                 
                 const final = {};
@@ -724,8 +739,9 @@
             res.innerHTML = '<div class="content-container"></div>';
             const container = res.querySelector('.content-container');
             
+            // 가격 순으로 정렬 (높은 가격부터)
             const sorted = Object.keys(data).sort((a, b) => {
-                return getTotalCharacterCount(data[b]) - getTotalCharacterCount(data[a]);
+                return itemDetailsMap[b].price - itemDetailsMap[a].price;
             });
             
             const displayItems = sorted.slice(0, 40); // 최대 40개 항목 표시
@@ -736,17 +752,34 @@
                 item.dataset.itemKey = k;
                 
                 const charValue = data[k];
-                const formattedChars = formatCharacterString(charValue);
+                const itemDetails = itemDetailsMap[k];
                 
+                // 텍스트 부분 생성
                 const txt = document.createElement('div');
                 txt.className = 'result-text';
-                txt.innerHTML = `<span class="item">${formattedChars}</span>
-                                 <span class="count">&nbsp;&nbsp;&nbsp;(${getTotalCharacterCount(charValue)})</span>`;
+                
+                // 가격 정보 추출 및 포맷팅
+                let displayText = itemDetails.displayText;
+                const pricePattern = /\$([\d.]+)/;
+                const priceMatch = displayText.match(pricePattern);
+                
+                if (priceMatch) {
+                    // 가격을 초록색 굵게 표시
+                    displayText = displayText.replace(
+                        pricePattern, 
+                        `<span class="price">$${priceMatch[1]}</span>`
+                    );
+                }
+                
+                txt.innerHTML = `<span class="item">${displayText}</span>
+                                 <span class="key">&nbsp;&nbsp;&nbsp;(${k})</span>`;
                 item.appendChild(txt);
                 
+                // 이미지 부분 생성
                 const imgs = document.createElement('div');
                 imgs.className = 'item-images';
                 
+                // 캐릭터 이미지 추가
                 const charImages = [];
                 const charPattern = /([a-z]{2})(\d)/g;
                 let match;
@@ -776,18 +809,21 @@
                     imgs.appendChild(img);
                 });
                 
-                // 그 외 고정된 아이템 박스 추가
-                [
-                    // { title: '태테르', count: '40+개' },
-                    // { title: '달증', count: '65+개' },
-                    // { title: '빵', count: '1000+개' },
-                    // { title: '소환권', count: '500+장' }
-                ].forEach(it => {
-                    const box = document.createElement('div');
-                    box.className = 'item-box';
-                    box.innerHTML = `<div class="item-title">${it.title}</div><div class="item-count">${it.count}</div>`;
-                    imgs.appendChild(box);
-                });
+                // Collapse 아이템 박스 추가
+                if (itemDetails.collapseText) {
+                    const collapseBox = document.createElement('div');
+                    collapseBox.className = 'item-box';
+                    collapseBox.innerHTML = `<div class="item-title">Collapse</div><div class="item-count">${itemDetails.collapseCount}</div>`;
+                    imgs.appendChild(collapseBox);
+                }
+                
+                // GUARANTEED 아이템 박스 추가
+                if (itemDetails.guaranteed) {
+                    const guaranteedBox = document.createElement('div');
+                    guaranteedBox.className = 'item-box';
+                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GUARANTEED</div>`;
+                    imgs.appendChild(guaranteedBox);
+                }
                 
                 item.appendChild(imgs);
                 item.addEventListener('click', () => copyToClipboard(item));
