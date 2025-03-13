@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -412,10 +412,10 @@
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
-    <button id="filterButton">필터 적용</button>
-    <div id="copyInstruction">※ 물품을 클릭하면 복사됩니다</div>
+    <button id="filterButton">Apply Filter</button>
+    <div id="copyInstruction">※ Click on an item to copy</div>
     <div id="results"></div>
-    <div id="copyMessage">복사되었습니다</div>
+    <div id="copyMessage">Copied to clipboard</div>
     <script>
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
@@ -523,7 +523,7 @@
         
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'character-name';
-                nameSpan.textContent = kor;
+                nameSpan.textContent = eng;
         
                 const spinboxContainer = document.createElement('div');
                 spinboxContainer.className = 'spinbox-container';
@@ -710,7 +710,7 @@
                 const txt = document.createElement('div');
                 txt.className = 'result-text';
                 txt.innerHTML = `<span class="item">${formattedChars}</span>
-                                 <span class="count">&nbsp;&nbsp;&nbsp;(총 ${getTotalCharacterCount(charValue)}개)</span>`;
+                                 <span class="count">&nbsp;&nbsp;&nbsp;(${getTotalCharacterCount(charValue)})</span>`;
                 item.appendChild(txt);
                 
                 const imgs = document.createElement('div');
@@ -747,10 +747,10 @@
                 
                 // 그 외 고정된 아이템 박스 추가
                 [
-                    { title: '태테르', count: '40+개' },
-                    { title: '달증', count: '65+개' },
-                    { title: '빵', count: '1000+개' },
-                    { title: '소환권', count: '500+장' }
+                    // { title: '태테르', count: '40+개' },
+                    // { title: '달증', count: '65+개' },
+                    // { title: '빵', count: '1000+개' },
+                    // { title: '소환권', count: '500+장' }
                 ].forEach(it => {
                     const box = document.createElement('div');
                     box.className = 'item-box';
@@ -779,8 +779,8 @@
                 // 코드에 해당하는 한글 이름 찾기
                 const charInfo = characters.find(([eng]) => eng.startsWith(code));
                 if (charInfo) {
-                    const korName = charInfo[1];
-                    result.push(`${korName}${count}`);
+                    const engName = charInfo[0];
+                    result.push(`${engName}${count}`);
                 } else {
                     result.push(`${code}${count}`);
                 }
