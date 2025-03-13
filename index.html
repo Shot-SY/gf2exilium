@@ -744,7 +744,8 @@
                 return itemDetailsMap[b].price - itemDetailsMap[a].price;
             });
             
-            const displayItems = sorted.slice(0, 40); // 최대 40개 항목 표시
+            // 제한 없이 모든 아이템 표시
+            const displayItems = sorted;
             
             displayItems.forEach(k => {
                 const item = document.createElement('div');
@@ -758,19 +759,20 @@
                 const txt = document.createElement('div');
                 txt.className = 'result-text';
                 
-                // 원본 텍스트에서 가격 부분 및 키 제거
+                // 원본 텍스트에서 가격 부분 및 = 제거
                 let displayText = itemDetails.displayText;
-                // = $ 부분과 가격 제거
-                displayText = displayText.replace(/=\s*\$[\d.]+/, '').trim();
+                // "$숫자.숫자" 패턴 제거
+                displayText = displayText.replace(/\$[\d.]+/g, '').trim();
+                // "=" 제거
+                displayText = displayText.replace(/=\s*/g, '').trim();
                 
-                // 가격 정보 별도로 표시
                 txt.innerHTML = `<span class="item">${displayText}</span>
                                  <span class="price">$${itemDetails.price.toFixed(2)}</span>
                                  <span class="key">(${k})</span>`;
                 
                 item.appendChild(txt);
                 
-                // 이미지 부분 생성 (이하 동일)
+                // 이미지 부분 (이하 동일)
                 const imgs = document.createElement('div');
                 imgs.className = 'item-images';
                 
@@ -816,7 +818,7 @@
                 if (itemDetails.guaranteed) {
                     const guaranteedBox = document.createElement('div');
                     guaranteedBox.className = 'item-box';
-                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Guaranteed</div>`;
+                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GUARANTEED</div>`;
                     imgs.appendChild(guaranteedBox);
                 }
                 
