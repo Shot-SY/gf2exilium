@@ -568,23 +568,23 @@
 
         function loadData() {
             const ts = new Date().getTime();
-            return Promise.all([
-                fetch(`data.lua?t=${ts}`).then(r => r.text()),
-                loadCharacters()
-            ]).then(([luaText]) => {
-                luaData = {};
-                
-                const allText = luaText.replace(/\n/g, ' ');
-                
-                const pattern = /\["(.+?)"\]\s*=\s*{\s*value\s*=\s*"(.+?)"/g;
-                
-                let match;
-                while ((match = pattern.exec(allText)) !== null) {
-                    luaData[match[1]] = match[2];
-                }
-                
-                console.log('데이터 로드됨:', luaData);
-            }).catch(error => { console.error('데이터 로딩 오류:', error); });
+            // loadCharacters() 호출 제거
+            return fetch(`data.lua?t=${ts}`)
+                .then(r => r.text())
+                .then(luaText => {
+                    luaData = {};
+                    
+                    const allText = luaText.replace(/\n/g, ' ');
+                    
+                    const pattern = /\["(.+?)"\]\s*=\s*{\s*value\s*=\s*"(.+?)"/g;
+                    
+                    let match;
+                    while ((match = pattern.exec(allText)) !== null) {
+                        luaData[match[1]] = match[2];
+                    }
+                    
+                    console.log('데이터 로드됨:', luaData);
+                }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
         function getTotalCharacterCount(charString) {
