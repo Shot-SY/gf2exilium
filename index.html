@@ -606,12 +606,19 @@
         }
 
         function getTotalCharacterCount(charString) {
+            // 계산에서 제외할 캐릭터 코드 목록
+            const excludedChars = ['sa', 'pe', 'be', 'mo']; // sabrina, peritia, bepri, mosinnagang의 첫 2글자
+            
             const charPattern = /([a-z]{2})(\d)/g;
             let totalCount = 0;
             let match;
             
             while ((match = charPattern.exec(charString)) !== null) {
-                totalCount += parseInt(match[2]);
+                const code = match[1];
+                // 제외 목록에 없는 캐릭터만 카운트
+                if (!excludedChars.includes(code)) {
+                    totalCount += parseInt(match[2]);
+                }
             }
             
             return totalCount;
@@ -703,6 +710,7 @@
             displayItems.forEach(k => {
                 const item = document.createElement('div');
                 item.className = 'result-item';
+                item.dataset.itemKey = k;
                 
                 const charValue = data[k];
                 const formattedChars = formatCharacterString(charValue);
@@ -790,10 +798,8 @@
         }
 
         function copyToClipboard(el) {
-            const formattedText = el.querySelector('.result-text .item').textContent.trim();
-            const count = el.querySelector('.result-text .count').textContent.trim();
-            const text = `${formattedText} ${count}`;
-            navigator.clipboard.writeText(text).then(() => showCopyMessage(), err => console.error('복사 실패: ', err));
+            const itemKey = el.dataset.itemKey;
+            navigator.clipboard.writeText(itemKey).then(() => showCopyMessage(), err => console.error('Copy failed: ', err));
         }
 
         function showCopyMessage(){
