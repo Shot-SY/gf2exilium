@@ -855,7 +855,17 @@
 
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
-            navigator.clipboard.writeText(itemKey).then(() => showCopyMessage(), err => console.error('Copy failed: ', err));
+            const itemDetails = itemDetailsMap[itemKey];
+            
+            if (!itemDetails) return;
+            
+            // 원본 텍스트 전체를 복사
+            const originalText = itemDetails.originalText;
+            
+            navigator.clipboard.writeText(originalText).then(
+                () => showCopyMessage(), 
+                err => console.error('Copy failed: ', err)
+            );
         }
 
         function showCopyMessage(){
