@@ -498,6 +498,8 @@
                         }
                     });
                     console.log('캐릭터 데이터 로드됨:', characters);
+                    // 데이터 로드 후 캐릭터 박스 생성
+                    createCharacterBoxes();
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
@@ -505,46 +507,54 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
-        characters.forEach(([eng, kor]) => {
-            const charBox = document.createElement('div');
-            charBox.className = 'character-box';
-            charBox.dataset.engName = eng;
-
-            const img = document.createElement('img');
-            img.src = `Portrait/${kor}.png`;
-            img.alt = kor;
-            img.className = 'character-img';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'character-name';
-            nameSpan.textContent = kor;
-
-            const spinboxContainer = document.createElement('div');
-            spinboxContainer.className = 'spinbox-container';
-
-            const spinbox = document.createElement('input');
-            spinbox.type = 'number';
-            spinbox.id = `${eng}-spin`;
-            spinbox.min = 0;
-            spinbox.max = 8;
-            spinbox.value = 0;
-            spinbox.disabled = true;
-
-            spinboxContainer.appendChild(spinbox);
-            charBox.append(img, nameSpan, spinboxContainer);
-            characterGrid.appendChild(charBox);
-
-            charBox.addEventListener('click', (e) => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); });
-            spinbox.addEventListener('click', (e) => { 
-                e.stopPropagation();
-                if(!charBox.classList.contains('selected')) {
-                    charBox.classList.add('selected');
-                    spinbox.disabled = false;
-                    if(spinbox.value === '0') spinbox.value = '1';
-                }
+        function createCharacterBoxes() {
+            const characterGrid = document.getElementById('characterGrid');
+            characterGrid.innerHTML = ''; // 기존 박스 제거
+            
+            characters.forEach(([eng, kor]) => {
+                const charBox = document.createElement('div');
+                charBox.className = 'character-box';
+                charBox.dataset.engName = eng;
+        
+                const img = document.createElement('img');
+                img.src = `Portrait/${kor}.png`;
+                img.alt = kor;
+                img.className = 'character-img';
+        
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'character-name';
+                nameSpan.textContent = kor;
+        
+                const spinboxContainer = document.createElement('div');
+                spinboxContainer.className = 'spinbox-container';
+        
+                const spinbox = document.createElement('input');
+                spinbox.type = 'number';
+                spinbox.id = `${eng}-spin`;
+                spinbox.min = 0;
+                spinbox.max = 8;
+                spinbox.value = 0;
+                spinbox.disabled = true;
+        
+                spinboxContainer.appendChild(spinbox);
+                charBox.append(img, nameSpan, spinboxContainer);
+                characterGrid.appendChild(charBox);
+        
+                charBox.addEventListener('click', (e) => { 
+                    if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); 
+                });
+                
+                spinbox.addEventListener('click', (e) => { 
+                    e.stopPropagation();
+                    if(!charBox.classList.contains('selected')) {
+                        charBox.classList.add('selected');
+                        spinbox.disabled = false;
+                        if(spinbox.value === '0') spinbox.value = '1';
+                    }
+                });
             });
-        });
-
+        }
+        
         function toggleSelection(charBox) {
             const spinbox = charBox.querySelector('input[type="number"]');
             if(charBox.classList.toggle('selected')) {
