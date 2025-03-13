@@ -1,734 +1,999 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GF2 Exilium Character Filter</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Noto Sans', sans-serif;
-      line-height: 1.6;
-      color: #e0e0e0;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #121212;
-    }
-    
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background-color: rgba(42, 42, 42, 0.8);
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    }
-    
-    h1 {
-      font-size: 2.5em;
-      color: #ff4081;
-      text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
-      margin-bottom: 10px;
-    }
-    
-    .character-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-    
-    .character-box {
-      background-color: rgba(42, 42, 42, 0.8);
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .character-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
-    }
-    
-    .character-box.selected {
-      background-color: rgba(255, 64, 129, 0.2);
-      box-shadow: 0 5px 15px rgba(255, 64, 129, 0.6);
-      border: 1px solid rgba(255, 64, 129, 0.5);
-    }
-    
-    .character-name {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-    
-    .character-korean {
-      font-size: 14px;
-      color: #bbb;
-      margin-bottom: 12px;
-    }
-    
-    .number-selector {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 5px;
-      margin-top: 10px;
-    }
-    
-    .number-btn {
-      width: 30px;
-      height: 30px;
-      background-color: #333;
-      border: 1px solid #555;
-      color: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      user-select: none;
-    }
-    
-    .number-btn:hover {
-      background-color: #444;
-    }
-    
-    .number-btn.active {
-      background-color: #ff4081;
-      border-color: #ff4081;
-      box-shadow: 0 0 8px rgba(255, 64, 129, 0.8);
-    }
-    
-    .filter-controls {
-      text-align: center;
-      margin: 30px 0;
-    }
-    
-    button#apply-filter {
-      padding: 15px 30px;
-      font-size: 18px;
-      background: linear-gradient(45deg, #ff4081, #f50057);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(255, 64, 129, 0.6);
-    }
-    
-    button#apply-filter:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 64, 129, 0.8);
-    }
-    
-    button#reset-filter {
-      padding: 12px 25px;
-      font-size: 16px;
-      background-color: #444;
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-      margin-left: 15px;
-    }
-    
-    button#reset-filter:hover {
-      background-color: #555;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    }
-    
-    .results-container {
-      background-color: rgba(42, 42, 42, 0.8);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      margin-bottom: 30px;
-      max-height: 600px;
-      overflow-y: auto;
-    }
-    
-    .results-container h2 {
-      color: #ff4081;
-      margin-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-    }
-    
-    .results-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .results-table th,
-    .results-table td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .results-table th {
-      background-color: rgba(0, 0, 0, 0.3);
-      color: #ff4081;
-      position: sticky;
-      top: 0;
-    }
-    
-    .results-table tbody tr {
-      transition: background-color 0.2s;
-    }
-    
-    .results-table tbody tr:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    .char-breakdown {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    
-    .char-item {
-      background-color: rgba(255, 64, 129, 0.15);
-      border-radius: 3px;
-      padding: 3px 8px;
-      font-size: 0.9em;
-    }
-    
-    .loader {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-    }
-    
-    .loader-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #ff4081;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .status-message {
-      text-align: center;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 5px;
-      transition: all 0.3s ease;
-      opacity: 0;
-    }
-    
-    .status-message.show {
-      opacity: 1;
-    }
-    
-    .status-message.error {
-      background-color: rgba(244, 67, 54, 0.2);
-      border: 1px solid #f44336;
-    }
-    
-    .status-message.success {
-      background-color: rgba(76, 175, 80, 0.2);
-      border: 1px solid #4CAF50;
-    }
-    
-    .no-results {
-      text-align: center;
-      padding: 30px;
-      font-style: italic;
-      color: #aaa;
-    }
-    
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      padding: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: #777;
-      font-size: 0.9em;
-    }
-    
-    @media (max-width: 768px) {
-      .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      }
-      
-      .character-name {
-        font-size: 14px;
-      }
-      
-      .character-korean {
-        font-size: 12px;
-      }
-      
-      .number-selector {
-        gap: 3px;
-      }
-      
-      .number-btn {
-        width: 25px;
-        height: 25px;
-        font-size: 12px;
-      }
-      
-      button#apply-filter {
-        padding: 12px 25px;
-        font-size: 16px;
-      }
-      
-      button#reset-filter {
-        padding: 10px 20px;
-        font-size: 14px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIRLS FRONTLINE 2: EXILIUM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y21MLG0SJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6Y21MLG0SJ');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            color: #e0e0e0;
+            position: relative;
+            overflow-y: scroll;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5em;
+            color: #ff4081;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+        }
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        .character-box {
+            background: url('https://www.transparenttextures.com/patterns/gplay.png'), rgba(26,26,26,0.2);
+            background-repeat: repeat;
+            background-size: cover;
+            border: none;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            position: relative;
+            height: 160px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+        .character-box.selected {
+            background-color: rgba(255,64,129,0.9);
+            box-shadow: 0 8px 20px rgba(255,64,129,0.8);
+            transform: translateY(-5px);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .character-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+            }
+            .character-box:hover .character-img {
+                transform: rotate(5deg);
+            }
+            #filterButton:hover {
+                background: linear-gradient(45deg, #ff4081, #f50057);
+                box-shadow: 0 6px 20px rgba(255,64,129,0.8);
+                transform: translateY(-3px);
+            }
+            .result-item:hover {
+                background-color: #1e1e1e;
+                box-shadow: 0 4px 12px rgba(255,64,129,0.4);
+            }
+        }
+        .character-img {
+            width: 80px;
+            height: 90px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        .character-name {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .spinbox-container {
+            width: 80%;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
+            justify-content: center;
+            margin-top: -5px;
+            transform: translateY(-10px);
+        }
+        .character-box.selected .spinbox-container {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .spinbox-container input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .spinbox-container input[type="number"]:focus {
+            border-color: #ff4081;
+            box-shadow: 0 0 5px rgba(255,64,129,0.5);
+            outline: none;
+            background-color: #2a2a2a;
+        }
+        #filterButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 15px;
+            margin: 25px 0;
+            font-size: 18px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ff4081, #f50057);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+            transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        #filterButton:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+        }
+        #copyInstruction {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #ff4081;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        #copyMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: none;
+            opacity: 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1em;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 1000;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #copyMessage.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #results {
+            padding: 20px;
+            height: 800px;
+            max-height: 800px;
+            overflow-y: auto;
+            background-color: rgba(26,26,26,0.8);
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        #results .content-container {
+            transform: translateZ(0);
+            will-change: opacity;
+            transition: opacity 0.2s ease;
+        }
+        
+        #results.filtering .content-container {
+            opacity: 0;
+        }
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(42,42,42,0.8);
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(255,64,129,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .small-character-img {
+            width: auto;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/geometry-dark.png') repeat;
+            opacity: 0.04;
+            z-index: -1;
+        }
+        .character-box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+            opacity: 0.2;
+            border-radius: 15px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .character-box > * {
+            position: relative;
+            z-index: 1;
+        }
+        .result-text {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .result-text .item {
+            color: #fff;
+            font-weight: 700;
+        }
+        .result-text .price {
+            color: #00e676;
+            font-weight: 600;
+        }
+        .result-text .count {
+            color: #ff9800;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .character-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+                gap: 15px;
+            }
+            .character-box {
+                height: 140px;
+                padding: 10px;
+            }
+            .spinbox-container input[type="number"] {
+                width: 45px;
+            }
+            #filterButton {
+                font-size: 16px;
+                padding: 12px;
+            }
+            .result-item {
+                padding: 12px;
+            }
+            .small-character-img {
+                width: 60px;
+                height: 60px;
+            }
+            .result-text {
+                gap: 5px;
+            }
+            #copyInstruction {
+                font-size: 1em;
+            }
+            #copyMessage {
+                font-size: 1em;
+                padding: 15px 20px;
+            }
+        }
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18,18,18,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 2000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #ff4081;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        .item-images {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .item-box {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 62px;
+            height: 62px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            border-radius: 10px;
+            margin: 0 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .item-title {
+            color: #ff4081;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .item-count {
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .item-box {
+                width: 47px;
+                height: 47px;
+            }
+            .item-title {
+                font-size: 12px;
+            }
+            .item-count {
+                font-size: 10px;
+            }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        @keyframes fadeOutScale {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+        /* 예산 박스 스타일 */
+        #budgetContainer {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .budget-box {
+            width: 300px;
+            height: 60px;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .budget-box:hover {
+            border-color: rgba(255,64,129,0.4);
+        }
+        
+        .budget-text {
+            font-size: 18px;
+            margin: 0;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            color: #e0e0e0;
+        }
+        
+        .budget-box.selected {
+            justify-content: space-between;
+            border-color: rgba(255,64,129,0.6);
+        }
+
+        .budget-text-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+        
+        .tooltip-content {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #fff;
+            white-space: normal;
+            width: 280px;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 64, 129, 0.3);
+            margin-top: 10px;
+        }
+        
+        .budget-box.selected .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .budget-input-wrapper {
+            display: none;
+            align-items: center;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .budget-box.selected .budget-input-wrapper {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .budget-input-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .budget-input-container input[type="number"] {
+            width: 120px;
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background-color: rgba(0,0,0,0.2);
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+        
+        .budget-input-container input[type="number"]:focus {
+            border-color: #ff4081;
+            outline: none;
+        }
+        
+        .budget-unit {
+            color: #e0e0e0;
+            margin-left: 8px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .budget-box {
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .budget-text {
+                font-size: 16px;
+            }
+            
+            .budget-input-container input[type="number"] {
+                width: 100px;
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="loader" id="loader">
-    <div class="loader-spinner"></div>
-  </div>
-  
-  <header>
-    <h1>GF2 Exilium Character Filter</h1>
-    <p>Check the quantity of desired characters to find keys that meet the conditions</p>
-  </header>
-  
-  <div class="status-message" id="statusMessage"></div>
-  
-  <div class="character-grid" id="characterGrid">
-    <!-- Character boxes will be dynamically created here -->
-  </div>
-  
-  <div class="filter-controls">
-    <button id="apply-filter">Apply Filter</button>
-    <button id="reset-filter">Reset Filter</button>
-  </div>
-  
-  <div class="results-container">
-    <h2>Search Results</h2>
-    <div id="results">
-      <p class="loading-text">Loading data...</p>
+    <div id="loader">
+        <div class="spinner"></div>
     </div>
-  </div>
-  
-  <footer>
-    <p>&copy; 2025 GF2 Exilium Filter | Made by Exilium Community</p>
-  </footer>
-  
-  <script>
-    // Global variables
-    let characterData = []; // Store character data
-    let gameData = {}; // Store data.lua content
-    
-    // DOM elements
-    const characterGrid = document.getElementById('characterGrid');
-    const applyFilterBtn = document.getElementById('apply-filter');
-    const resetFilterBtn = document.getElementById('reset-filter');
-    const resultsDiv = document.getElementById('results');
-    const loader = document.getElementById('loader');
-    const statusMessage = document.getElementById('statusMessage');
-    
-    // Execute on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // Load data and initialize UI
-        await Promise.all([loadCharacters(), loadGameData()]);
-        createCharacterBoxes();
-        hideLoader();
-        
-        // Run initial filtering
-        filterData();
-      } catch (error) {
-        console.error('Initialization error:', error);
-        showStatus(`Error loading data: ${error.message}`, true);
-        hideLoader();
-      }
-    });
-    
-    // Event listeners
-    applyFilterBtn.addEventListener('click', filterData);
-    resetFilterBtn.addEventListener('click', resetFilters);
-    
-    // Load Characters.txt file
-    async function loadCharacters() {
-      try {
-        const response = await fetch('Characters.txt');
-        if (!response.ok) {
-          throw new Error(`Cannot load Characters.txt file (${response.status})`);
-        }
-        
-        const text = await response.text();
-        const lines = text.trim().split('\n');
-        
-        characterData = [];
-        
-        lines.forEach(line => {
-          const parts = line.trim().split(' ');
-          if (parts.length >= 2) {
-            const englishName = parts[0].trim();
-            const koreanName = parts.slice(1).join(' ').trim();
-            const code = englishName.substring(0, 2).toLowerCase();
-            
-            characterData.push({
-              code: code,
-              englishName: englishName,
-              koreanName: koreanName
-            });
-          }
-        });
-        
-        console.log(`Loaded ${characterData.length} characters.`);
-      } catch (error) {
-        console.error('Character file loading error:', error);
-        showStatus('Failed to load character file. Please refresh the page.', true);
-        throw error;
-      }
-    }
-    
-    // Load data.lua file
-    async function loadGameData() {
-      try {
-        const response = await fetch('data.lua');
-        if (!response.ok) {
-          throw new Error(`Cannot load data.lua file (${response.status})`);
-        }
-        
-        const text = await response.text();
-        gameData = parseLuaData(text);
-        
-        console.log(`Loaded ${Object.keys(gameData).length} game data.`);
-      } catch (error) {
-        console.error('Game data loading error:', error);
-        showStatus('Failed to load data.lua file. Please refresh the page.', true);
-        throw error;
-      }
-    }
-    
-    // Parse Lua data function
-    function parseLuaData(luaText) {
-      const result = {};
-      
-      // Use regex to parse data
-      const pattern = /\["([^"]+)"\]\s*=\s*{[\s\n]*value\s*=\s*"([^"]+)",[\s\n]*isRated\s*=\s*"([^"]+)",[\s\n]*timestamp\s*=\s*"([^"]+)"/g;
-      
-      let match;
-      while ((match = pattern.exec(luaText)) !== null) {
-        const [_, key, value, isRated, timestamp] = match;
-        result[key] = {
-          value: value,
-          isRated: isRated,
-          timestamp: timestamp
+    <div id="tsparticles"></div>
+    <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
+    <div class="character-grid" id="characterGrid"></div>
+    <div id="budgetContainer">
+        <div class="budget-box" id="budgetBox">
+            <div class="budget-text-container">
+                <span class="budget-text">추천 조합 보기</span>
+                <span class="tooltip-content">입력한 예산의 ±30% 범위 내에서 추천 조합을 찾아드립니다. 유효캐릭터가 많은 순으로 물품이 정렬됩니다. 꼭 포함시키고 싶은 캐릭터는 1 이상의 수를 입력하세요</span>
+            </div>
+            <div class="budget-input-wrapper">
+                <div class="budget-input-container">
+                    <input type="number" id="budgetInput" min="0" step="5000" placeholder="50000~" disabled />
+                    <span class="budget-unit">원</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="filterButton">필터 적용</button>
+    <div id="copyInstruction">※ 물품을 클릭하면 복사됩니다</div>
+    <div id="results"></div>
+    <div id="copyMessage">복사되었습니다</div>
+    <script>
+        let lastActivityTime = Date.now();
+        const updateActivityTime = () => {
+            lastActivityTime = Date.now();
         };
-      }
-      
-      return result;
-    }
-    
-    // Create character boxes
-    function createCharacterBoxes() {
-      characterGrid.innerHTML = '';
-      
-      characterData.forEach(character => {
-        const charBox = document.createElement('div');
-        charBox.className = 'character-box';
-        charBox.dataset.code = character.code;
+        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => {
+            document.addEventListener(event, updateActivityTime);
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const currentTime = Date.now();
+                const inactiveTime = currentTime - lastActivityTime;
+                const twoHours = 7200000;
+                if (inactiveTime > twoHours) {
+                    window.location.reload(true);
+                } else {
+                    lastActivityTime = currentTime;
+                }
+            }
+        });
         
-        const namePart = document.createElement('div');
-        namePart.className = 'character-name';
-        namePart.textContent = character.englishName;
+        window.addEventListener('load', () => {
+            // 마지막 로드 시간을 localStorage에서 확인
+            const lastLoad = localStorage.getItem('lastLoadTime');
+            const currentTime = Date.now();
+            
+            // 마지막 로드로부터 1초 이상 지났거나 lastLoad가 없으면 새로고침
+            if (!lastLoad || (currentTime - parseInt(lastLoad)) > 1000) {
+                localStorage.setItem('lastLoadTime', currentTime);
+                window.location.reload(true); // true를 넣으면 강제로 캐시를 무시
+                return;
+            }
         
-        const koreanPart = document.createElement('div');
-        koreanPart.className = 'character-korean';
-        koreanPart.textContent = character.koreanName;
+            // 기존 로딩 로직
+            const loader = document.getElementById('loader');
+            loadCharacters()
+                .then(() => loadData())
+                .then(() => filterData())
+                .then(() => new Promise(r => setTimeout(r, 500)))
+                .then(() => { 
+                    loader.classList.add('hidden'); 
+                    setTimeout(() => loader.style.display = 'none', 500); 
+                })
+                .catch(error => {
+                    console.error('초기 필터 적용 에러:', error);
+                    loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
+                });
+        });
+
+        tsParticles.load("tsparticles", {
+            particles: {
+                number: { value: 50, density: { enable: true, value_area: 800 }},
+                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
+                size: { value: 3, random: { enable: true, minimumValue: 1 }},
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
+                color: { value: ["#FF0000","#FF7F00","#FFFF00","#00FF00","#0000FF","#4B0082","#8F00FF"] },
+                opacity: { value: 0.8, random: false }
+            },
+            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
+            retina_detect: true
+        });
+
+        let characters = [];
         
-        const numberSelector = document.createElement('div');
-        numberSelector.className = 'number-selector';
+        function loadCharacters() {
+            const ts = new Date().getTime();
+            return fetch(`Characters.txt?t=${ts}`)
+                .then(r => r.text())
+                .then(text => {
+                    characters = [];
+                    text.split('\n').forEach(line => {
+                        const parts = line.trim().split(' ');
+                        if (parts.length >= 2) {
+                            const eng = parts[0];
+                            const kor = parts.slice(1).join(' ');
+                            if (eng && kor) {
+                                characters.push([eng, kor]);
+                            }
+                        }
+                    });
+                    console.log('캐릭터 데이터 로드됨:', characters);
+                })
+                .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
+        }
+
+        let sortedData = {}, luaData = {};
+        const characterGrid = document.getElementById('characterGrid');
+        const budgetBox = document.getElementById('budgetBox');
+        const budgetInput = document.getElementById('budgetInput');
+
+        characters.forEach(([eng, kor]) => {
+            const charBox = document.createElement('div');
+            charBox.className = 'character-box';
+            charBox.dataset.engName = eng;
+
+            const img = document.createElement('img');
+            img.src = `Portrait/${kor}.png`;
+            img.alt = kor;
+            img.className = 'character-img';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'character-name';
+            nameSpan.textContent = kor;
+
+            const spinboxContainer = document.createElement('div');
+            spinboxContainer.className = 'spinbox-container';
+
+            const spinbox = document.createElement('input');
+            spinbox.type = 'number';
+            spinbox.id = `${eng}-spin`;
+            spinbox.min = 0;
+            spinbox.max = 8;
+            spinbox.value = 0;
+            spinbox.disabled = true;
+
+            spinboxContainer.appendChild(spinbox);
+            charBox.append(img, nameSpan, spinboxContainer);
+            characterGrid.appendChild(charBox);
+
+            charBox.addEventListener('click', (e) => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); });
+            spinbox.addEventListener('click', (e) => { 
+                e.stopPropagation();
+                if(!charBox.classList.contains('selected')) {
+                    charBox.classList.add('selected');
+                    spinbox.disabled = false;
+                    if(spinbox.value === '0') spinbox.value = '1';
+                }
+            });
+        });
+
+        budgetBox.addEventListener('click', (e) => {
+            if(e.target.tagName.toLowerCase() !== 'input') toggleBudgetSelection(budgetBox);
+        });
         
-        // Create number buttons from 0 to 7
-        for (let i = 0; i <= 7; i++) {
-          const numBtn = document.createElement('div');
-          numBtn.className = 'number-btn';
-          numBtn.textContent = i;
-          numBtn.dataset.value = i;
-          
-          if (i === 0) {
-            numBtn.classList.add('active');
-          }
-          
-          numBtn.addEventListener('click', (e) => {
+        budgetInput.addEventListener('click', (e) => { 
             e.stopPropagation();
-            selectNumber(charBox, numBtn);
-          });
-          
-          numberSelector.appendChild(numBtn);
-        }
-        
-        charBox.appendChild(namePart);
-        charBox.appendChild(koreanPart);
-        charBox.appendChild(numberSelector);
-        
-        // Toggle selection when clicking the entire box
-        charBox.addEventListener('click', () => {
-          toggleCharacterBox(charBox);
-        });
-        
-        characterGrid.appendChild(charBox);
-      });
-    }
-    
-    // Toggle character box
-    function toggleCharacterBox(charBox) {
-      const isSelected = charBox.classList.toggle('selected');
-      
-      // Adjust number button active state
-      const numberBtns = charBox.querySelectorAll('.number-btn');
-      if (isSelected) {
-        // If selected, activate number 1
-        numberBtns.forEach(btn => {
-          btn.classList.remove('active');
-          if (btn.dataset.value === '1') {
-            btn.classList.add('active');
-          }
-        });
-      } else {
-        // If deselected, activate number 0
-        numberBtns.forEach(btn => {
-          btn.classList.remove('active');
-          if (btn.dataset.value === '0') {
-            btn.classList.add('active');
-          }
-        });
-      }
-    }
-    
-    // Select number
-    function selectNumber(charBox, selectedBtn) {
-      // Deactivate all number buttons
-      charBox.querySelectorAll('.number-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      // Activate selected button
-      selectedBtn.classList.add('active');
-      
-      // If a number other than 0 is selected, set character box to selected state
-      const value = parseInt(selectedBtn.dataset.value);
-      if (value > 0) {
-        charBox.classList.add('selected');
-      } else {
-        charBox.classList.remove('selected');
-      }
-    }
-    
-    // Apply filter function
-    function filterData() {
-      showLoader();
-      
-      setTimeout(() => {
-        try {
-          // Get selected characters and values
-          const selectedChars = {};
-          document.querySelectorAll('.character-box').forEach(charBox => {
-            const code = charBox.dataset.code;
-            const activeBtn = charBox.querySelector('.number-btn.active');
-            if (activeBtn) {
-              const value = parseInt(activeBtn.dataset.value);
-              if (value > 0) {
-                selectedChars[code] = value;
-              }
+            if(!budgetBox.classList.contains('selected')) {
+                budgetBox.classList.add('selected');
+                budgetInput.disabled = false;
             }
-          });
-          
-          // Filter data
-          const filteredData = {};
-          for (const [key, data] of Object.entries(gameData)) {
-            const charCounts = parseValueString(data.value);
+        });
+
+        function toggleBudgetSelection(budgetBox) {
+            const isActivating = !budgetBox.classList.contains('selected');
+            const budgetTextContainer = budgetBox.querySelector('.budget-text-container');
             
-            // Check all selected character conditions
-            let isMatch = true;
-            for (const [charCode, minCount] of Object.entries(selectedChars)) {
-              if (!charCounts[charCode] || charCounts[charCode] < minCount) {
-                isMatch = false;
-                break;
-              }
+            [...document.getElementsByClassName('character-box')].forEach(box => {
+                box.classList.remove('selected');
+                const spinbox = box.querySelector('input[type="number"]');
+                spinbox.disabled = true;
+                spinbox.value = '0';
+            });
+        
+            if (isActivating) {
+                budgetBox.classList.add('selected');
+                budgetInput.disabled = false;
+                budgetTextContainer.querySelector('.budget-text').textContent = '예산';
+                setTimeout(() => budgetInput.focus(), 300);
+                
+            } else {
+                budgetBox.classList.remove('selected');
+                budgetInput.disabled = true;
+                budgetInput.value = '';
+                budgetTextContainer.querySelector('.budget-text').textContent = '추천 조합 보기';
+            }
+        }
+
+        function toggleSelection(charBox) {
+            const spinbox = charBox.querySelector('input[type="number"]');
+            if(charBox.classList.toggle('selected')) {
+                spinbox.disabled = false;
+                spinbox.value = spinbox.value === '0' ? '1' : spinbox.value;
+            } else {
+                spinbox.disabled = true;
+                spinbox.value = 0;
+            }
+        }
+
+        function loadData() {
+            const ts = new Date().getTime();
+            return Promise.all([
+                fetch(`sorted_data_with_keys.txt?t=${ts}`).then(r => r.text()),
+                fetch(`data.lua?t=${ts}`).then(r => r.text()),
+                loadCharacters()
+            ]).then(([sortedText, luaText]) => {
+                sortedData = {};
+                sortedText.split('\n').forEach(line => { const [k,...v] = line.split(' '); if(k && v.length) sortedData[k]=v.join(' '); });
+                luaData = {};
+                luaText.split('\n').forEach(line => { const m = line.match(/\["(.+)"\]\s*=\s*"(.+)"/); if(m) luaData[m[1]] = m[2]; });
+                console.log('데이터 로드됨:', sortedData, luaData);
+            }).catch(error => { console.error('데이터 로딩 오류:', error); });
+        }
+
+        function filterData() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('filtering');
+            
+            setTimeout(() => {
+                let filtered = {};
+                for(const [k, v] of Object.entries(luaData)) {
+                    const chars = v.match(/.{1,3}/g)||[];
+                    if(checkConditions(chars)) filtered[k] = v;
+                }
+        
+                // 예산 필터링 및 정렬 로직
+                const budgetSelected = budgetBox.classList.contains('selected');
+                if (budgetSelected) {
+                    const budgetValue = parseFloat(budgetInput.value);
+                    // 입력값이 있을 때만 가격 필터링 적용
+                    if (!isNaN(budgetValue) && budgetValue > 0) {
+                        const minPrice = budgetValue * 0.65;
+                        const maxPrice = budgetValue * 1.35;
+        
+                        filtered = Object.fromEntries(
+                            Object.entries(filtered).filter(([key, val]) => {
+                                const price = getPrice(key);
+                                return price >= minPrice && price <= maxPrice;
+                            })
+                        );
+                    }
+                    // 입력값이 비어있거나 유효하지 않은 경우 가격 제한 없이 진행
+                }
+                
+                // 정렬 로직
+                const sortedKeys = Object.keys(filtered).sort((a, b) => {
+                    if (budgetSelected) {
+                        return getSelectedCharacterSum(filtered[b]) - getSelectedCharacterSum(filtered[a]);
+                    } else {
+                        return getPrice(b) - getPrice(a);
+                    }
+                });
+                
+                const final = {};
+                sortedKeys.forEach(key => {
+                    final[key] = filtered[key];
+                });
+                
+                displayResults(final);
+                resultsDiv.classList.remove('filtering');
+            }, 200);
+        }
+        
+        // 선택된 캐릭터들의 총합을 계산하는 함수
+        function getSelectedCharacterSum(luaString) {
+            const chars = luaString.match(/.{1,3}/g) || [];
+            let sum = 0;
+            
+            chars.forEach(char => {
+                const name = char.slice(0, 2);
+                const num = parseInt(char[2]);
+                
+                // 선택된 캐릭터인 경우에만 합산
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName.startsWith(name));
+                if (box && box.classList.contains('selected')) {
+                    sum += num;
+                }
+            });
+            
+            return sum;
+        }
+
+        function checkConditions(chars) {
+            const count = {};
+            
+            chars.forEach(c => { 
+                const name = c.slice(0,2); 
+                const num = parseInt(c[2]); 
+                count[name] = (count[name]||0)+num;
+            });
+            
+            return characters.every(([eng, kor]) => {
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName === eng);
+                if(box && box.classList.contains('selected')){
+                    return (count[eng.slice(0,2)] || 0) >= 
+                        parseInt(box.querySelector('input').value);
+                }
+                return true;
+            });
+        }
+
+        function getPrice(k) {
+            const m = sortedData[k]?.match(/=\s*([\d,]+)/);
+            return m ? parseInt(m[1].replace(/,/g,'')) : -1;
+        }
+
+        function displayResults(data) {
+            const res = document.getElementById('results');
+            res.scrollTop = 0;
+            
+            res.innerHTML = '<div class="content-container"></div>';
+            const container = res.querySelector('.content-container');
+            
+            const budgetSelected = budgetBox.classList.contains('selected');
+            const sorted = Object.keys(data).sort((a, b) => {
+                if (budgetSelected) {
+                    return getSelectedCharacterSum(luaData[b]) - getSelectedCharacterSum(luaData[a]);
+                } else {
+                    return getPrice(b) - getPrice(a);
+                }
+            });
+        
+            const displayItems = budgetSelected ? sorted.slice(0, 40) : sorted;
+        
+            displayItems.forEach(k => {
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                const val = sortedData[k];
+                if(val){
+                    const [chars, priceCount] = val.split('=').map(s => s.trim());
+                    const pm = priceCount.match(/(\S+)\s*\(([^)]+)\)/);
+                    const price = pm ? pm[1] : '가격 정보 없음';
+                    const count = pm ? pm[2] : '0';
+                    const txt = document.createElement('div');
+                    txt.className = 'result-text';
+                    txt.innerHTML = `<span class="item">${chars}</span><span class="price">${price}</span><span class="count">&nbsp;&nbsp;&nbsp;(${count})</span>`;
+                    item.appendChild(txt);
+                    const imgs = document.createElement('div');
+                    imgs.className = 'item-images';
+        
+                    // 캐릭터를 이미지로 표시하기 전 처리
+                    const charImages = [];
+                    chars.split(' ').forEach(it => {
+                        const m = it.match(/([가-힣]+)(\d*)/);
+                        if (m) {
+                            const [_, name, cnt] = m;
+                            const rep = cnt ? parseInt(cnt) : 1;
+                            
+                                for (let i = 0; i < rep; i++) {
+                                    charImages.push({
+                                        src: `Portrait/${name}.png`, // 이미지 경로 수정
+                                        alt: name
+                                    });
+                                }
+                        }
+                    });
+
+                    // 맨 앞에 올 아이템들 배열
+                    [
+                        // { title: '전설Ⅱ', count: '선택권' },
+                        // { title: '전설Ⅰ', count: '선택권' },
+                        // { title: '전설Ⅰ', count: '선택권' },
+                        // { title: '전설Ⅰ', count: '선택권' },
+                        // { title: '3성', count: '선택권' }
+                    ].forEach(it => {
+                        const box = document.createElement('div');
+                        box.className = 'item-box';
+                        box.innerHTML = `<div class="item-title">${it.title}</div><div class="item-count">${it.count}</div>`;
+                        imgs.appendChild(box);
+                    });
+                    
+                    // 캐릭터 이미지 추가
+                    charImages.forEach(imgData => {
+                        const img = document.createElement('img');
+                        img.src = imgData.src;
+                        img.alt = imgData.alt;
+                        img.className = 'small-character-img';
+                        imgs.appendChild(img);
+                    });
+                    
+                    // 그 외 고정된 아이템 박스 추가
+                    [
+                        { title: '태테르', count: '40+개' },
+                        { title: '달증', count: '65+개' },
+                        { title: '빵', count: '1000+개' },
+                        { title: '소환권', count: '500+장' }
+                    ].forEach(it => {
+                        const box = document.createElement('div');
+                        box.className = 'item-box';
+                        box.innerHTML = `<div class="item-title">${it.title}</div><div class="item-count">${it.count}</div>`;
+                        imgs.appendChild(box);
+                    });
+                    
+                    item.appendChild(imgs);
+                    item.addEventListener('click', () => copyToClipboard(item));
+                } else { 
+                    item.textContent = data[k]; 
+                }
+                container.appendChild(item);
+            });
+            document.getElementById('copyInstruction').style.display = 'block';
+        }
+
+        function copyToClipboard(el) {
+            const chars = el.querySelector('.result-text .item').textContent.trim();
+            const price = el.querySelector('.result-text .price').textContent.trim();
+            const count = el.querySelector('.result-text .count').textContent.trim();
+            const text = `${chars} ${price} ${count}`;
+            navigator.clipboard.writeText(text).then(() => showCopyMessage(), err => console.error('복사 실패: ', err));
+        }
+
+        function showCopyMessage(){
+            const msg = document.getElementById('copyMessage');
+            msg.classList.add('show');
+            setTimeout(() => { 
+                msg.classList.remove('show');
+            }, 2000);
+        }
+
+        function getSelectedCharacters(){
+            let result = '';
+            const budgetBox = document.getElementById('budgetBox');
+            const budgetInput = document.getElementById('budgetInput');
+            
+            if(budgetBox.classList.contains('selected')) {
+                if(budgetInput.value) {
+                    result = `${budgetInput.value} - `;
+                } 
+                else {
+                    result = "nil - ";
+                }
             }
             
-            if (isMatch) {
-              filteredData[key] = {
-                ...data,
-                parsedCounts: charCounts
-              };
-            }
-          }
-          
-          // Display results
-          displayResults(filteredData);
-          hideLoader();
-          
-        } catch (error) {
-          console.error('Filtering error:', error);
-          showStatus('Error occurred during filtering.', true);
-          hideLoader();
+            result += [...document.getElementsByClassName('character-box')]
+                .filter(b => b.classList.contains('selected'))
+                .map(b => `${b.dataset.engName}:${b.querySelector('input').value}`)
+                .join(',');
+            
+            return result;
         }
-      }, 100);
-    }
-    
-    // Parse value string (ex: "su1gy1to2sa1ks4ch3gr1ne3ca2na1ri1")
-    function parseValueString(valueString) {
-      const result = {};
-      const pattern = /([a-z]{2})(\d+)/g;
-      let match;
-      
-      while ((match = pattern.exec(valueString)) !== null) {
-        const [_, code, count] = match;
-        result[code] = parseInt(count);
-      }
-      
-      return result;
-    }
-    
-    // Display results function
-    function displayResults(filteredData) {
-      const keys = Object.keys(filteredData);
-      
-      if (keys.length === 0) {
-        resultsDiv.innerHTML = '<div class="no-results">No results match the conditions.</div>';
-        return;
-      }
-      
-      let tableHTML = `
-        <p>Total ${keys.length} keys match the conditions.</p>
-        <table class="results-table">
-          <thead>
-            <tr>
-              <th>Key</th>
-              <th>Rating</th>
-              <th>Timestamp</th>
-              <th>Character Composition</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-      
-      // Sort by timestamp, newest first
-      keys.sort((a, b) => {
-        const timeA = new Date(filteredData[a].timestamp);
-        const timeB = new Date(filteredData[b].timestamp);
-        return timeB - timeA;
-      });
-      
-      keys.forEach(key => {
-        const data = filteredData[key];
-        const formattedComposition = formatCharacterComposition(data.parsedCounts);
         
-        tableHTML += `
-          <tr>
-            <td>${key}</td>
-            <td>${data.isRated}</td>
-            <td>${data.timestamp}</td>
-            <td class="char-breakdown">${formattedComposition}</td>
-          </tr>
-        `;
-      });
-      
-      tableHTML += `
-          </tbody>
-        </table>
-      `;
-      
-      resultsDiv.innerHTML = tableHTML;
-    }
-    
-    // Format character composition
-    function formatCharacterComposition(counts) {
-      let result = '';
-      
-      // Find characters by code
-      characterData.forEach(character => {
-        const count = counts[character.code];
-        if (count && count > 0) {
-          result += `<span class="char-item">${character.englishName}: ${count}</span>`;
-        }
-      });
-      
-      return result;
-    }
-    
-    // Reset filters
-    function resetFilters() {
-      document.querySelectorAll('.character-box').forEach(charBox => {
-        charBox.classList.remove('selected');
-        
-        // Reset all number buttons (activate 0)
-        const numberBtns = charBox.querySelectorAll('.number-btn');
-        numberBtns.forEach(btn => {
-          btn.classList.remove('active');
-          if (btn.dataset.value === '0') {
-            btn.classList.add('active');
-          }
+        document.getElementById('filterButton').addEventListener('click', () => {
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            loadData().then(() => { 
+                filterData(); 
+                gtag('event', 'apply_filter', {
+                    'selected_characters': getSelectedCharacters()
+                });
+            })
+            .catch(error => { 
+                console.error('필터 적용 에러:', error); 
+            });
         });
-      });
-      
-      // Display results again
-      filterData();
-    }
-    
-    // Show/hide loader functions
-    function showLoader() {
-      loader.style.display = 'flex';
-    }
-    
-    function hideLoader() {
-      loader.style.display = 'none';
-    }
-    
-    // Display status message
-    function showStatus(message, isError) {
-      statusMessage.textContent = message;
-      statusMessage.className = 'status-message';
-      
-      if (isError) {
-        statusMessage.classList.add('error');
-      } else {
-        statusMessage.classList.add('success');
-      }
-      
-      statusMessage.classList.add('show');
-      
-      // Hide message after 3 seconds
-      setTimeout(() => {
-        statusMessage.classList.remove('show');
-      }, 3000);
-    }
-  </script>
+        
+    </script>
 </body>
 </html>
