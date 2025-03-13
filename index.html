@@ -566,6 +566,19 @@
             }
         }
 
+        function filterValidCharacters(charString) {
+            const validCharCodes = new Set(characters.map(([eng]) => eng.slice(0, 2)));
+            
+            const charGroups = charString.match(/.{1,3}/g) || [];
+            
+            const validGroups = charGroups.filter(group => {
+                const code = group.slice(0, 2);
+                return validCharCodes.has(code);
+            });
+            
+            return validGroups.join('');
+        }
+        
         function loadData() {
             const ts = new Date().getTime();
             // loadCharacters() 호출 제거
@@ -580,7 +593,12 @@
                     
                     let match;
                     while ((match = pattern.exec(allText)) !== null) {
-                        luaData[match[1]] = match[2];
+                        // 유효한 캐릭터만 포함하도록 필터링
+                        const filteredValue = filterValidCharacters(match[2]);
+                        // 필터링 후 값이 있을 경우만 저장
+                        if (filteredValue) {
+                            luaData[match[1]] = filteredValue;
+                        }
                     }
                     
                     console.log('데이터 로드됨:', luaData);
