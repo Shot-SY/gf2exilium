@@ -413,7 +413,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.8);
             background-color: rgba(18, 18, 18, 0.95);
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -424,6 +424,14 @@
             max-height: 80vh;
             overflow-y: auto;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .signature-popup.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
         
         .signature-popup-title {
@@ -1093,9 +1101,14 @@
                 popupItemsContainer.appendChild(popupItem);
             });
             
-            // 팝업 표시
+            // 팝업 표시 (애니메이션 적용)
             const popup = document.getElementById('signaturePopup');
             popup.style.display = 'block';
+            
+            // 약간의 지연 후 애니메이션 클래스 추가 (DOM 업데이트 타이밍 문제 방지)
+            setTimeout(() => {
+                popup.classList.add('show');
+            }, 10);
         }
 
         // 레어 시그니처를 읽기 쉬운 형태로 변환
@@ -1125,7 +1138,12 @@
         // 시그니처 팝업 닫기
         function closeSignaturePopup() {
             const popup = document.getElementById('signaturePopup');
-            popup.style.display = 'none';
+            popup.classList.remove('show');
+            
+            // 애니메이션 완료 후 display none 설정
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300); // 애니메이션 지속 시간과 동일하게 설정
         }
         
         // 팝업 닫기 버튼 이벤트 리스너
