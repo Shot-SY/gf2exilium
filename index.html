@@ -482,6 +482,25 @@
         .signature-popup-close:hover {
             color: #ff4081;
         }
+
+        /* 오버레이 스타일 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1999; /* 팝업보다 낮고 다른 요소보다 높은 z-index */
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .overlay.show {
+            display: block;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -495,6 +514,9 @@
     <div id="copyInstruction">※ Click on an item to see similar items or copy</div>
     <div id="results"></div>
     <div id="copyMessage">Copied to clipboard</div>
+
+    <!-- 오버레이 요소 -->
+    <div id="overlay" class="overlay"></div>
     
     <!-- 시그니처 팝업 -->
     <div id="signaturePopup" class="signature-popup">
@@ -1125,6 +1147,10 @@
             
             // 팝업 가져오기
             const popup = document.getElementById('signaturePopup');
+            const overlay = document.getElementById('overlay');
+            
+            // 오버레이 표시
+            overlay.style.display = 'block';
             
             // 팝업 표시 (애니메이션 적용)
             popup.style.display = 'block';
@@ -1136,6 +1162,7 @@
             // 약간의 지연 후 애니메이션 클래스 추가
             setTimeout(() => {
                 popup.classList.add('show');
+                overlay.classList.add('show');
             }, 10);
         }
 
@@ -1166,11 +1193,15 @@
         // 시그니처 팝업 닫기
         function closeSignaturePopup() {
             const popup = document.getElementById('signaturePopup');
+            const overlay = document.getElementById('overlay');
+            
             popup.classList.remove('show');
+            overlay.classList.remove('show');
             
             // 애니메이션 완료 후 display none 설정
             setTimeout(() => {
                 popup.style.display = 'none';
+                overlay.style.display = 'none';
             }, 300); // 애니메이션 지속 시간과 동일하게 설정
         }
         
@@ -1184,6 +1215,9 @@
                 closeSignaturePopup();
             }
         });
+
+        // 오버레이 클릭 시 팝업 닫기
+        document.getElementById('overlay').addEventListener('click', closeSignaturePopup);
         
         // 캐릭터 코드를 읽기 쉬운 형태로 변환하는 함수
         function formatCharacterString(charString) {
