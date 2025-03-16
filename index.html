@@ -409,64 +409,67 @@
         }
         
         /* 팝업 스타일 */
-        .signature-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(18, 18, 18, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            z-index: 2000;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            display: none;
-        }
-        
-        .signature-popup-title {
-            color: #ff4081;
-            font-size: 1.5em;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .signature-popup-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-        
-        .signature-popup-item {
-            background-color: rgba(42, 42, 42, 0.8);
-            border-radius: 10px;
-            padding: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        
-        .signature-popup-item:hover {
-            background-color: rgba(64, 64, 64, 0.8);
-            transform: translateY(-3px);
-        }
-        
-        .signature-popup-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .signature-popup-close:hover {
-            color: #ff4081;
-        }
+	    .signature-popup {
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%);
+	        background-color: rgba(18, 18, 18, 0.95);
+	        border-radius: 15px;
+	        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+	        padding: 20px;
+	        z-index: 2000;
+	        width: 90%;
+	        max-width: 800px;
+	        max-height: 80vh;
+	        overflow-y: auto;
+	        display: none;
+	    }
+	    
+	    .signature-popup-title {
+	        color: #ff4081;
+	        font-size: 1.5em;
+	        font-weight: 600;
+	        margin-bottom: 15px;
+	        text-align: center;
+	    }
+	    
+	    .signature-popup-items {
+	        display: flex;
+	        flex-direction: column;
+	        gap: 15px;
+	    }
+	    
+	    .signature-popup-item {
+	        background-color: rgba(42, 42, 42, 0.8);
+	        border-radius: 10px;
+	        padding: 15px;
+	        cursor: pointer;
+	        transition: background-color 0.3s, transform 0.3s;
+	        display: flex;
+	        flex-direction: column;
+	    }
+	    
+	    .signature-popup-item:hover {
+	        background-color: rgba(64, 64, 64, 0.8);
+	        transform: translateY(-3px);
+	    }
+	    
+	    .signature-popup-close {
+	        position: absolute;
+	        top: 15px;
+	        right: 15px;
+	        background: none;
+	        border: none;
+	        color: #fff;
+	        font-size: 24px;
+	        cursor: pointer;
+	        transition: color 0.3s;
+	    }
+	    
+	    .signature-popup-close:hover {
+	        color: #ff4081;
+	    }
     </style>
 </head>
 <body>
@@ -997,6 +1000,7 @@
             similarItems.forEach(similarItem => {
                 const similarItemKey = similarItem.dataset.itemKey;
                 const itemDetails = itemDetailsMap[similarItemKey];
+                const charValue = luaData[similarItemKey];
                 
                 const popupItem = document.createElement('div');
                 popupItem.className = 'signature-popup-item';
@@ -1007,18 +1011,79 @@
                 displayText = displayText.replace(/\$[\d.]+/g, '').trim();
                 displayText = displayText.replace(/=\s*/g, '').trim();
                 
-                popupItem.innerHTML = `
-                    <div class="result-text">
-                        <span class="item">${displayText}</span>
-                        <span class="price">$${itemDetails.price.toFixed(2)}</span>
-                        <span class="key" style="color: orange;">(${similarItemKey})</span>
-                    </div>
+                // 텍스트 부분 생성
+                const txt = document.createElement('div');
+                txt.className = 'result-text';
+                txt.innerHTML = `
+                    <span class="item">${displayText}</span>
+                    <span class="price">$${itemDetails.price.toFixed(2)}</span>
+                    <span class="key" style="color: orange;">(${similarItemKey})</span>
                 `;
+                
+                // 이미지 부분 생성
+                const imgs = document.createElement('div');
+                imgs.className = 'item-images';
+                
+                // 캐릭터 이미지 추가
+                const charImages = [];
+                const charPattern = /([a-z]{2})(\d)/g;
+                let match;
+                
+                while ((match = charPattern.exec(charValue)) !== null) {
+                    const code = match[1];
+                    const count = parseInt(match[2]);
+                    
+                    const charInfo = characters.find(([eng]) => eng.startsWith(code));
+                    if (charInfo) {
+                        const korName = charInfo[1];
+                        for (let i = 0; i < count; i++) {
+                            charImages.push({
+                                src: `Portrait/${korName}.png`,
+                                alt: korName
+                            });
+                        }
+                    }
+                }
+                
+                // 캐릭터 이미지 추가
+                charImages.forEach(imgData => {
+                    const img = document.createElement('img');
+                    img.src = imgData.src;
+                    img.alt = imgData.alt;
+                    img.className = 'small-character-img';
+                    imgs.appendChild(img);
+                });
+                
+                // 파파샤 이미지 추가
+                const papashaImg = document.createElement('img');
+                papashaImg.src = 'Portrait/파파샤.png';
+                papashaImg.alt = '파파샤';
+                papashaImg.className = 'small-character-img';
+                imgs.appendChild(papashaImg);
+                
+                // Collapse 아이템 박스 추가
+                if (itemDetails.collapseText) {
+                    const collapseBox = document.createElement('div');
+                    collapseBox.className = 'item-box';
+                    collapseBox.innerHTML = `<div class="item-title">Collapse</div><div class="item-count">${itemDetails.collapseCount}</div>`;
+                    imgs.appendChild(collapseBox);
+                }
+                
+                // GUARANTEED 아이템 박스 추가
+                if (itemDetails.guaranteed) {
+                    const guaranteedBox = document.createElement('div');
+                    guaranteedBox.className = 'item-box';
+                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Guaranteed</div>`;
+                    imgs.appendChild(guaranteedBox);
+                }
                 
                 // 현재 선택된 아이템 강조
                 if (similarItemKey === itemKey) {
                     popupItem.style.border = '2px solid #ff4081';
                 }
+                
+                popupItem.appendChild(txt);
+                popupItem.appendChild(imgs);
                 
                 popupItem.addEventListener('click', () => {
                     copyToClipboard(similarItem);
@@ -1032,7 +1097,7 @@
             const popup = document.getElementById('signaturePopup');
             popup.style.display = 'block';
         }
-        
+
         // 레어 시그니처를 읽기 쉬운 형태로 변환
         function formatRareSignature(signature) {
             if (!signature) return '';
