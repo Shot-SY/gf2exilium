@@ -409,67 +409,67 @@
         }
         
         /* 팝업 스타일 */
-	    .signature-popup {
-	        position: fixed;
-	        top: 50%;
-	        left: 50%;
-	        transform: translate(-50%, -50%);
-	        background-color: rgba(18, 18, 18, 0.95);
-	        border-radius: 15px;
-	        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-	        padding: 20px;
-	        z-index: 2000;
-	        width: 90%;
-	        max-width: 800px;
-	        max-height: 80vh;
-	        overflow-y: auto;
-	        display: none;
-	    }
-	    
-	    .signature-popup-title {
-	        color: #ff4081;
-	        font-size: 1.5em;
-	        font-weight: 600;
-	        margin-bottom: 15px;
-	        text-align: center;
-	    }
-	    
-	    .signature-popup-items {
-	        display: flex;
-	        flex-direction: column;
-	        gap: 15px;
-	    }
-	    
-	    .signature-popup-item {
-	        background-color: rgba(42, 42, 42, 0.8);
-	        border-radius: 10px;
-	        padding: 15px;
-	        cursor: pointer;
-	        transition: background-color 0.3s, transform 0.3s;
-	        display: flex;
-	        flex-direction: column;
-	    }
-	    
-	    .signature-popup-item:hover {
-	        background-color: rgba(64, 64, 64, 0.8);
-	        transform: translateY(-3px);
-	    }
-	    
-	    .signature-popup-close {
-	        position: absolute;
-	        top: 15px;
-	        right: 15px;
-	        background: none;
-	        border: none;
-	        color: #fff;
-	        font-size: 24px;
-	        cursor: pointer;
-	        transition: color 0.3s;
-	    }
-	    
-	    .signature-popup-close:hover {
-	        color: #ff4081;
-	    }
+        .signature-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(18, 18, 18, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            z-index: 2000;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .signature-popup-title {
+            color: #ff4081;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .signature-popup-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .signature-popup-item {
+            background-color: rgba(42, 42, 42, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .signature-popup-item:hover {
+            background-color: rgba(64, 64, 64, 0.8);
+            transform: translateY(-3px);
+        }
+        
+        .signature-popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .signature-popup-close:hover {
+            color: #ff4081;
+        }
     </style>
 </head>
 <body>
@@ -765,18 +765,18 @@
             const chars = charString.match(/.{1,3}/g) || [];
             let signature = {};
             
-			// 레어 캐릭터만 필터링하여 시그니처 생성
-			chars.forEach(char => {
-				const code = char.slice(0, 2);
-				const count = parseInt(char[2]);
-				
-				// 레어 캐릭터 코드인지 확인
-				const isRare = rareCharacters.some(([eng]) => eng.slice(0, 2) === code);
-				
-				if (isRare) {
-					signature[code] = (signature[code] || 0) + count;
-				}
-			});
+            // 레어 캐릭터만 필터링하여 시그니처 생성
+            chars.forEach(char => {
+                const code = char.slice(0, 2);
+                const count = parseInt(char[2]);
+                
+                // 레어 캐릭터 코드인지 확인
+                const isRare = rareCharacters.some(([eng]) => eng.slice(0, 2) === code);
+                
+                if (isRare) {
+                    signature[code] = (signature[code] || 0) + count;
+                }
+            });
             
             // 정렬된 문자열 형태로 시그니처 반환
             return Object.entries(signature)
