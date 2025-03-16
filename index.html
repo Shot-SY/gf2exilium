@@ -409,12 +409,11 @@
         }
         
         /* 팝업 스타일 */
-        /* 팝업 애니메이션 스타일 추가 */
         .signature-popup {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: translate(-50%, -50%);
             background-color: rgba(18, 18, 18, 0.95);
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -425,85 +424,37 @@
             max-height: 80vh;
             overflow-y: auto;
             display: none;
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
         }
         
-        .signature-popup.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        
-        /* 배경 오버레이 추가 */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .popup-overlay.active {
-            opacity: 1;
-        }
-        
-        /* 팝업 내용 애니메이션 */
-        .signature-popup-items {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            transition-delay: 0.1s;
-        }
-        
-        .signature-popup.active .signature-popup-items {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* 팝업 제목 애니메이션 */
         .signature-popup-title {
             color: #ff4081;
             font-size: 1.5em;
             font-weight: 600;
             margin-bottom: 15px;
             text-align: center;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
         }
         
-        .signature-popup.active .signature-popup-title {
-            opacity: 1;
-            transform: translateY(0);
+        .signature-popup-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
-        /* 팝업 아이템 스타일 */
         .signature-popup-item {
             background-color: rgba(42, 42, 42, 0.8);
             border-radius: 10px;
             padding: 15px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .signature-popup-item:hover {
             background-color: rgba(64, 64, 64, 0.8);
             transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(255, 64, 129, 0.3);
         }
         
-        /* 닫기 버튼 애니메이션 */
         .signature-popup-close {
             position: absolute;
             top: 15px;
@@ -513,20 +464,11 @@
             color: #fff;
             font-size: 24px;
             cursor: pointer;
-            transition: color 0.3s, transform 0.3s;
-            opacity: 0;
-            transform: rotate(-90deg);
-        }
-        
-        .signature-popup.active .signature-popup-close {
-            opacity: 1;
-            transform: rotate(0);
-            transition-delay: 0.2s;
+            transition: color 0.3s;
         }
         
         .signature-popup-close:hover {
             color: #ff4081;
-            transform: rotate(90deg);
         }
     </style>
 </head>
@@ -1025,9 +967,6 @@
             document.getElementById('copyInstruction').style.display = 'block';
         }
         
-        // HTML에 오버레이 요소 추가
-        document.body.insertAdjacentHTML('beforeend', '<div class="popup-overlay"></div>');
-        
         // 동일 시그니처 아이템 팝업 표시 함수
         function showSimilarItems(item) {
             const itemKey = item.dataset.itemKey;
@@ -1141,7 +1080,6 @@
                 // 현재 선택된 아이템 강조
                 if (similarItemKey === itemKey) {
                     popupItem.style.border = '2px solid #ff4081';
-                    popupItem.style.boxShadow = '0 0 15px rgba(255, 64, 129, 0.5)';
                 }
                 
                 popupItem.appendChild(txt);
@@ -1155,44 +1093,51 @@
                 popupItemsContainer.appendChild(popupItem);
             });
             
-            // 팝업 및 오버레이 표시 (애니메이션 적용)
+            // 팝업 표시
             const popup = document.getElementById('signaturePopup');
-            const overlay = document.querySelector('.popup-overlay');
-            
-            // 팝업창과 오버레이 표시
             popup.style.display = 'block';
-            overlay.style.display = 'block';
+        }
+
+        // 레어 시그니처를 읽기 쉬운 형태로 변환
+        function formatRareSignature(signature) {
+            if (!signature) return '';
             
-            // 리플로우 강제 실행
-            void popup.offsetWidth;
-            void overlay.offsetWidth;
+            const charPattern = /([a-z]{2})(\d)/g;
+            let match;
+            let result = [];
             
-            // 애니메이션 클래스 추가
-            popup.classList.add('active');
-            overlay.classList.add('active');
+            while ((match = charPattern.exec(signature)) !== null) {
+                const code = match[1];
+                const count = match[2];
+                
+                // 코드에 해당하는 영어 이름 찾기
+                const charInfo = rareCharacters.find(([eng]) => eng.startsWith(code));
+                if (charInfo) {
+                    result.push(`${charInfo[0]}${count}`);
+                } else {
+                    result.push(`${code}${count}`);
+                }
+            }
+            
+            return result.join(' ');
         }
         
-        // 시그니처 팝업 닫기 함수 수정
+        // 시그니처 팝업 닫기
         function closeSignaturePopup() {
             const popup = document.getElementById('signaturePopup');
-            const overlay = document.querySelector('.popup-overlay');
-            
-            // 애니메이션 클래스 제거
-            popup.classList.remove('active');
-            overlay.classList.remove('active');
-            
-            // 애니메이션 완료 후 display 속성 변경
-            setTimeout(() => {
-                popup.style.display = 'none';
-                overlay.style.display = 'none';
-            }, 300); // 애니메이션 지속 시간과 맞춤
+            popup.style.display = 'none';
         }
         
         // 팝업 닫기 버튼 이벤트 리스너
         document.getElementById('signaturePopupClose').addEventListener('click', closeSignaturePopup);
         
-        // 오버레이 클릭 시 팝업 닫기
-        document.querySelector('.popup-overlay').addEventListener('click', closeSignaturePopup);
+        // 팝업 외부 클릭 시 닫기
+        window.addEventListener('click', (event) => {
+            const popup = document.getElementById('signaturePopup');
+            if (event.target === popup) {
+                closeSignaturePopup();
+            }
+        });
         
         // 캐릭터 코드를 읽기 쉬운 형태로 변환하는 함수
         function formatCharacterString(charString) {
