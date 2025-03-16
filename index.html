@@ -1101,8 +1101,13 @@
                 popupItemsContainer.appendChild(popupItem);
             });
             
-            // 팝업 표시 (애니메이션 적용)
+            // 팝업 가져오기
             const popup = document.getElementById('signaturePopup');
+            
+            // 스크롤 위치 초기화
+            popup.scrollTop = 0;
+            
+            // 팝업 표시 (애니메이션 적용)
             popup.style.display = 'block';
             
             // 약간의 지연 후 애니메이션 클래스 추가 (DOM 업데이트 타이밍 문제 방지)
