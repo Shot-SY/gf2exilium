@@ -83,6 +83,9 @@
                 background-color: #1e1e1e;
                 box-shadow: 0 4px 12px rgba(255,64,129,0.4);
             }
+            .collapse-filter-container .toggle-button:hover {
+                background-color: rgba(255,64,129,0.8);
+            }
         }
         .character-img {
             width: 80px;
@@ -403,6 +406,96 @@
                 transform: translate(-50%, -50%) scale(0.8);
             }
         }
+        
+        /* 새로 추가된 Collapse 필터 스타일 */
+        .collapse-filter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            max-width: 400px;
+            background-color: rgba(26,26,26,0.6);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .collapse-filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .collapse-filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ff4081;
+        }
+        
+        .toggle-button {
+            width: 50px;
+            height: 24px;
+            background-color: rgba(80,80,80,0.5);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .toggle-button::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-button.active {
+            background-color: rgba(255,64,129,0.6);
+        }
+        
+        .toggle-button.active::after {
+            transform: translateX(26px);
+        }
+        
+        .collapse-filter-content {
+            width: 100%;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        
+        .collapse-filter-content.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .collapse-filter-input {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .collapse-filter-input:focus {
+            border-color: #ff4081;
+            box-shadow: 0 0 5px rgba(255,64,129,0.5);
+            outline: none;
+            background-color: #2a2a2a;
+        }
     </style>
 </head>
 <body>
@@ -412,6 +505,18 @@
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
+    
+    <!-- 새로 추가된 Collapse 필터 -->
+    <div class="collapse-filter-container" id="collapseFilterContainer">
+        <div class="collapse-filter-header">
+            <div class="collapse-filter-title">최소 Collapse 필터</div>
+            <div class="toggle-button" id="collapseFilterToggle"></div>
+        </div>
+        <div class="collapse-filter-content" id="collapseFilterContent">
+            <input type="number" id="collapseFilterInput" class="collapse-filter-input" value="8000" min="0">
+        </div>
+    </div>
+    
     <button id="filterButton">Apply Filter</button>
     <div id="copyInstruction">※ Click on an item to copy</div>
     <div id="results"></div>
@@ -464,7 +569,26 @@
                     loader.classList.add('hidden');
                     setTimeout(() => loader.style.display = 'none', 500);
                 });
+                
+            // Collapse 필터 토글 이벤트 설정
+            setupCollapseFilter();
         });
+
+        // Collapse 필터 설정 함수
+        function setupCollapseFilter() {
+            const toggle = document.getElementById('collapseFilterToggle');
+            const content = document.getElementById('collapseFilterContent');
+            
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                content.classList.toggle('active');
+                
+                // 필터링 다시 적용
+                if (document.getElementById('results').innerHTML !== '') {
+                    filterData();
+                }
+            });
+        }
 
         tsParticles.load("tsparticles", {
             particles: {
@@ -641,7 +765,7 @@
                             // Collapse 부분 찾기
                             const collapseMatch = line.match(/(\d+)(Collapse)/i);
                             if (collapseMatch) {
-                                itemDetails.collapseCount = collapseMatch[1];
+                                itemDetails.collapseCount = parseInt(collapseMatch[1]);
                                 itemDetails.collapseText = collapseMatch[0];
                             }
                             
@@ -667,9 +791,29 @@
             
             setTimeout(() => {
                 let filtered = {};
+                
+                // Collapse 필터 상태 확인
+                const collapseFilterActive = document.getElementById('collapseFilterToggle').classList.contains('active');
+                const collapseMinValue = collapseFilterActive ? parseInt(document.getElementById('collapseFilterInput').value) || 0 : 0;
+                
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g)||[];
-                    if(checkConditions(chars)) filtered[k] = v;
+                    
+                    // 캐릭터 조건 확인
+                    const passesCharacterFilter = checkConditions(chars);
+                    
+                    // Collapse 필터 확인
+                    let passesCollapseFilter = true;
+                    if (collapseFilterActive) {
+                        const itemDetails = itemDetailsMap[k];
+                        const collapseCount = itemDetails.collapseCount || 0;
+                        passesCollapseFilter = collapseCount >= collapseMinValue;
+                    }
+                    
+                    // 두 조건 모두 만족하는 경우만 추가
+                    if (passesCharacterFilter && passesCollapseFilter) {
+                        filtered[k] = v;
+                    }
                 }
                 
                 // 가격 순으로 정렬 (높은 가격부터)
@@ -903,6 +1047,12 @@
             });
         });
         
+        // Collapse 필터 입력값 변경 시 자동으로 필터 적용
+        document.getElementById('collapseFilterInput').addEventListener('change', () => {
+            if (document.getElementById('collapseFilterToggle').classList.contains('active')) {
+                filterData();
+            }
+        });
     </script>
 </body>
 </html>
