@@ -226,6 +226,10 @@
             object-fit: contain;
             border-radius: 8px;
         }
+        .small-character-img.rare {
+            border: 2px solid #ff9800;
+            box-shadow: 0 2px 8px rgba(255,152,0,0.7);
+        }
         body::before {
             content: "";
             position: absolute;
@@ -926,10 +930,13 @@
                     const charInfo = characters.find(([eng]) => eng.startsWith(code));
                     if (charInfo) {
                         const korName = charInfo[1];
+                        const isRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        
                         for (let i = 0; i < count; i++) {
                             charImages.push({
                                 src: `Portrait/${korName}.png`,
-                                alt: korName
+                                alt: korName,
+                                isRare: isRare // 레어 캐릭터 여부 저장
                             });
                         }
                     }
@@ -941,6 +948,12 @@
                     img.src = imgData.src;
                     img.alt = imgData.alt;
                     img.className = 'small-character-img';
+                    
+                    // 레어 캐릭터인 경우 클래스 추가
+                    if (imgData.isRare) {
+                        img.classList.add('rare');
+                    }
+                    
                     imgs.appendChild(img);
                 });
 
@@ -1044,10 +1057,13 @@
                     const charInfo = characters.find(([eng]) => eng.startsWith(code));
                     if (charInfo) {
                         const korName = charInfo[1];
+                        const isRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        
                         for (let i = 0; i < count; i++) {
                             charImages.push({
                                 src: `Portrait/${korName}.png`,
-                                alt: korName
+                                alt: korName,
+                                isRare: isRare // 레어 캐릭터 여부 저장
                             });
                         }
                     }
@@ -1059,6 +1075,12 @@
                     img.src = imgData.src;
                     img.alt = imgData.alt;
                     img.className = 'small-character-img';
+                    
+                    // 레어 캐릭터인 경우 클래스 추가
+                    if (imgData.isRare) {
+                        img.classList.add('rare');
+                    }
+                    
                     imgs.appendChild(img);
                 });
                 
