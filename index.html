@@ -1230,14 +1230,6 @@
         // 팝업 닫기 버튼 이벤트 리스너
         document.getElementById('signaturePopupClose').addEventListener('click', closeSignaturePopup);
         
-        // 팝업 외부 클릭 시 닫기
-        window.addEventListener('click', (event) => {
-            const popup = document.getElementById('signaturePopup');
-            if (event.target === popup) {
-                closeSignaturePopup();
-            }
-        });
-        
         // 캐릭터 코드를 읽기 쉬운 형태로 변환하는 함수
         function formatCharacterString(charString) {
             let result = [];
