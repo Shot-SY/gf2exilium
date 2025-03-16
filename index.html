@@ -1172,7 +1172,7 @@
             overlay.classList.add('active');
         }
         
-        // 시그니처 팝업 닫기
+        // 시그니처 팝업 닫기 함수 수정
         function closeSignaturePopup() {
             const popup = document.getElementById('signaturePopup');
             const overlay = document.querySelector('.popup-overlay');
@@ -1192,43 +1192,7 @@
         document.getElementById('signaturePopupClose').addEventListener('click', closeSignaturePopup);
         
         // 오버레이 클릭 시 팝업 닫기
-        document.addEventListener('DOMContentLoaded', () => {
-            const overlay = document.querySelector('.popup-overlay');
-            overlay.addEventListener('click', closeSignaturePopup);
-        });
-
-        // 레어 시그니처를 읽기 쉬운 형태로 변환
-        function formatRareSignature(signature) {
-            if (!signature) return '';
-            
-            const charPattern = /([a-z]{2})(\d)/g;
-            let match;
-            let result = [];
-            
-            while ((match = charPattern.exec(signature)) !== null) {
-                const code = match[1];
-                const count = match[2];
-                
-                // 코드에 해당하는 영어 이름 찾기
-                const charInfo = rareCharacters.find(([eng]) => eng.startsWith(code));
-                if (charInfo) {
-                    result.push(`${charInfo[0]}${count}`);
-                } else {
-                    result.push(`${code}${count}`);
-                }
-            }
-            
-            return result.join(' ');
-        }
-        
-        // 시그니처 팝업 닫기
-        function closeSignaturePopup() {
-            const popup = document.getElementById('signaturePopup');
-            popup.style.display = 'none';
-        }
-        
-        // 팝업 닫기 버튼 이벤트 리스너
-        document.getElementById('signaturePopupClose').addEventListener('click', closeSignaturePopup);
+        document.querySelector('.popup-overlay').addEventListener('click', closeSignaturePopup);
         
         // 캐릭터 코드를 읽기 쉬운 형태로 변환하는 함수
         function formatCharacterString(charString) {
