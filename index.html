@@ -172,7 +172,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.8);
-            background-color: rgba(0,0,0,0.8);
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
             color: #fff;
             padding: 20px 30px;
             border-radius: 12px;
@@ -180,15 +180,47 @@
             opacity: 0;
             font-family: 'Poppins', sans-serif;
             font-size: 1.1em;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             z-index: 1000;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            border-left: 4px solid #ff4081;
         }
+        
         #copyMessage.show {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: messagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        /* 복사 아이콘 */
+        .copy-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ff4081;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 64, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
+        }
+        
+        .copy-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+        }
+        
         #results {
             padding: 20px;
             height: 800px;
@@ -513,7 +545,14 @@
     <button id="filterButton">Apply Filter</button>
     <div id="copyInstruction">※ Click on an item to see similar items or copy</div>
     <div id="results"></div>
-    <div id="copyMessage">Copied to clipboard</div>
+    <div id="copyMessage">
+        <div class="copy-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+        </div>
+        <span>Copied to clipboard</span>
+    </div>
 
     <!-- 오버레이 요소 -->
     <div id="overlay" class="overlay"></div>
