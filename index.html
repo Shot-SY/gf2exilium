@@ -810,11 +810,11 @@
                                 j++;
                             }
                             
-                            // Collapse 부분 찾기
-                            const collapseMatch = line.match(/(\d+)(Collapse)/i);
-                            if (collapseMatch) {
-                                itemDetails.collapseCount = collapseMatch[1];
-                                itemDetails.collapseText = collapseMatch[0];
+                            // Gems 부분 찾기
+                            const gemsMatch = line.match(/(\d+)(Gems)/i);
+                            if (gemsMatch) {
+                                itemDetails.gemsCount = gemsMatch[1];
+                                itemDetails.gemsText = gemsMatch[0];
                             }
                             
                             // 표시 텍스트 설정 (키와 = 기호 제외)
@@ -1025,12 +1025,12 @@
                 papashaImg.className = 'small-character-img';
                 imgs.appendChild(papashaImg);
                 
-                // Collapse 아이템 박스 추가
-                if (itemDetails.collapseText) {
-                    const collapseBox = document.createElement('div');
-                    collapseBox.className = 'item-box';
-                    collapseBox.innerHTML = `<div class="item-title">Collapse</div><div class="item-count">${itemDetails.collapseCount}</div>`;
-                    imgs.appendChild(collapseBox);
+                // Gems 아이템 박스 추가
+                if (itemDetails.gemsText) {
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box';
+                    gemsBox.innerHTML = `<div class="item-title">Gems</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    imgs.appendChild(gemsBox);
                 }
                 
                 // GUARANTEED 아이템 박스 추가
@@ -1152,12 +1152,12 @@
                 papashaImg.className = 'small-character-img';
                 imgs.appendChild(papashaImg);
                 
-                // Collapse 아이템 박스 추가
-                if (itemDetails.collapseText) {
-                    const collapseBox = document.createElement('div');
-                    collapseBox.className = 'item-box';
-                    collapseBox.innerHTML = `<div class="item-title">Collapse</div><div class="item-count">${itemDetails.collapseCount}</div>`;
-                    imgs.appendChild(collapseBox);
+                // Gems 아이템 박스 추가
+                if (itemDetails.gemsText) {
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box';
+                    gemsBox.innerHTML = `<div class="item-title">Gems</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    imgs.appendChild(gemsBox);
                 }
                 
                 // GUARANTEED 아이템 박스 추가
