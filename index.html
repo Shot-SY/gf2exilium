@@ -760,23 +760,64 @@
 
         // tsParticles 최적화 함수
         function optimizeParticles() {
+            // 전역 변수로 파티클 상태 추적
+            window.particlesPaused = false;
+            
             // 스크롤 이벤트에서 파티클 최적화
             document.addEventListener('scroll', function() {
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     // 스크롤 중에는 파티클 수를 줄임
                     const currentParticles = window.tsParticles.domItem(0);
-                    if (!currentParticles.pausedByScroll) {
-                        currentParticles.pausedByScroll = true;
+                    
+                    if (!window.particlesPaused) {
+                        window.particlesPaused = true;
+                        currentParticles.pause();
                         currentParticles.options.particles.number.value = 20; // 스크롤 중 파티클 수 감소
-                        
-                        clearTimeout(currentParticles.scrollTimer);
-                        currentParticles.scrollTimer = setTimeout(() => {
-                            currentParticles.options.particles.number.value = 50; // 원래 파티클 수로 복원
-                            currentParticles.pausedByScroll = false;
-                        }, 300);
                     }
+                    
+                    // 기존 타이머 취소
+                    clearTimeout(window.particlesResumeTimer);
+                    
+                    // 새 타이머 설정 (스크롤 멈춤 후 300ms 후에 재개)
+                    window.particlesResumeTimer = setTimeout(() => {
+                        if (window.particlesPaused) {
+                            window.particlesPaused = false;
+                            currentParticles.options.particles.number.value = 50; // 원래 파티클 수로 복원
+                            currentParticles.play();
+                            console.log("파티클 재개됨");
+                        }
+                    }, 300);
                 }
             }, { passive: true });
+            
+            // 결과 영역의 스크롤 이벤트 처리 개선
+            const results = document.getElementById('results');
+            if (results) {
+                results.addEventListener('scroll', function() {
+                    if (window.tsParticles && window.tsParticles.domItem(0)) {
+                        const currentParticles = window.tsParticles.domItem(0);
+                        
+                        if (!window.particlesPaused) {
+                            window.particlesPaused = true;
+                            currentParticles.pause();
+                            currentParticles.options.particles.number.value = 20;
+                        }
+                        
+                        // 기존 타이머 취소
+                        clearTimeout(window.particlesResumeTimer);
+                        
+                        // 새 타이머 설정
+                        window.particlesResumeTimer = setTimeout(() => {
+                            if (window.particlesPaused) {
+                                window.particlesPaused = false;
+                                currentParticles.options.particles.number.value = 50;
+                                currentParticles.play();
+                                console.log("결과 영역 스크롤 후 파티클 재개됨");
+                            }
+                        }, 300);
+                    }
+                }, { passive: true });
+            }
         }
 
         let characters = [];
@@ -1311,6 +1352,7 @@
                         
                         // 스크롤 중 파티클 효과 일시 중지
                         if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.particlesPaused = true;
                             window.tsParticles.domItem(0).pause();
                         }
                     }
@@ -1323,7 +1365,9 @@
                         
                         // 파티클 효과 재개
                         if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.particlesPaused = false;
                             window.tsParticles.domItem(0).play();
+                            console.log("스크롤 종료 후 파티클 재개됨");
                         }
                     }, 100);
                 }
