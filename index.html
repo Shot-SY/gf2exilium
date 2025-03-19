@@ -762,62 +762,94 @@
         function optimizeParticles() {
             // 전역 변수로 파티클 상태 추적
             window.particlesPaused = false;
+            window.lastScrollActivity = 0;
             
-            // 스크롤 이벤트에서 파티클 최적화
-            document.addEventListener('scroll', function() {
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    // 스크롤 중에는 파티클 수를 줄임
-                    const currentParticles = window.tsParticles.domItem(0);
+            // 스크롤 이벤트 쓰로틀링 함수
+            const handleScroll = throttle(function(event) {
+                // 스크롤 발생 요소 확인 (results 영역인지 확인)
+                const target = event.target;
+                const isResultsScroll = target.id === 'results' || target.closest('#results');
+                
+                // 결과 영역 스크롤일 때만 파티클 제어
+                if (isResultsScroll) {
+                    window.lastScrollActivity = Date.now();
                     
-                    if (!window.particlesPaused) {
+                    if (!window.particlesPaused && window.tsParticles && window.tsParticles.domItem(0)) {
                         window.particlesPaused = true;
-                        currentParticles.pause();
-                        currentParticles.options.particles.number.value = 20; // 스크롤 중 파티클 수 감소
+                        window.tsParticles.domItem(0).pause();
                     }
                     
                     // 기존 타이머 취소
                     clearTimeout(window.particlesResumeTimer);
                     
-                    // 새 타이머 설정 (스크롤 멈춤 후 300ms 후에 재개)
+                    // 새 타이머 설정 (스크롤 멈춤 후 150ms 후에 재개 - 더 빠르게)
                     window.particlesResumeTimer = setTimeout(() => {
-                        if (window.particlesPaused) {
+                        const now = Date.now();
+                        // 마지막 스크롤 활동 이후 충분한 시간이 지났는지 확인
+                        if (window.particlesPaused && (now - window.lastScrollActivity) >= 150) {
                             window.particlesPaused = false;
-                            currentParticles.options.particles.number.value = 50; // 원래 파티클 수로 복원
-                            currentParticles.play();
-                            console.log("파티클 재개됨");
+                            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                                window.tsParticles.domItem(0).play();
+                            }
                         }
-                    }, 300);
+                    }, 150);
+                }
+            }, 16); // 약 60fps에 맞춘 쓰로틀링
+            
+            // 결과 영역의 스크롤 이벤트에만 리스너 추가
+            const results = document.getElementById('results');
+            if (results) {
+                results.addEventListener('scroll', handleScroll, { passive: true });
+            }
+            
+            // 터치 이벤트 처리
+            results.addEventListener('touchstart', function() {
+                if (results.classList.contains('scrolling')) return;
+                
+                results.classList.add('scrolling');
+                document.body.classList.add('is-scrolling');
+                
+                // 터치 시작 시 파티클 일시 중지
+                if (!window.particlesPaused && window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.particlesPaused = true;
+                    window.tsParticles.domItem(0).pause();
                 }
             }, { passive: true });
             
-            // 결과 영역의 스크롤 이벤트 처리 개선
-            const results = document.getElementById('results');
-            if (results) {
-                results.addEventListener('scroll', function() {
-                    if (window.tsParticles && window.tsParticles.domItem(0)) {
-                        const currentParticles = window.tsParticles.domItem(0);
-                        
-                        if (!window.particlesPaused) {
-                            window.particlesPaused = true;
-                            currentParticles.pause();
-                            currentParticles.options.particles.number.value = 20;
+            results.addEventListener('touchend', function() {
+                // 터치 종료 후 짧은 지연 후 클래스 제거
+                setTimeout(function() {
+                    results.classList.remove('scrolling');
+                    document.body.classList.remove('is-scrolling');
+                    
+                    // 터치 종료 후 파티클 재개
+                    if (window.particlesPaused) {
+                        window.particlesPaused = false;
+                        if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.tsParticles.domItem(0).play();
                         }
-                        
-                        // 기존 타이머 취소
-                        clearTimeout(window.particlesResumeTimer);
-                        
-                        // 새 타이머 설정
-                        window.particlesResumeTimer = setTimeout(() => {
-                            if (window.particlesPaused) {
-                                window.particlesPaused = false;
-                                currentParticles.options.particles.number.value = 50;
-                                currentParticles.play();
-                                console.log("결과 영역 스크롤 후 파티클 재개됨");
-                            }
-                        }, 300);
                     }
-                }, { passive: true });
-            }
+                }, 100);
+            }, { passive: true });
+            
+            // 페이지 가시성 변경 이벤트 처리 개선
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    // 페이지가 숨겨질 때 파티클 일시 중지
+                    if (window.tsParticles && window.tsParticles.domItem(0)) {
+                        window.particlesPaused = true;
+                        window.tsParticles.domItem(0).pause();
+                    }
+                } else {
+                    // 페이지가 다시 보일 때 파티클 재개
+                    if (window.particlesPaused) {
+                        window.particlesPaused = false;
+                        if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.tsParticles.domItem(0).play();
+                        }
+                    }
+                }
+            });
         }
 
         let characters = [];
@@ -1339,6 +1371,7 @@
             const scrollThreshold = 16; // 약 60fps에 해당하는 시간
             
             res.scrollHandler = function(e) {
+                // 이 함수는 이제 클래스 토글만 담당하고 파티클 제어는 optimizeParticles에서 처리
                 const now = performance.now();
                 
                 // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
@@ -1349,12 +1382,6 @@
                         res.isScrolling = true;
                         res.classList.add('scrolling');
                         document.body.classList.add('is-scrolling');
-                        
-                        // 스크롤 중 파티클 효과 일시 중지
-                        if (window.tsParticles && window.tsParticles.domItem(0)) {
-                            window.particlesPaused = true;
-                            window.tsParticles.domItem(0).pause();
-                        }
                     }
                     
                     clearTimeout(res.scrollEndTimer);
@@ -1362,13 +1389,6 @@
                         res.isScrolling = false;
                         res.classList.remove('scrolling');
                         document.body.classList.remove('is-scrolling');
-                        
-                        // 파티클 효과 재개
-                        if (window.tsParticles && window.tsParticles.domItem(0)) {
-                            window.particlesPaused = false;
-                            window.tsParticles.domItem(0).play();
-                            console.log("스크롤 종료 후 파티클 재개됨");
-                        }
                     }, 100);
                 }
             };
