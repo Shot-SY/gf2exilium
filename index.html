@@ -41,6 +41,8 @@
             margin-bottom: 30px;
             position: relative;
             z-index: 1;
+            transform: translateZ(0);
+            contain: layout paint;
         }
         .character-box {
             background: url('https://www.transparenttextures.com/patterns/gplay.png'), rgba(26,26,26,0.2);
@@ -60,6 +62,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.7);
             backdrop-filter: blur(5px);
             z-index: 1;
+            transform: translateZ(0);
+            contain: layout paint;
         }
         .character-box.rare {
             border: 2px solid #ff9800;
@@ -95,6 +99,8 @@
             margin-bottom: 10px;
             border-radius: 10px;
             transition: transform 0.3s;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
         .character-name {
             font-size: 16px;
@@ -152,6 +158,7 @@
             font-weight: 600;
             position: relative;
             z-index: 1;
+            transform: translateZ(0);
         }
         #filterButton:active {
             transform: translateY(0);
@@ -184,6 +191,7 @@
             z-index: 1000;
             transition: opacity 0.3s ease, transform 0.3s ease;
             border-left: 4px solid #ff4081;
+            will-change: transform, opacity;
         }
         
         #copyMessage.show {
@@ -207,6 +215,7 @@
             align-items: center;
             justify-content: center;
             animation: pulse 1s infinite;
+            transform: translateZ(0);
         }
         
         @keyframes pulse {
@@ -219,6 +228,7 @@
             width: 14px;
             height: 14px;
             fill: white;
+            transform: translateZ(0);
         }
         
         #results {
@@ -231,16 +241,29 @@
             box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
             position: relative;
             z-index: 1;
+            will-change: scroll-position;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            contain: strict;
+            transform: translateZ(0);
         }
         #results .content-container {
             transform: translateZ(0);
             will-change: opacity;
             transition: opacity 0.2s ease;
+            contain: layout paint style;
+            backface-visibility: hidden;
         }
         
         #results.filtering .content-container {
             opacity: 0;
         }
+        
+        /* 스크롤 최적화 스타일 */
+        #results.scrolling .result-item {
+            transition: none !important;
+        }
+        
         .result-item {
             margin-bottom: 20px;
             padding: 15px;
@@ -251,12 +274,18 @@
             box-shadow: 0 2px 8px rgba(255,64,129,0.2);
             display: flex;
             flex-direction: column;
+            position: relative;
+            transform: translateZ(0);
+            contain: layout paint;
         }
         .small-character-img {
             width: auto;
             height: 80px;
             object-fit: contain;
             border-radius: 8px;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: paint;
         }
         .small-character-img.rare {
             border: 2px solid #ff9800;
@@ -295,6 +324,7 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 10px;
+            transform: translateZ(0);
         }
         .result-text .item {
             color: #fff;
@@ -377,11 +407,14 @@
             height: 60px;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
+            transform: translateZ(0);
         }
         .item-images {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
+            transform: translateZ(0);
+            contain: layout paint;
         }
         .item-box {
             display: inline-flex;
@@ -395,6 +428,8 @@
             margin: 0 5px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.1);
+            transform: translateZ(0);
+            contain: layout paint;
         }
         .item-title {
             color: #ff4081;
@@ -462,6 +497,9 @@
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
+            will-change: transform, opacity;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
         }
 
         .signature-popup.show {
@@ -482,6 +520,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            transform: translateZ(0);
+            contain: content;
         }
         
         .signature-popup-item {
@@ -492,6 +532,8 @@
             transition: background-color 0.3s, transform 0.3s;
             display: flex;
             flex-direction: column;
+            transform: translateZ(0);
+            contain: layout paint;
         }
         
         .signature-popup-item:hover {
@@ -509,6 +551,7 @@
             font-size: 24px;
             cursor: pointer;
             transition: color 0.3s;
+            z-index: 1;
         }
         
         .signature-popup-close:hover {
@@ -527,11 +570,17 @@
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease;
+            will-change: opacity;
         }
         
         .overlay.show {
             display: block;
             opacity: 1;
+        }
+        
+        /* 스크롤 중 팝업 최적화 */
+        .signature-popup.scrolling .signature-popup-item {
+            transition: none !important;
         }
     </style>
 </head>
@@ -605,7 +654,89 @@
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => { 
                     loader.classList.add('hidden'); 
-                    setTimeout(() => loader.style.display = 'none', 500); 
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        
+                        // 스크롤 성능 최적화
+                        const results = document.getElementById('results');
+                        if (results) {
+                            // 스크롤 성능 최적화를 위한 설정
+                            results.style.willChange = 'scroll-position';
+                            results.style.webkitOverflowScrolling = 'touch';
+                            results.style.overscrollBehavior = 'contain';
+                            results.style.contain = 'strict';
+                            
+                            // 스크롤 이벤트 최적화 - 쓰로틀링 적용
+                            let lastScrollTime = 0;
+                            const scrollThreshold = 16; // 약 60fps에 해당하는 시간
+                            
+                            results.addEventListener('scroll', function(e) {
+                                const now = performance.now();
+                                
+                                // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
+                                if (now - lastScrollTime >= scrollThreshold) {
+                                    lastScrollTime = now;
+                                    
+                                    if (!results.isScrolling) {
+                                        results.isScrolling = true;
+                                        results.classList.add('scrolling');
+                                        document.body.classList.add('is-scrolling');
+                                    }
+                                    
+                                    clearTimeout(results.scrollEndTimer);
+                                    results.scrollEndTimer = setTimeout(function() {
+                                        results.isScrolling = false;
+                                        results.classList.remove('scrolling');
+                                        document.body.classList.remove('is-scrolling');
+                                    }, 100);
+                                }
+                            }, { passive: true });
+                            
+                            // 스크롤 시작/종료 이벤트 추가
+                            results.addEventListener('touchstart', function() {
+                                results.classList.add('scrolling');
+                                document.body.classList.add('is-scrolling');
+                            }, { passive: true });
+                            
+                            results.addEventListener('touchend', function() {
+                                setTimeout(function() {
+                                    results.classList.remove('scrolling');
+                                    document.body.classList.remove('is-scrolling');
+                                }, 100);
+                            }, { passive: true });
+                        }
+                        
+                        // 시그니처 팝업 스크롤 최적화
+                        const signaturePopup = document.getElementById('signaturePopup');
+                        if (signaturePopup) {
+                            // 스크롤 이벤트 최적화 - 쓰로틀링 적용
+                            let lastPopupScrollTime = 0;
+                            const popupScrollThreshold = 16;
+                            
+                            signaturePopup.addEventListener('scroll', function(e) {
+                                const now = performance.now();
+                                
+                                if (now - lastPopupScrollTime >= popupScrollThreshold) {
+                                    lastPopupScrollTime = now;
+                                    
+                                    if (!signaturePopup.isScrolling) {
+                                        signaturePopup.isScrolling = true;
+                                        signaturePopup.classList.add('scrolling');
+                                    }
+                                    
+                                    clearTimeout(signaturePopup.scrollEndTimer);
+                                    signaturePopup.scrollEndTimer = setTimeout(function() {
+                                        signaturePopup.isScrolling = false;
+                                        signaturePopup.classList.remove('scrolling');
+                                    }, 100);
+                                }
+                            }, { passive: true });
+                        }
+                        
+                        // 페이지 로드 후 추가 최적화
+                        optimizeImages();
+                        optimizeParticles();
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('초기 필터 적용 에러:', error);
@@ -626,6 +757,27 @@
             interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
             retina_detect: true
         });
+
+        // tsParticles 최적화 함수
+        function optimizeParticles() {
+            // 스크롤 이벤트에서 파티클 최적화
+            document.addEventListener('scroll', function() {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    // 스크롤 중에는 파티클 수를 줄임
+                    const currentParticles = window.tsParticles.domItem(0);
+                    if (!currentParticles.pausedByScroll) {
+                        currentParticles.pausedByScroll = true;
+                        currentParticles.options.particles.number.value = 20; // 스크롤 중 파티클 수 감소
+                        
+                        clearTimeout(currentParticles.scrollTimer);
+                        currentParticles.scrollTimer = setTimeout(() => {
+                            currentParticles.options.particles.number.value = 50; // 원래 파티클 수로 복원
+                            currentParticles.pausedByScroll = false;
+                        }, 300);
+                    }
+                }
+            }, { passive: true });
+        }
 
         let characters = [];
         let rareCharacters = []; // 레어 캐릭터 리스트
@@ -678,6 +830,9 @@
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = ''; // 기존 박스 제거
             
+            // DocumentFragment 사용하여 DOM 조작 최소화
+            const fragment = document.createDocumentFragment();
+            
             characters.forEach(([eng, kor]) => {
                 const charBox = document.createElement('div');
                 charBox.className = 'character-box';
@@ -692,6 +847,8 @@
                 img.src = `Portrait/${kor}.png`;
                 img.alt = kor;
                 img.className = 'character-img';
+                img.loading = 'lazy'; // 지연 로딩 적용
+                img.decoding = 'async'; // 비동기 디코딩 적용
         
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'character-name';
@@ -710,7 +867,7 @@
         
                 spinboxContainer.appendChild(spinbox);
                 charBox.append(img, nameSpan, spinboxContainer);
-                characterGrid.appendChild(charBox);
+                fragment.appendChild(charBox);
         
                 charBox.addEventListener('click', (e) => { 
                     if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); 
@@ -725,6 +882,9 @@
                     }
                 });
             });
+            
+            // 한 번에 DOM에 추가
+            characterGrid.appendChild(fragment);
         }
         
         function toggleSelection(charBox) {
@@ -862,6 +1022,11 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('filtering');
             
+            // 파티클 효과 일시 중지 (필터링 중 성능 향상)
+            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                window.tsParticles.domItem(0).pause();
+            }
+            
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
@@ -886,6 +1051,11 @@
                 
                 displayResults(final);
                 resultsDiv.classList.remove('filtering');
+                
+                // 파티클 효과 재개
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
             }, 200);
         }
         
@@ -929,17 +1099,60 @@
             });
         }
 
-        function getPrice(k) {
-            const m = sortedData[k]?.match(/=\s*([\d,]+)/);
-            return m ? parseInt(m[1].replace(/,/g,'')) : -1;
+        // 이미지 로딩 최적화 함수
+        function optimizeImages() {
+            // 이미지 지연 로딩 설정
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) {
+                    img.loading = 'lazy';
+                }
+                if (!img.hasAttribute('decoding')) {
+                    img.decoding = 'async';
+                }
+            });
+            
+            // 이미지 사전 로딩을 위한 Set
+            const imagesToPreload = new Set();
+            
+            // 자주 사용되는 이미지만 사전 로드
+            characters.slice(0, 10).forEach(([_, name]) => {
+                imagesToPreload.add(`Portrait/${name}.png`);
+            });
+            
+            // 이미지 사전 로딩 함수
+            function preloadImages() {
+                const imagePromises = Array.from(imagesToPreload).map(src => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.decoding = 'async';
+                        img.onload = resolve;
+                        img.onerror = resolve; // 에러가 발생해도 계속 진행
+                        img.src = src;
+                    });
+                });
+                
+                return Promise.all(imagePromises);
+            }
+            
+            // 이미지 사전 로딩 시작
+            preloadImages();
         }
 
         function displayResults(data) {
             const res = document.getElementById('results');
             res.scrollTop = 0;
             
-            res.innerHTML = '<div class="content-container"></div>';
-            const container = res.querySelector('.content-container');
+            // 기존 스크롤 이벤트 리스너 제거
+            if (res.scrollHandler) {
+                res.removeEventListener('scroll', res.scrollHandler);
+            }
+            
+            // DocumentFragment 사용하여 DOM 조작 최소화
+            const fragment = document.createDocumentFragment();
+            const container = document.createElement('div');
+            container.className = 'content-container';
+            fragment.appendChild(container);
             
             // 가격 순으로 정렬 (높은 가격부터)
             const sorted = Object.keys(data).sort((a, b) => {
@@ -948,6 +1161,24 @@
             
             // 제한 없이 모든 아이템 표시
             const displayItems = sorted;
+            
+            // 이미지 지연 로딩을 위한 IntersectionObserver 설정
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const dataSrc = img.getAttribute('data-src');
+                        if (dataSrc) {
+                            img.src = dataSrc;
+                            img.removeAttribute('data-src');
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '200px 0px', // 뷰포트 200px 위/아래에서 미리 로드
+                threshold: 0.01
+            });
             
             displayItems.forEach(k => {
                 const item = document.createElement('div');
@@ -1006,9 +1237,14 @@
                 // 캐릭터 이미지 추가
                 charImages.forEach(imgData => {
                     const img = document.createElement('img');
-                    img.src = imgData.src;
+                    // 지연 로딩을 위해 data-src 속성 사용
+                    img.setAttribute('data-src', imgData.src);
+                    // 초기 이미지는 1x1 투명 GIF
+                    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                     img.alt = imgData.alt;
                     img.className = 'small-character-img';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
                     
                     // 레어 캐릭터인 경우 클래스 추가
                     if (imgData.isRare) {
@@ -1016,14 +1252,19 @@
                     }
                     
                     imgs.appendChild(img);
+                    imageObserver.observe(img);
                 });
 
                 // 파파샤 이미지 추가
                 const papashaImg = document.createElement('img');
-                papashaImg.src = 'Portrait/파파샤.png';
+                papashaImg.setAttribute('data-src', 'Portrait/파파샤.png');
+                papashaImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                 papashaImg.alt = '파파샤';
                 papashaImg.className = 'small-character-img';
+                papashaImg.loading = 'lazy';
+                papashaImg.decoding = 'async';
                 imgs.appendChild(papashaImg);
+                imageObserver.observe(papashaImg);
                 
                 // Gems 아이템 박스 추가
                 if (itemDetails.gemsText) {
@@ -1046,7 +1287,50 @@
                 container.appendChild(item);
             });
             
+            // 모든 DOM 요소를 한 번에 추가
+            res.innerHTML = '';
+            res.appendChild(fragment);
+            
             document.getElementById('copyInstruction').style.display = 'block';
+            
+            // 스크롤 이벤트 최적화 - 쓰로틀링 적용
+            let lastScrollTime = 0;
+            const scrollThreshold = 16; // 약 60fps에 해당하는 시간
+            
+            res.scrollHandler = function(e) {
+                const now = performance.now();
+                
+                // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
+                if (now - lastScrollTime >= scrollThreshold) {
+                    lastScrollTime = now;
+                    
+                    if (!res.isScrolling) {
+                        res.isScrolling = true;
+                        res.classList.add('scrolling');
+                        document.body.classList.add('is-scrolling');
+                        
+                        // 스크롤 중 파티클 효과 일시 중지
+                        if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.tsParticles.domItem(0).pause();
+                        }
+                    }
+                    
+                    clearTimeout(res.scrollEndTimer);
+                    res.scrollEndTimer = setTimeout(function() {
+                        res.isScrolling = false;
+                        res.classList.remove('scrolling');
+                        document.body.classList.remove('is-scrolling');
+                        
+                        // 파티클 효과 재개
+                        if (window.tsParticles && window.tsParticles.domItem(0)) {
+                            window.tsParticles.domItem(0).play();
+                        }
+                    }, 100);
+                }
+            };
+            
+            // passive 옵션으로 스크롤 성능 향상
+            res.addEventListener('scroll', res.scrollHandler, { passive: true });
         }
         
         // 동일 시그니처 아이템 팝업 표시 함수
@@ -1070,13 +1354,39 @@
                 return;
             }
             
+            // 파티클 효과 일시 중지 (팝업 표시 중 성능 향상)
+            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                window.tsParticles.domItem(0).pause();
+            }
+            
             // 팝업 내용 채우기
             const popupItemsContainer = document.getElementById('signaturePopupItems');
             popupItemsContainer.innerHTML = '';
             
+            // DocumentFragment 사용하여 DOM 조작 최소화
+            const fragment = document.createDocumentFragment();
+            
             // 팝업 제목 설정
             const popupTitle = document.querySelector('.signature-popup-title');
             popupTitle.textContent = `Items with same rare character set (${formatRareSignature(rareSignature)})`;
+            
+            // 이미지 지연 로딩을 위한 IntersectionObserver 설정
+            const popupImageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const dataSrc = img.getAttribute('data-src');
+                        if (dataSrc) {
+                            img.src = dataSrc;
+                            img.removeAttribute('data-src');
+                        }
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '100px 0px',
+                threshold: 0.01
+            });
             
             // 유사 아이템들 추가
             similarItems.forEach(similarItem => {
@@ -1124,7 +1434,7 @@
                             charImages.push({
                                 src: `Portrait/${korName}.png`,
                                 alt: korName,
-                                isRare: isRare // 레어 캐릭터 여부 저장
+                                isRare: isRare
                             });
                         }
                     }
@@ -1133,9 +1443,13 @@
                 // 캐릭터 이미지 추가
                 charImages.forEach(imgData => {
                     const img = document.createElement('img');
-                    img.src = imgData.src;
+                    // 지연 로딩을 위해 data-src 속성 사용
+                    img.setAttribute('data-src', imgData.src);
+                    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                     img.alt = imgData.alt;
                     img.className = 'small-character-img';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
                     
                     // 레어 캐릭터인 경우 클래스 추가
                     if (imgData.isRare) {
@@ -1143,14 +1457,19 @@
                     }
                     
                     imgs.appendChild(img);
+                    popupImageObserver.observe(img);
                 });
                 
                 // 파파샤 이미지 추가
                 const papashaImg = document.createElement('img');
-                papashaImg.src = 'Portrait/파파샤.png';
+                papashaImg.setAttribute('data-src', 'Portrait/파파샤.png');
+                papashaImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                 papashaImg.alt = '파파샤';
                 papashaImg.className = 'small-character-img';
+                papashaImg.loading = 'lazy';
+                papashaImg.decoding = 'async';
                 imgs.appendChild(papashaImg);
+                popupImageObserver.observe(papashaImg);
                 
                 // Gems 아이템 박스 추가
                 if (itemDetails.gemsText) {
@@ -1181,8 +1500,11 @@
                     closeSignaturePopup();
                 });
                 
-                popupItemsContainer.appendChild(popupItem);
+                fragment.appendChild(popupItem);
             });
+            
+            // 모든 DOM 요소를 한 번에 추가
+            popupItemsContainer.appendChild(fragment);
             
             // 팝업 가져오기
             const popup = document.getElementById('signaturePopup');
@@ -1241,6 +1563,11 @@
             setTimeout(() => {
                 popup.style.display = 'none';
                 overlay.style.display = 'none';
+                
+                // 파티클 효과 재개
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
             }, 300); // 애니메이션 지속 시간과 동일하게 설정
         }
         
@@ -1311,7 +1638,20 @@
                 .join(',');
         }
         
-        document.getElementById('filterButton').addEventListener('click', () => {
+        // 쓰로틀링 함수
+        function throttle(func, delay) {
+            let lastCall = 0;
+            return function(...args) {
+                const now = Date.now();
+                if (now - lastCall >= delay) {
+                    lastCall = now;
+                    return func.apply(this, args);
+                }
+            };
+        }
+        
+        // 필터 버튼 클릭 이벤트 리스너 (쓰로틀링 적용)
+        const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => { 
                 filterData(); 
@@ -1322,8 +1662,42 @@
             .catch(error => { 
                 console.error('필터 적용 에러:', error); 
             });
+        }, 300); // 300ms 쓰로틀링
+        
+        document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
+        
+        // 페이지 가시성 변경 이벤트 처리
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                // 페이지가 숨겨질 때 파티클 일시 중지
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).pause();
+                }
+            } else {
+                // 페이지가 다시 보일 때 파티클 재개
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            }
         });
         
+        // 터치 이벤트 최적화
+        document.addEventListener('touchstart', () => {
+            document.body.classList.add('touch-active');
+        }, { passive: true });
+        
+        document.addEventListener('touchend', () => {
+            setTimeout(() => {
+                document.body.classList.remove('touch-active');
+            }, 100);
+        }, { passive: true });
+        
+        // 리사이즈 이벤트 최적화
+        const optimizedResize = throttle(() => {
+            // 리사이즈 시 필요한 작업
+        }, 200);
+        
+        window.addEventListener('resize', optimizedResize, { passive: true });
     </script>
 </body>
 </html>
