@@ -1011,7 +1011,7 @@
                             }
                             
                             // Gems 부분 찾기
-                            const gemsMatch = line.match(/(\d+)(Gems)/i);
+                            const gemsMatch = line.match(/(\d+)(PickupTicket)/i);
                             if (gemsMatch) {
                                 itemDetails.gemsCount = gemsMatch[1];
                                 itemDetails.gemsText = gemsMatch[0];
@@ -1310,7 +1310,7 @@
                 if (itemDetails.gemsText) {
                     const gemsBox = document.createElement('div');
                     gemsBox.className = 'item-box';
-                    gemsBox.innerHTML = `<div class="item-title">Gems</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
                     imgs.appendChild(gemsBox);
                 }
                 
@@ -1498,7 +1498,7 @@
                 if (itemDetails.gemsText) {
                     const gemsBox = document.createElement('div');
                     gemsBox.className = 'item-box';
-                    gemsBox.innerHTML = `<div class="item-title">Gems</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
                     imgs.appendChild(gemsBox);
                 }
                 
