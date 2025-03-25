@@ -27,10 +27,10 @@ A24A klukai1 suomi1 makiato1 centaureissi1 tororo1 sabrina2 peritia1 7165Gems = 
 1EC klukai2 suomi1 centaureissi1 gyunggu2 tororo1 sabrina1 peritia1 19110Gems = $117.80
 
 === kl1_su2_ma0_ce1_gy0_to1 ===
-1DY klukai1 suomi2 centaureissi1 tororo1 sabrina2 peritia1 8605Gems = $75.80
+1DY klukai1 suomi2 centaureissi1 tororo1 sabrina2 peritia1 16105Gems = $96.90
 
 === kl1_su3_ma0_ce0_gy1_to1 ===
-A1TV klukai1 suomi3 gyunggu1 tororo1 sabrina2 bepri1 4480Gems = $58.40
+A1TV klukai1 suomi3 gyunggu1 tororo1 sabrina2 bepri1 10480Gems = $78.20
 
 === kl1_su1_ma0_ce1_gy4_to1 ===
 A1RA klukai1 suomi1 centaureissi1 gyunggu4 tororo1 sabrina2 10270Gems = $86.90
@@ -376,15 +376,15 @@ A233 klukai1 suomi1 makiato1 gyunggu1 sabrina2 mosinnagang1 10015Gems = $57.30
 A23Y klukai1 suomi2 gyunggu1 tororo3 sabrina1 mosinnagang1 19740Gems = $100.10
 
 === kl1_su2_ma0_ce0_gy1_to2 ===
+A1OR klukai1 suomi2 gyunggu1 tororo2 sabrina2 14870Gems = $83.70
+1T7 klukai1 suomi2 gyunggu1 tororo2 sabrina1 14645Gems = $81.90
 1H1 klukai1 suomi2 gyunggu1 tororo2 sabrina1 11950Gems = $76.10
 1PU klukai1 suomi2 gyunggu1 tororo2 sabrina1 11780Gems = $75.10
 1MX klukai1 suomi2 gyunggu1 tororo2 sabrina1 peritia1 10435Gems = $72.00
-A1OR klukai1 suomi2 gyunggu1 tororo2 sabrina2 7370Gems = $62.30
-1T7 klukai1 suomi2 gyunggu1 tororo2 sabrina1 7145Gems = $60.50
 
 === kl1_su2_ma0_ce0_gy2_to1 ===
 1UG klukai1 suomi2 gyunggu2 tororo1 sabrina1 18185Gems = $88.70
-A1Y6 klukai1 suomi2 gyunggu2 tororo1 sabrina1 peritia1 3025Gems = $50.30
+A1Y6 klukai1 suomi2 gyunggu2 tororo1 sabrina1 peritia1 9025Gems = $68.60
 
 === kl2_su0_ma1_ce0_gy1_to2 ===
 1KQ klukai2 makiato1 gyunggu1 tororo2 sabrina1 peritia1 10790Gems = $73.50
@@ -396,11 +396,11 @@ A1OB klukai2 suomi1 gyunggu1 tororo2 sabrina2 bepri1 16380Gems = $87.70
 === kl1_su2_ma0_ce0_gy1_to1 ===
 1EZ klukai1 suomi2 gyunggu1 tororo1 sabrina1 peritia1 17930Gems = $80.30
 1HR klukai1 suomi2 gyunggu1 tororo1 sabrina1 16745Gems = $77.10
+1SA klukai1 suomi2 gyunggu1 tororo1 sabrina1 bepri1 15020Gems = $75.80
 1JB klukai1 suomi2 gyunggu1 tororo1 sabrina1 peritia1 13450Gems = $73.40
 1RD klukai1 suomi2 gyunggu1 tororo1 sabrina1 peritia1 11895Gems = $69.20
+1LB klukai1 suomi2 gyunggu1 tororo1 sabrina3 bepri1 10210Gems = $66.60
 1PY klukai1 suomi2 gyunggu1 tororo1 sabrina3 mosinnagang1 9985Gems = $65.70
-1SA klukai1 suomi2 gyunggu1 tororo1 sabrina1 bepri1 9020Gems = $60.40
-1LB klukai1 suomi2 gyunggu1 tororo1 sabrina3 bepri1 2710Gems = $44.90
 
 === kl2_su0_ma1_ce0_gy1_to1 ===
 1QR klukai2 makiato1 gyunggu1 tororo1 sabrina1 peritia1 12810Gems = $72.20
@@ -419,24 +419,24 @@ A1QS klukai1 suomi2 tororo1 sabrina1 mosinnagang1 19660Gems = $73.50
 1G8 klukai1 suomi2 tororo1 sabrina1 mosinnagang1 18230Gems = $71.20
 A207 klukai1 suomi2 tororo1 sabrina2 18220Gems = $71.20
 1OB klukai1 suomi2 tororo1 sabrina1 mosinnagang1 16680Gems = $68.90
-1SD klukai1 suomi2 tororo1 sabrina3 mosinnagang1 9145Gems = $54.80
-1JQ klukai1 suomi2 tororo1 sabrina2 peritia1 8730Gems = $52.40
+1JQ klukai1 suomi2 tororo1 sabrina2 peritia1 15230Gems = $67.90
+1SD klukai1 suomi2 tororo1 sabrina3 mosinnagang1 15145Gems = $69.20
 
 === kl1_su2_ma0_ce0_gy1_to0 ===
-A26R klukai1 suomi2 gyunggu1 sabrina1 bepri1 mosinnagang1 15040Gems = $68.80
+A26R klukai1 suomi2 gyunggu1 sabrina1 bepri1 mosinnagang1 16540Gems = $71.20
 
 === kl0_su0_ma1_ce1_gy2_to4 ===
 1N4 makiato1 centaureissi1 gyunggu2 tororo4 sabrina1 peritia1 5670Gems GUARANTEED = $63.00
 
 === kl1_su1_ma0_ce0_gy1_to5 ===
-A1UG klukai1 suomi1 gyunggu1 tororo5 sabrina1 bepri1 8975Gems = $62.90
+A1UG klukai1 suomi1 gyunggu1 tororo5 sabrina1 bepri1 7475Gems = $58.30
 
 === kl0_su1_ma1_ce0_gy3_to2 ===
 1O2 suomi1 makiato1 gyunggu3 tororo2 sabrina1 mosinnagang1 4700Gems GUARANTEED = $56.00
 
 === kl1_su1_ma0_ce0_gy2_to3 ===
-1JC klukai1 suomi1 gyunggu2 tororo3 sabrina1 10440Gems = $59.90
-1MP klukai1 suomi1 gyunggu2 tororo3 sabrina3 10410Gems = $62.00
+1JC klukai1 suomi1 gyunggu2 tororo3 sabrina1 5940Gems = $47.30
+1MP klukai1 suomi1 gyunggu2 tororo3 sabrina3 5910Gems = $49.10
 
 === kl1_su0_ma1_ce0_gy1_to4 ===
 A1WI klukai1 makiato1 gyunggu1 tororo4 sabrina1 peritia1 9875Gems = $58.30
@@ -446,9 +446,9 @@ A1TC klukai1 makiato1 gyunggu1 tororo4 sabrina2 9590Gems = $57.40
 A1RC klukai1 makiato1 gyunggu4 tororo1 sabrina2 bepri1 9945Gems GUARANTEED = $73.30
 
 === kl1_su1_ma0_ce0_gy1_to4 ===
-A1QY klukai1 suomi1 gyunggu1 tororo4 sabrina1 10400Gems = $58.40
-1HI klukai1 suomi1 gyunggu1 tororo4 sabrina1 8795Gems = $54.10
-A1VZ klukai1 suomi1 gyunggu1 tororo4 sabrina1 8375Gems = $52.80
+1HI klukai1 suomi1 gyunggu1 tororo4 sabrina1 4295Gems = $42.20
+A1QY klukai1 suomi1 gyunggu1 tororo4 sabrina1 4400Gems = $42.20
+A1VZ klukai1 suomi1 gyunggu1 tororo4 sabrina1 3955Gems = $41.10
 
 === kl0_su0_ma1_ce1_gy2_to2 ===
 A1P2 makiato1 centaureissi1 gyunggu2 tororo2 sabrina1 bepri1 6340Gems GUARANTEED = $50.10
@@ -473,11 +473,11 @@ A28M klukai1 makiato1 gyunggu2 tororo2 sabrina1 9805Gems = $50.40
 === kl1_su1_ma0_ce0_gy2_to2 ===
 1LS klukai1 suomi1 gyunggu2 tororo2 sabrina1 18205Gems = $66.90
 A1YI klukai1 suomi1 gyunggu2 tororo2 sabrina1 bepri1 14950Gems = $63.50
-1H2 klukai1 suomi1 gyunggu2 tororo2 sabrina1 11920Gems = $56.20
-1DW klukai1 suomi1 gyunggu2 tororo2 sabrina1 10300Gems = $52.10
 1QH klukai1 suomi1 gyunggu2 tororo2 sabrina1 10420Gems = $52.10
-A1X0 klukai1 suomi1 gyunggu2 tororo2 sabrina1 peritia1 bepri1 9045Gems = $50.60
-1ED klukai1 suomi1 gyunggu2 tororo2 sabrina1 peritia1 8345Gems = $48.00
+1DW klukai1 suomi1 gyunggu2 tororo2 sabrina1 7360Gems = $44.20
+1H2 klukai1 suomi1 gyunggu2 tororo2 sabrina1 7420Gems = $44.20
+1ED klukai1 suomi1 gyunggu2 tororo2 sabrina1 peritia1 3985Gems = $36.90
+A1X0 klukai1 suomi1 gyunggu2 tororo2 sabrina1 peritia1 bepri1 3045Gems = $35.80
 
 === kl0_su0_ma1_ce1_gy1_to3 ===
 1G4 makiato1 centaureissi1 gyunggu1 tororo3 sabrina1 mosinnagang1 6090Gems GUARANTEED = $48.60
@@ -528,29 +528,29 @@ A1T5 klukai1 suomi1 gyunggu1 tororo3 sabrina1 bepri1 16555Gems = $64.50
 A1P0 klukai1 suomi1 gyunggu1 tororo3 sabrina1 shootingstar1 14910Gems = $65.40
 1I3 klukai1 suomi1 gyunggu1 tororo3 sabrina1 peritia1 14375Gems = $61.30
 1SI klukai1 suomi1 gyunggu1 tororo3 sabrina1 bepri1 13485Gems = $60.00
-A23J klukai1 suomi1 gyunggu1 tororo3 sabrina1 mosinnagang1 13430Gems = $59.80
 A1XM klukai1 suomi1 gyunggu1 tororo3 sabrina1 12050Gems = $55.50
-1N8 klukai1 suomi1 gyunggu1 tororo3 sabrina1 mosinnagang1 11890Gems = $56.30
-1LO klukai1 suomi1 gyunggu1 tororo3 sabrina1 10440Gems = $51.40
 A1PN klukai1 suomi1 gyunggu1 tororo3 sabrina1 10345Gems = $51.00
-A25K klukai1 suomi1 gyunggu1 tororo3 sabrina1 bepri1 10275Gems = $51.70
 A280 klukai1 suomi1 gyunggu1 tororo3 sabrina1 mosinnagang1 9635Gems = $50.10
+A25K klukai1 suomi1 gyunggu1 tororo3 sabrina1 bepri1 8855Gems = $48.10
+1N8 klukai1 suomi1 gyunggu1 tororo3 sabrina1 mosinnagang1 7390Gems = $44.30
+A23J klukai1 suomi1 gyunggu1 tororo3 sabrina1 mosinnagang1 7430Gems = $44.30
+1LO klukai1 suomi1 gyunggu1 tororo3 sabrina1 4440Gems = $36.50
 
 === kl1_su1_ma0_ce0_gy3_to1 ===
 A1X6 klukai1 suomi1 gyunggu3 tororo1 sabrina1 19140Gems = $69.80
 A21G klukai1 suomi1 gyunggu3 tororo1 sabrina1 18075Gems = $68.00
 A20U klukai1 suomi1 gyunggu3 tororo1 sabrina1 16440Gems = $65.70
-1IG klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 13390Gems = $62.10
 A1P4 klukai1 suomi1 gyunggu3 tororo1 sabrina2 13380Gems = $62.10
 A1R6 klukai1 suomi1 gyunggu3 tororo1 sabrina2 peritia1 13220Gems = $63.20
-1N3 klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia2 11925Gems = $59.80
-1FO klukai1 suomi1 gyunggu3 tororo1 sabrina2 11710Gems = $58.10
-1I1 klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 bepri1 10450Gems = $55.90
-A1WH klukai1 suomi1 gyunggu3 tororo1 sabrina2 9020Gems = $50.60
-1OA klukai1 suomi1 gyunggu3 tororo1 sabrina3 8930Gems = $51.30
-A1RL klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 mosinnagang1 8930Gems = $51.30
-A1RV klukai1 suomi1 gyunggu3 tororo1 sabrina1 bepri1 8835Gems = $50.20
-A222 klukai1 suomi1 gyunggu3 tororo1 sabrina1 8440Gems = $47.90
+1IG klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 7390Gems = $46.20
+1FO klukai1 suomi1 gyunggu3 tororo1 sabrina2 5710Gems = $42.10
+1I1 klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 bepri1 4450Gems = $40.20
+1N3 klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia2 4425Gems = $39.80
+1OA klukai1 suomi1 gyunggu3 tororo1 sabrina3 4430Gems = $39.80
+A1RV klukai1 suomi1 gyunggu3 tororo1 sabrina1 bepri1 4335Gems = $38.80
+A1WH klukai1 suomi1 gyunggu3 tororo1 sabrina2 3020Gems = $35.70
+A1RL klukai1 suomi1 gyunggu3 tororo1 sabrina1 peritia1 mosinnagang1 2930Gems = $36.30
+A222 klukai1 suomi1 gyunggu3 tororo1 sabrina1 2440Gems = $33.50
 
 === kl0_su0_ma1_ce1_gy1_to2 ===
 A1SE makiato1 centaureissi1 gyunggu1 tororo2 sabrina1 bepri1 mosinnagang1 7535Gems GUARANTEED = $45.50
@@ -669,18 +669,16 @@ A208 klukai1 suomi1 gyunggu1 tororo2 sabrina2 16440Gems = $56.20
 1SS klukai1 suomi1 gyunggu1 tororo2 sabrina2 16360Gems = $56.00
 1DK klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 16040Gems = $55.60
 1JI klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 14925Gems = $53.80
-1UC klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 14850Gems = $53.80
-A243 klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 14925Gems = $53.80
 A1RP klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia2 14705Gems = $54.80
 1IA klukai1 suomi1 gyunggu1 tororo2 sabrina2 13440Gems = $51.90
 A1V6 klukai1 suomi1 gyunggu1 tororo2 sabrina1 13500Gems = $50.80
 A21E klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 13455Gems = $51.90
-1GV klukai1 suomi1 gyunggu1 tororo2 sabrina2 bepri1 13400Gems = $52.80
 1Q3 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 13390Gems = $51.60
 1U6 klukai1 suomi1 gyunggu1 tororo2 sabrina2 13410Gems = $51.60
+1UC klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 13350Gems = $51.60
 A1NX klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 13400Gems = $51.60
 A1YY klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 13305Gems = $51.60
-A24M klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 13435Gems = $51.60
+A243 klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 13425Gems = $51.60
 1LY klukai1 suomi1 gyunggu1 tororo2 sabrina2 13235Gems = $51.40
 1OK klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 13250Gems = $51.40
 1P0 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 13260Gems = $51.40
@@ -689,34 +687,36 @@ A24Q klukai1 suomi1 gyunggu1 tororo2 sabrina2 mosinnagang1 13030Gems = $52.30
 A1TS klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 11950Gems = $48.80
 A20G klukai1 suomi1 gyunggu1 tororo2 sabrina2 bepri1 11950Gems = $49.90
 A20Z klukai1 suomi1 gyunggu1 tororo2 sabrina1 11965Gems = $47.80
-1RO klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 11875Gems = $48.40
 A1O4 klukai1 suomi1 gyunggu1 tororo2 sabrina1 11930Gems = $47.40
 A1Q2 klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 11865Gems = $48.40
 A22Y klukai1 suomi1 gyunggu1 tororo2 sabrina1 11815Gems = $47.40
 A1TT klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 bepri1 11485Gems = $48.30
-1GQ klukai1 suomi1 gyunggu1 tororo2 sabrina2 10455Gems = $45.00
-A1Y5 klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 mosinnagang1 10515Gems = $46.00
 A23A klukai1 suomi1 gyunggu1 tororo2 sabrina2 10450Gems = $45.00
-1PO klukai1 suomi1 gyunggu1 tororo2 sabrina2 bepri1 10360Gems = $45.60
-A1RF klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 bepri1 10410Gems = $45.60
-A1ZV klukai1 suomi1 gyunggu1 tororo2 sabrina2 10360Gems = $44.60
-1MG klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 10230Gems = $44.20
-1N7 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang2 10275Gems = $45.30
-1TV klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 10175Gems = $44.20
+1GV klukai1 suomi1 gyunggu1 tororo2 sabrina2 bepri1 10400Gems = $45.60
 A1Q5 klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 9885Gems = $43.50
-A1SP klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 9885Gems = $43.50
 1ER klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 8955Gems = $41.30
-1MR klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 8945Gems = $41.30
 A1UR klukai1 suomi1 gyunggu1 tororo2 sabrina3 8985Gems = $42.30
-A1XT klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 9010Gems = $41.30
-1FE klukai1 suomi1 gyunggu1 tororo2 sabrina2 8935Gems = $40.90
-1GP klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang2 8930Gems = $41.90
-1Q0 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 8875Gems = $40.90
-1UF klukai1 suomi1 gyunggu1 tororo2 sabrina2 mosinnagang1 stonepillar1 8870Gems = $45.70
-A1SD klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 8895Gems = $40.90
-A24U klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 bepri1 8885Gems = $41.90
+A24M klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 8935Gems = $40.90
 1J3 klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 8785Gems = $40.60
-A265 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 8765Gems = $40.60
+1RO klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 7375Gems = $37.40
+1UF klukai1 suomi1 gyunggu1 tororo2 sabrina2 mosinnagang1 stonepillar1 7370Gems = $41.90
+A1RF klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 bepri1 5910Gems = $35.00
+A1ZV klukai1 suomi1 gyunggu1 tororo2 sabrina2 5860Gems = $34.10
+1TV klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 5675Gems = $33.80
+A1SP klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 5385Gems = $33.10
+1GQ klukai1 suomi1 gyunggu1 tororo2 sabrina2 4455Gems = $31.20
+A1XT klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 4510Gems = $31.20
+A1Y5 klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 mosinnagang1 4515Gems = $32.10
+1GP klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang2 4430Gems = $31.70
+1PO klukai1 suomi1 gyunggu1 tororo2 sabrina2 bepri1 4360Gems = $31.70
+1Q0 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 4375Gems = $30.90
+A24U klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 bepri1 4385Gems = $31.70
+1MG klukai1 suomi1 gyunggu1 tororo2 sabrina1 peritia1 4230Gems = $30.60
+1N7 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang2 4275Gems = $31.40
+1FE klukai1 suomi1 gyunggu1 tororo2 sabrina2 2995Gems = $28.20
+A1SD klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 2895Gems = $27.90
+A265 klukai1 suomi1 gyunggu1 tororo2 sabrina1 mosinnagang1 2765Gems = $27.60
+1MR klukai1 suomi1 gyunggu1 tororo2 sabrina1 bepri1 1445Gems = $25.30
 
 === kl1_su1_ma0_ce0_gy2_to1 ===
 1KN klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 mosinnagang1 19685Gems = $63.20
@@ -724,43 +724,43 @@ A1Q0 klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 19515Gems = $61.90
 1SX klukai1 suomi1 gyunggu2 tororo1 sabrina1 16365Gems = $56.10
 A1RM klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 16385Gems = $57.30
 1PR klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 14905Gems = $55.10
-1FV klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 14770Gems = $54.80
 1JG klukai1 suomi1 gyunggu2 tororo1 sabrina2 14760Gems = $54.80
 1QS klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 14480Gems = $54.40
 A1PB klukai1 suomi1 gyunggu2 tororo1 sabrina1 14450Gems = $53.20
 1M2 klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 13450Gems = $53.10
 A22E klukai1 suomi1 gyunggu2 tororo1 sabrina2 13480Gems = $53.10
-1GZ klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia2 13420Gems = $54.00
 1LT klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 13430Gems = $52.90
+1FV klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 13270Gems = $52.60
 1JA klukai1 suomi1 gyunggu2 tororo1 sabrina2 13215Gems = $52.60
 1DH klukai1 suomi1 gyunggu2 tororo1 sabrina1 13040Gems = $51.30
 A1Y1 klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang1 13060Gems GUARANTEED = $57.90
 A1YX klukai1 suomi1 gyunggu2 tororo1 sabrina1 13030Gems = $51.30
-A25R klukai1 suomi1 gyunggu2 tororo1 sabrina2 12765Gems = $52.00
 A1YU klukai1 suomi1 gyunggu2 tororo1 sabrina2 12010Gems = $50.00
 A25S klukai1 suomi1 gyunggu2 tororo1 sabrina1 11765Gems = $48.10
-1D1 klukai1 suomi1 gyunggu2 tororo1 sabrina2 10440Gems = $46.10
-A1UO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 mosinnagang1 10445Gems = $47.10
-A1ZO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 10530Gems = $46.10
-A22O klukai1 suomi1 gyunggu2 tororo1 sabrina3 10450Gems = $47.10
-1IK klukai1 suomi1 gyunggu2 tororo1 sabrina4 10375Gems = $47.80
-1SG klukai1 suomi1 gyunggu2 tororo1 sabrina2 10375Gems = $45.70
 1M8 klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 10285Gems = $45.30
-A25F klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 10285Gems = $45.30
-A1PA klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 bepri1 9925Gems = $45.60
-A1UB klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri2 9970Gems = $45.60
-A26V klukai1 suomi1 gyunggu2 tororo1 sabrina2 9740Gems = $44.20
-A1Y3 klukai1 suomi1 gyunggu2 tororo1 sabrina2 9025Gems = $42.40
-A211 klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang1 8945Gems = $42.40
+1D1 klukai1 suomi1 gyunggu2 tororo1 sabrina2 9000Gems = $42.40
 1F1 klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 8930Gems = $42.00
-1FG klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang2 8830Gems = $43.00
-1R7 klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri2 mosinnagang1 8910Gems = $44.00
-1TO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 bepri1 8875Gems = $43.00
-A22V klukai1 suomi1 gyunggu2 tororo1 sabrina2 mosinnagang1 8805Gems = $43.00
-1OF klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 mosinnagang1 8755Gems = $42.60
-A20D klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang2 8745Gems = $42.60
-1HT klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 7440Gems = $38.80
-1HX klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 7425Gems = $38.40
+1GZ klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia2 8920Gems = $43.00
+A25R klukai1 suomi1 gyunggu2 tororo1 sabrina2 6765Gems = $37.10
+1IK klukai1 suomi1 gyunggu2 tororo1 sabrina4 5875Gems = $36.80
+1R7 klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri2 mosinnagang1 5910Gems = $36.80
+A1UB klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri2 5470Gems = $34.90
+A1UO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 mosinnagang1 4445Gems = $33.00
+A1Y3 klukai1 suomi1 gyunggu2 tororo1 sabrina2 4525Gems = $32.10
+A1ZO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 4530Gems = $32.10
+A211 klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang1 4445Gems = $32.10
+A22O klukai1 suomi1 gyunggu2 tororo1 sabrina3 4450Gems = $33.00
+1SG klukai1 suomi1 gyunggu2 tororo1 sabrina2 4375Gems = $31.80
+1TO klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 bepri1 4375Gems = $32.60
+1OF klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 mosinnagang1 4255Gems = $32.30
+A20D klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang2 4245Gems = $32.30
+A25F klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 4285Gems = $31.50
+A1PA klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 bepri1 3925Gems = $31.70
+1HT klukai1 suomi1 gyunggu2 tororo1 sabrina1 bepri1 3020Gems = $29.00
+1HX klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 3005Gems = $29.00
+1FG klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang2 2890Gems = $29.50
+A22V klukai1 suomi1 gyunggu2 tororo1 sabrina2 mosinnagang1 2805Gems = $29.50
+A26V klukai1 suomi1 gyunggu2 tororo1 sabrina2 2240Gems = $27.50
 
 === kl0_su0_ma1_ce1_gy1_to1 ===
 A1QI makiato1 centaureissi1 gyunggu1 tororo1 sabrina2 peritia1 6195Gems GUARANTEED = $34.60
@@ -951,20 +951,15 @@ A27V klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 15735Gems = $46.90
 1L5 klukai1 suomi1 gyunggu1 tororo1 sabrina2 14945Gems = $45.90
 1SH klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 14945Gems = $45.90
 A1TE klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 14995Gems = $45.90
-A21Z klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 stonepillar1 14965Gems = $50.70
 1G3 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 14935Gems = $45.70
 1I7 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 14930Gems = $46.70
 1JN klukai1 suomi1 gyunggu1 tororo1 sabrina2 14925Gems = $45.70
 1NO klukai1 suomi1 gyunggu1 tororo1 sabrina2 14795Gems = $45.70
 1O0 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 14915Gems = $45.70
-1OQ klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 14875Gems = $46.70
 1T6 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 14895Gems = $45.70
 1T9 klukai1 suomi1 gyunggu1 tororo1 sabrina2 14905Gems = $45.70
 A1Q9 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 14885Gems = $45.70
-A22J klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 14915Gems = $46.70
-A24X klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 14870Gems = $46.70
 1QJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 14765Gems = $45.40
-A25W klukai1 suomi1 gyunggu1 tororo1 sabrina2 14690Gems = $45.40
 1DP klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 14550Gems = $45.20
 1G9 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 13440Gems = $44.80
 1GY klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 13455Gems = $43.70
@@ -974,7 +969,6 @@ A25W klukai1 suomi1 gyunggu1 tororo1 sabrina2 14690Gems = $45.40
 1KF klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 13560Gems = $43.70
 1ML klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13460Gems = $43.70
 A1TL klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13445Gems = $43.70
-A1TM klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 13495Gems = $44.80
 A1UM klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13500Gems = $43.70
 A1VM klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 13505Gems = $44.80
 A1ZR klukai1 suomi1 gyunggu1 tororo1 sabrina2 13490Gems = $43.70
@@ -987,6 +981,7 @@ A20V klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 13465Gems GUARANTEED 
 1LP klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13435Gems = $43.50
 1NG klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 13385Gems = $43.50
 1O3 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 13400Gems = $44.60
+1OQ klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 13375Gems = $44.60
 1Q8 klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 13380Gems = $43.50
 1R3 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 13395Gems = $44.60
 1R9 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13375Gems = $43.50
@@ -998,59 +993,64 @@ A1S3 klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 13300Gems = $44.60
 A1SV klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13420Gems = $43.50
 A1T4 klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 13330Gems = $43.50
 A1T6 klukai1 suomi1 gyunggu1 tororo1 sabrina2 13325Gems = $43.50
-A22C klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 mosinnagang1 13405Gems = $45.50
 A22I klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13335Gems = $43.50
+A22J klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 13415Gems = $44.60
+A24X klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 13370Gems = $44.60
 A253 klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13420Gems = $43.50
-1GX klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 13255Gems = $44.30
 1HE klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 13285Gems = $43.30
 1NW klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 13155Gems = $43.30
 1PJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 13255Gems = $43.30
 A1PH klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 13170Gems = $43.30
-A26Y klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 mosinnagang1 13185Gems = $44.30
-1J8 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 13115Gems = $44.10
-1II klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 11965Gems = $41.90
+A25W klukai1 suomi1 gyunggu1 tororo1 sabrina2 13190Gems = $43.30
 1KX klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 11945Gems = $41.90
 1L6 klukai1 suomi1 gyunggu1 tororo1 sabrina2 11975Gems = $40.90
 1MQ klukai1 suomi1 gyunggu1 tororo1 sabrina2 11950Gems = $40.90
 A1TW klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 12025Gems = $40.90
 A1WP klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 11975Gems = $41.90
 1FL klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 11935Gems = $41.50
-1JR klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 11935Gems = $41.50
-1P5 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 11880Gems = $41.50
 1R5 klukai1 suomi1 gyunggu1 tororo1 sabrina2 shootingstar1 11880Gems = $44.20
-1RJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 mosinnagang2 11880Gems = $42.40
 A1RX klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang1 11875Gems = $40.50
-1R1 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 11655Gems = $41.20
 1U9 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 11750Gems = $41.20
 1PK klukai1 suomi1 gyunggu1 tororo1 sabrina2 11480Gems = $39.50
-1EV klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 10465Gems = $38.40
 1MU klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 mosinnagang1 10455Gems = $38.40
-A1TR klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 10505Gems = $38.40
-1KH klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 10415Gems = $38.00
 1NR klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 mosinnagang1 10320Gems = $38.90
 1RL klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 10385Gems = $38.00
-A1RN klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 mosinnagang1 10390Gems = $38.90
-1UK klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 10145Gems = $37.70
-A1Q3 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 10215Gems = $37.70
-A1PG klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 mosinnagang1 10125Gems = $38.20
-A1YM klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 10020Gems = $37.30
-1GD klukai1 suomi1 gyunggu1 tororo1 sabrina3 peritia1 9130Gems = $36.20
 1I6 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 8950Gems = $35.00
-A1VJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 8985Gems = $35.00
 A1VW klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 8985Gems = $35.00
-A21O klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 8960Gems = $35.00
-A226 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 8965Gems = $35.00
-A22G klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 8985Gems = $35.00
-1JD klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 8795Gems = $34.70
-1SV klukai1 suomi1 gyunggu1 tororo1 sabrina3 8910Gems = $34.70
-A1OS klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 8925Gems = $34.70
-A1WV klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 8835Gems = $34.70
+1KH klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 8915Gems = $34.70
 A1Y8 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 8900Gems = $34.70
-A1Q4 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 8665Gems = $34.30
-1E2 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 8335Gems = $33.40
-1PD klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 8305Gems = $33.40
-1EA klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 bepri1 6870Gems = $31.30
-A1OI klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 stonepillar1 6970Gems = $33.70
+1GX klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 8755Gems = $34.30
+1J8 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 8615Gems = $34.00
+1GD klukai1 suomi1 gyunggu1 tororo1 sabrina3 peritia1 7630Gems = $32.90
+1II klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 7465Gems = $31.80
+A1TM klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 7495Gems = $31.80
+A21Z klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 stonepillar1 7465Gems = $35.00
+1P5 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 7380Gems = $31.50
+A22C klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 mosinnagang1 7405Gems = $32.30
+1R1 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 7155Gems = $31.10
+A26Y klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 mosinnagang1 7185Gems = $31.10
+1PD klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 6805Gems = $30.20
+1EV klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 5965Gems = $28.70
+1RJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 bepri1 mosinnagang2 5880Gems = $29.20
+A1RN klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 mosinnagang1 5890Gems = $29.20
+1EA klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 bepri1 5510Gems = $28.60
+A1TR klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 4505Gems = $25.80
+A1VJ klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 4485Gems = $25.80
+A21O klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 4460Gems = $25.80
+1JR klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 4435Gems = $25.50
+A1WV klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 4335Gems = $25.50
+1UK klukai1 suomi1 gyunggu1 tororo1 sabrina1 mosinnagang2 4145Gems = $25.20
+A1Q3 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 mosinnagang1 4215Gems = $25.20
+A1YM klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 4020Gems = $24.90
+A226 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 2965Gems = $23.00
+A22G klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 2985Gems = $23.00
+1JD klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 2795Gems = $22.70
+1SV klukai1 suomi1 gyunggu1 tororo1 sabrina3 2910Gems = $22.70
+A1OS klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 2925Gems = $22.70
+A1Q4 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 2665Gems = $22.50
+A1PG klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 mosinnagang1 2625Gems = $22.90
+1E2 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 2475Gems = $21.90
+A1OI klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 stonepillar1 -300Gems = $20.40
 
 === kl0_su1_ma1_ce0_gy0_to2 ===
 A1X2 suomi1 makiato1 tororo2 sabrina1 mosinnagang1 22440Gems GUARANTEED = $60.50
@@ -1172,11 +1172,11 @@ A24N klukai1 suomi1 tororo1 sabrina1 peritia2 mosinnagang1 16445Gems = $40.20
 A26P klukai1 suomi1 tororo1 sabrina1 peritia1 mosinnagang1 16390Gems = $39.20
 A1PU klukai1 suomi1 tororo1 sabrina2 bepri2 14955Gems = $38.20
 A1YP klukai1 suomi1 tororo1 sabrina2 peritia1 bepri1 14980Gems = $38.20
-1IL klukai1 suomi1 tororo1 sabrina1 peritia1 mosinnagang1 14930Gems = $37.10
-1QP klukai1 suomi1 tororo1 sabrina2 mosinnagang1 14860Gems = $37.10
 1T4 klukai1 suomi1 tororo1 sabrina3 14750Gems = $36.90
 A1UN klukai1 suomi1 tororo1 sabrina1 peritia1 bepri1 mosinnagang1 14765Gems = $37.80
 A273 klukai1 suomi1 tororo1 sabrina1 peritia1 mosinnagang1 14405Gems = $36.50
+1IL klukai1 suomi1 tororo1 sabrina1 peritia1 mosinnagang1 13430Gems = $35.10
+1QP klukai1 suomi1 tororo1 sabrina2 mosinnagang1 13360Gems = $35.10
 
 === kl1_su1_ma0_ce0_gy1_to0 ===
 A1ZT klukai1 suomi1 gyunggu1 sabrina2 21010Gems = $45.90
