@@ -410,8 +410,6 @@ A233 klukai1 suomi1 makiato1 gyunggu1 sabrina2 mosinnagang1 72PickupTicket = $55
 A1OR klukai1 suomi2 gyunggu1 tororo2 sabrina2 mosinnagang1 3PickupTicket GUARANTEED = $50.00
 
 === kl1_su2_ma0_ce0_gy2_to1 ===
-1UG klukai1 suomi2 gyunggu2 tororo1 sabrina1 mosinnagang1 18PickupTicket GUARANTEED = $55.00
-1JB klukai1 suomi2 gyunggu2 tororo1 sabrina1 peritia1 4PickupTicket GUARANTEED = $50.00
 1SA klukai1 suomi2 gyunggu2 tororo1 sabrina1 bepri1 3PickupTicket GUARANTEED = $49.30
 A1Y6 klukai1 suomi2 gyunggu2 tororo1 sabrina1 peritia1 3PickupTicket = $40.70
 
