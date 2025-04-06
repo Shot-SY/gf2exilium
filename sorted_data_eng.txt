@@ -4,9 +4,6 @@
 === kl2_su1_ma1_ce1_gy1_to1 ===
 1PL klukai2 suomi1 makiato1 centaureissi1 gyunggu1 tororo1 sabrina1 peritia1 97PickupTicket = $107.10
 
-=== kl1_su1_ma1_ce1_gy1_to4 ===
-A1R8 klukai1 suomi1 makiato1 centaureissi1 gyunggu1 tororo4 sabrina1 126PickupTicket = $110.70
-
 === kl1_su1_ma1_ce1_gy1_to3 ===
 1H4 klukai1 suomi1 makiato1 centaureissi1 gyunggu1 tororo3 sabrina1 peritia1 15PickupTicket = $66.40
 
@@ -70,7 +67,6 @@ A1Q7 klukai2 suomi1 makiato1 gyunggu1 tororo1 sabrina2 45PickupTicket = $66.40
 A207 klukai1 suomi2 makiato1 tororo2 sabrina2 29PickupTicket = $59.30
 
 === kl1_su2_ma1_ce0_gy0_to1 ===
-A1QS klukai1 suomi2 makiato1 tororo1 sabrina1 mosinnagang1 108PickupTicket = $80.00
 1SD klukai1 suomi2 makiato1 tororo1 sabrina3 mosinnagang1 18PickupTicket = $51.40
 
 === kl1_su2_ma1_ce0_gy1_to0 ===
