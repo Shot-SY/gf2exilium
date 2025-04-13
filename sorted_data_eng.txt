@@ -1113,7 +1113,6 @@ A226 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 34PickupTicket = $17.
 A22G klukai1 suomi1 gyunggu1 tororo1 sabrina2 peritia1 34PickupTicket = $17.90
 1JD klukai1 suomi1 gyunggu1 tororo1 sabrina2 bepri1 33PickupTicket = $17.10
 A1PG klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia2 mosinnagang1 32PickupTicket = $17.90
-A1Q4 klukai1 suomi1 gyunggu1 tororo1 sabrina2 mosinnagang1 32PickupTicket = $17.10
 1E2 klukai1 suomi1 gyunggu1 tororo1 sabrina1 peritia1 bepri1 31PickupTicket = $17.10
 
 === kl1_me0_su0_ma1_ce0_gy0_to2 ===
