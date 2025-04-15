@@ -838,16 +838,16 @@
                             const eng = parts[0];
                             const kor = parts.slice(1).join(' ');
                             
-                            // 'sabrina 사브리나' 줄을 만나면 플래그 설정
-                            if (eng === 'sabrina' && kor === '사브리나') {
-                                foundSabrina = true;
+                            // 'gyunggu 경구' 줄을 만나면 플래그 설정
+                            if (eng === 'gyunggu' && kor === '경구') {
+                                foundGyunggu = true;
                             }
                             
                             if (eng && kor) {
                                 characters.push([eng, kor]);
                                 
-                                // 'sabrina 사브리나' 이전의 캐릭터들은 레어 캐릭터로 분류
-                                if (!foundSabrina) {
+                                // 'gyunggu 경구' 이전의 캐릭터들은 레어 캐릭터로 분류
+                                if (!foundGyunggu) {
                                     rareCharacters.push([eng, kor]);
                                 }
                             }
@@ -1391,7 +1391,7 @@
             
             // 팝업 제목 설정
             const popupTitle = document.querySelector('.signature-popup-title');
-            popupTitle.textContent = `Items with same rare character set (${formatRareSignature(rareSignature)})`;
+            popupTitle.textContent = `Items with same limited character set (${formatRareSignature(rareSignature)})`;
             
             // 이미지 지연 로딩을 위한 IntersectionObserver 설정
             const popupImageObserver = new IntersectionObserver((entries, observer) => {
