@@ -591,13 +591,6 @@
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
-    <div class="character-box ticket-filter" id="ticketFilterBox">
-        <img src="Portrait/픽업티켓.png" alt="Pickup Ticket" class="character-img">
-        <span class="character-name">Pickup Ticket</span>
-        <div class="spinbox-container">
-            <input type="number" id="ticketCountFilter" min="1" value="1" disabled>
-        </div>
-    </div>
     <button id="filterButton">Apply Filter</button>
     <div id="copyInstruction">※ Click on an item to see similar items or copy</div>
     <div id="results"></div>
@@ -750,35 +743,6 @@
                     loader.classList.add('hidden');
                     setTimeout(() => loader.style.display = 'none', 500);
                 });
-
-            // Add event listener for the new ticket filter box
-            const ticketFilterBox = document.getElementById('ticketFilterBox');
-            const ticketCountInput = document.getElementById('ticketCountFilter');
-
-            if (ticketFilterBox && ticketCountInput) {
-                ticketFilterBox.addEventListener('click', (e) => {
-                    // Prevent toggling if the input itself is clicked
-                    if (e.target.tagName.toLowerCase() !== 'input') {
-                        if (ticketFilterBox.classList.toggle('selected')) {
-                            ticketCountInput.disabled = false;
-                            // Optionally set a default value if it's currently 0 or empty, e.g., if (ticketCountInput.value < 1) ticketCountInput.value = 1;
-                        } else {
-                            ticketCountInput.disabled = true;
-                            // Optionally reset value: ticketCountInput.value = 1;
-                        }
-                    }
-                });
-
-                // Allow clicking the input to activate the box if not already selected
-                ticketCountInput.addEventListener('click', (e) => {
-                     e.stopPropagation(); // Prevent the box click listener from firing again
-                     if (!ticketFilterBox.classList.contains('selected')) {
-                         ticketFilterBox.classList.add('selected');
-                         ticketCountInput.disabled = false;
-                         // Optionally set default: if (ticketCountInput.value < 1) ticketCountInput.value = 1;
-                     }
-                });
-            }
         });
 
         tsParticles.load("tsparticles", {
@@ -959,6 +923,51 @@
                 });
             });
 
+            // PickupTicket 박스 추가
+            const ticketBox = document.createElement('div');
+            ticketBox.className = 'character-box'; // 기존 박스와 동일한 클래스
+            ticketBox.dataset.engName = 'PickupTicket'; // 데이터 식별자
+
+            const ticketImg = document.createElement('img');
+            ticketImg.src = `픽업티켓.png`; // 이미지 경로
+            ticketImg.alt = 'PickupTicket';
+            ticketImg.className = 'character-img'; // 기존 이미지와 동일한 클래스
+            ticketImg.loading = 'lazy';
+            ticketImg.decoding = 'async';
+
+            const ticketNameSpan = document.createElement('span');
+            ticketNameSpan.className = 'character-name'; // 기존 이름과 동일한 클래스
+            ticketNameSpan.textContent = 'PickupTicket'; // 박스 이름
+
+            const ticketSpinboxContainer = document.createElement('div');
+            ticketSpinboxContainer.className = 'spinbox-container'; // 스핀박스 컨테이너
+
+            const ticketSpinbox = document.createElement('input');
+            ticketSpinbox.type = 'number';
+            ticketSpinbox.id = 'PickupTicket-spin'; // 스핀박스 ID
+            ticketSpinbox.min = 0;
+            // ticketSpinbox.max = 8; // 최대값은 필요에 따라 설정 (일단 제거)
+            ticketSpinbox.value = 0;
+            ticketSpinbox.disabled = true;
+
+            ticketSpinboxContainer.appendChild(ticketSpinbox);
+            ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
+            fragment.appendChild(ticketBox);
+
+            // PickupTicket 박스 클릭 이벤트 리스너 추가
+            ticketBox.addEventListener('click', (e) => {
+                if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
+            });
+
+            ticketSpinbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!ticketBox.classList.contains('selected')) {
+                    ticketBox.classList.add('selected');
+                    ticketSpinbox.disabled = false;
+                    if(ticketSpinbox.value === '0') ticketSpinbox.value = '1'; // 최소 1개부터 시작
+                }
+            });
+
             // 한 번에 DOM에 추가
             characterGrid.appendChild(fragment);
         }
@@ -1023,7 +1032,8 @@
                                 originalText: line,
                                 price: 0,
                                 guaranteed: line.includes('GUARANTEED'),
-                                displayText: ''
+                                displayText: '',
+                                gemsCount: 0 // PickupTicket 개수 초기화
                             };
 
                             // '$' 기호를 찾아 가격 추출
@@ -1046,21 +1056,20 @@
                                 j++;
                             }
 
-                            // Gems 부분 찾기
-                            const gemsMatch = line.match(/(\d+)(PickupTicket)/i);
+                            // PickupTicket 부분 찾기 (숫자+PickupTicket)
+                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
-                                itemDetails.gemsCount = gemsMatch[1];
-                                itemDetails.gemsText = gemsMatch[0];
+                                itemDetails.gemsCount = parseInt(gemsMatch[1]); // 정수로 파싱하여 저장
+                                itemDetails.gemsText = gemsMatch[0]; // 텍스트도 저장 (기존 로직 유지)
                             }
 
                             // 표시 텍스트 설정 (키와 = 기호 제외)
                             itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
 
                             // 필터링 된 캐릭터 문자열이 있을 경우만 저장
-                            if (charString) {
-                                luaData[key] = charString;
-                                itemDetailsMap[key] = itemDetails;
-                            }
+                            // 캐릭터 문자열이 없어도 PickupTicket 등의 정보가 있을 수 있으므로 항상 저장
+                            luaData[key] = charString; // 캐릭터 문자열은 그대로 저장
+                            itemDetailsMap[key] = itemDetails; // 상세 정보 저장
                         }
                     }
 
@@ -1112,10 +1121,8 @@
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g)||[];
-                    // Pass the key 'k' to checkConditions
-                    if(checkConditions(k, chars)) {
-                         filtered[k] = v;
-                    }
+                    // checkConditions에 k (itemKey) 전달
+                    if(checkConditions(chars, k)) filtered[k] = v;
                 }
 
                 // 가격 순으로 정렬 (높은 가격부터)
@@ -1163,7 +1170,8 @@
             return sum;
         }
 
-        function checkConditions(key, chars) {
+        // itemKey 인자 추가
+        function checkConditions(chars, itemKey) {
             const count = {};
 
             chars.forEach(c => {
@@ -1172,8 +1180,8 @@
                 count[name] = (count[name]||0)+num;
             });
 
-            // Check character conditions (existing logic)
-            const characterConditionsMet = characters.every(([eng, kor]) => {
+            // 캐릭터 조건 검사
+            const characterCondition = characters.every(([eng, kor]) => {
                 const box = [...document.getElementsByClassName('character-box')]
                     .find(b => b.dataset.engName === eng);
                 if(box && box.classList.contains('selected')){
@@ -1183,32 +1191,28 @@
                 return true;
             });
 
-            // If character conditions fail, no need to check tickets
-            if (!characterConditionsMet) {
+            // 캐릭터 조건 불충족 시 바로 false 반환
+            if (!characterCondition) {
                 return false;
             }
 
-            // Check ticket condition (new logic)
-            const ticketFilterBox = document.getElementById('ticketFilterBox');
-            const ticketCountInput = document.getElementById('ticketCountFilter');
+            // PickupTicket 조건 검사
+            const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
+            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
+                const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
+                const itemDetails = itemDetailsMap[itemKey];
+                const hasTickets = itemDetails?.gemsCount || 0; // itemDetailsMap에서 티켓 개수 가져오기
 
-            // Check if the ticket filter is active
-            if (ticketFilterBox && ticketFilterBox.classList.contains('selected') && ticketCountInput) {
-                const requiredTickets = parseInt(ticketCountInput.value) || 1; // Get required count, default to 1 if invalid
-                const itemDetails = itemDetailsMap[key];
-
-                // Get actual ticket count from item details (ensure it exists and is a number)
-                const actualTickets = itemDetails && itemDetails.gemsCount ? parseInt(itemDetails.gemsCount) : 0;
-
-                // Perform the check
-                if (actualTickets < requiredTickets) {
-                    return false; // Ticket condition failed
+                // 티켓 개수가 요구사항보다 적으면 false 반환
+                if (hasTickets < requiredTickets) {
+                    return false;
                 }
             }
 
-            // If we reached here, all active conditions are met
+            // 모든 조건 충족 시 true 반환
             return true;
         }
+
 
         // 이미지 로딩 최적화 함수
         function optimizeImages() {
@@ -1230,6 +1234,7 @@
             characters.slice(0, 10).forEach(([_, name]) => {
                 imagesToPreload.add(`Portrait/${name}.png`);
             });
+            imagesToPreload.add('픽업티켓.png'); // PickupTicket 이미지도 사전 로드
 
             // 이미지 사전 로딩 함수
             function preloadImages() {
@@ -1377,8 +1382,8 @@
                 imgs.appendChild(papashaImg);
                 imageObserver.observe(papashaImg);
 
-                // Gems 아이템 박스 추가
-                if (itemDetails.gemsText) {
+                // PickupTicket 아이템 박스 추가 (loadData에서 gemsCount 사용)
+                if (itemDetails.gemsCount > 0) {
                     const gemsBox = document.createElement('div');
                     gemsBox.className = 'item-box';
                     gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
@@ -1565,8 +1570,8 @@
                 imgs.appendChild(papashaImg);
                 popupImageObserver.observe(papashaImg);
 
-                // Gems 아이템 박스 추가
-                if (itemDetails.gemsText) {
+                // PickupTicket 아이템 박스 추가
+                if (itemDetails.gemsCount > 0) {
                     const gemsBox = document.createElement('div');
                     gemsBox.className = 'item-box';
                     gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
@@ -1727,7 +1732,7 @@
 
         function getSelectedCharacters(){
             return [...document.getElementsByClassName('character-box')]
-                .filter(b => b.classList.contains('selected') && !b.id.includes('ticketFilterBox')) // Exclude ticket filter box
+                .filter(b => b.classList.contains('selected'))
                 .map(b => `${b.dataset.engName}:${b.querySelector('input').value}`)
                 .join(',');
         }
@@ -1749,14 +1754,9 @@
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
                 filterData();
-                // Prepare data for gtag
-                let gtagData = { 'selected_characters': getSelectedCharacters() };
-                const ticketFilterBox = document.getElementById('ticketFilterBox');
-                const ticketCountInput = document.getElementById('ticketCountFilter');
-                if (ticketFilterBox && ticketFilterBox.classList.contains('selected') && ticketCountInput) {
-                   gtagData['ticket_filter_count'] = ticketCountInput.value;
-                }
-                gtag('event', 'apply_filter', gtagData);
+                gtag('event', 'apply_filter', {
+                    'selected_characters': getSelectedCharacters()
+                });
             })
             .catch(error => {
                 console.error('필터 적용 에러:', error);
