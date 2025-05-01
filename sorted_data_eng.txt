@@ -11,7 +11,7 @@ A237 klukai1 suomi1 makiato1 mechty2 gyunggu1 tororo3 sabrina1 162PickupTicket =
 A1RH klukai1 suomi1 makiato1 mechty2 gyunggu2 tororo1 sabrina2 peritia1 150PickupTicket = $109.30
 
 === kl1_su1_ve2_ma1_me0_ce0_gy1_to2 ===
-A1OG klukai1 suomi1 vector2 makiato1 gyunggu1 tororo2 sabrina2 bepri1 121PickupTicket GUARANTEED = $117.10
+A1OG klukai1 suomi1 vector2 makiato1 gyunggu1 tororo2 sabrina2 bepri1 131PickupTicket GUARANTEED = $120.00
 
 === kl2_su1_ve0_ma0_me1_ce1_gy2_to1 ===
 1EC klukai2 suomi1 mechty1 centaureissi1 gyunggu2 tororo1 sabrina2 peritia1 79PickupTicket = $88.60
