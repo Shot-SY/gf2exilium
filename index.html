@@ -1858,34 +1858,39 @@
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
 		    const skinPopupElement = document.getElementById('skinInfoPopup');
-		    // const skinPopupImageElement = document.getElementById('skinInfoPopupImage'); // 필요시 사용
 		
 		    if (skinTriggerElement && skinPopupElement) {
-		        let isPopupPinnedByClick = false; // 클릭으로 팝업이 고정되었는지 여부
+		        let isPopupPinnedByClick = false;
 		
 		        const showPopup = () => {
+		            // console.log('Showing popup. Pinned:', isPopupPinnedByClick); // 디버깅용
 		            skinPopupElement.style.display = 'block';
-		            // 이미지는 HTML src에 이미 경로가 설정되어 있습니다.
 		        };
 		
 		        const hidePopup = () => {
+		            // console.log('Hiding popup. Pinned:', isPopupPinnedByClick); // 디버깅용
 		            skinPopupElement.style.display = 'none';
 		        };
 		
-		        skinTriggerElement.addEventListener('mouseover', () => {
-		            if (!isPopupPinnedByClick) { // 클릭으로 고정되지 않았을 때만 호버로 표시
+		        // mouseover -> mouseenter로 변경
+		        skinTriggerElement.addEventListener('mouseenter', () => {
+		            // console.log('Mouse enter trigger'); // 디버깅용
+		            if (!isPopupPinnedByClick) {
 		                showPopup();
 		            }
 		        });
 		
-		        skinTriggerElement.addEventListener('mouseout', () => {
-		            if (!isPopupPinnedByClick) { // 클릭으로 고정되지 않았을 때만 호버로 숨김
+		        // mouseout -> mouseleave로 변경
+		        skinTriggerElement.addEventListener('mouseleave', () => {
+		            // console.log('Mouse leave trigger'); // 디버깅용
+		            if (!isPopupPinnedByClick) {
 		                hidePopup();
 		            }
 		        });
 		
 		        skinTriggerElement.addEventListener('click', (event) => {
-		            event.stopPropagation(); // document 클릭 이벤트로의 전파를 막음
+		            event.stopPropagation();
+		            // console.log('Click on trigger. Current pinned state:', isPopupPinnedByClick); // 디버깅용
 		            if (isPopupPinnedByClick) {
 		                hidePopup();
 		                isPopupPinnedByClick = false;
@@ -1893,26 +1898,28 @@
 		                showPopup();
 		                isPopupPinnedByClick = true;
 		            }
+		            // console.log('New pinned state:', isPopupPinnedByClick); // 디버깅용
 		        });
 		
-		        // 팝업 외부 클릭 시 닫기 (클릭으로 띄운 팝업만 해당)
 		        document.addEventListener('click', (event) => {
 		            if (isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
-		                // 클릭된 대상이 팝업 자신이 아니고, 트리거 요소도 아닌 경우
-		                if (!skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target) ) {
+		                if (!skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target)) {
+		                    // console.log('Clicked outside popup. Hiding.'); // 디버깅용
 		                    hidePopup();
 		                    isPopupPinnedByClick = false;
 		                }
 		            }
 		        });
 		
-		        // ESC 키로 팝업 닫기 (선택적)
 		        document.addEventListener('keydown', (event) => {
 		            if (event.key === 'Escape' && isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
+		                // console.log('Escape key pressed. Hiding popup.'); // 디버깅용
 		                hidePopup();
 		                isPopupPinnedByClick = false;
 		            }
 		        });
+		    } else {
+		        // console.error('Skin trigger or popup element not found!'); // 디버깅용
 		    }
 		});
     </script>
