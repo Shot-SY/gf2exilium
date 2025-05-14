@@ -587,10 +587,6 @@
 		    position: relative;
 		}
 		
-		#skinInfoTrigger:hover {
-		    color: #ff4081 !important;
-		}
-		
 		.skin-tooltip-icon {
 		    display: inline-block;
 		    background-color: #ff4081;
@@ -1860,66 +1856,37 @@
 		    const skinPopupElement = document.getElementById('skinInfoPopup');
 		
 		    if (skinTriggerElement && skinPopupElement) {
-		        let isPopupPinnedByClick = false;
 		
 		        const showPopup = () => {
-		            // console.log('Showing popup. Pinned:', isPopupPinnedByClick); // 디버깅용
 		            skinPopupElement.style.display = 'block';
 		        };
 		
 		        const hidePopup = () => {
-		            // console.log('Hiding popup. Pinned:', isPopupPinnedByClick); // 디버깅용
 		            skinPopupElement.style.display = 'none';
 		        };
 		
-		        // mouseover -> mouseenter로 변경
-		        skinTriggerElement.addEventListener('mouseenter', () => {
-		            // console.log('Mouse enter trigger'); // 디버깅용
-		            if (!isPopupPinnedByClick) {
-		                showPopup();
-		            }
-		        });
-		
-		        // mouseout -> mouseleave로 변경
-		        skinTriggerElement.addEventListener('mouseleave', () => {
-		            // console.log('Mouse leave trigger'); // 디버깅용
-		            if (!isPopupPinnedByClick) {
-		                hidePopup();
-		            }
-		        });
-		
 		        skinTriggerElement.addEventListener('click', (event) => {
-		            event.stopPropagation();
-		            // console.log('Click on trigger. Current pinned state:', isPopupPinnedByClick); // 디버깅용
-		            if (isPopupPinnedByClick) {
+		            event.stopPropagation(); // 중요: document 클릭 이벤트로의 전파 방지
+		            if (skinPopupElement.style.display === 'block') {
 		                hidePopup();
-		                isPopupPinnedByClick = false;
 		            } else {
 		                showPopup();
-		                isPopupPinnedByClick = true;
 		            }
-		            // console.log('New pinned state:', isPopupPinnedByClick); // 디버깅용
 		        });
 		
+		        // 팝업 외부 클릭 시 닫기
 		        document.addEventListener('click', (event) => {
-		            if (isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
-		                if (!skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target)) {
-		                    // console.log('Clicked outside popup. Hiding.'); // 디버깅용
-		                    hidePopup();
-		                    isPopupPinnedByClick = false;
-		                }
+		            // 팝업이 열려 있고, 클릭된 대상이 팝업 자신이 아니고, 트리거 요소도 아닌 경우
+		            if (skinPopupElement.style.display === 'block' &&
+		                !skinPopupElement.contains(event.target) &&
+		                event.target !== skinTriggerElement &&
+		                !skinTriggerElement.contains(event.target)) {
+		                hidePopup();
 		            }
 		        });
 		
-		        document.addEventListener('keydown', (event) => {
-		            if (event.key === 'Escape' && isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
-		                // console.log('Escape key pressed. Hiding popup.'); // 디버깅용
-		                hidePopup();
-		                isPopupPinnedByClick = false;
-		            }
-		        });
 		    } else {
-		        // console.error('Skin trigger or popup element not found!'); // 디버깅용
+		        console.error('Skin trigger or popup element not found for skin info popup.');
 		    }
 		});
     </script>
