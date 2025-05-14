@@ -582,6 +582,55 @@
         .signature-popup.scrolling .signature-popup-item {
             transition: none !important;
         }
+		
+		#skinInfoTrigger {
+		    position: relative;
+		}
+		
+		#skinInfoTrigger:hover {
+		    color: #ff4081 !important;
+		}
+		
+		.skin-tooltip-icon {
+		    display: inline-block;
+		    background-color: #ff4081;
+		    color: white;
+		    border-radius: 50%;
+		    width: 16px;
+		    height: 16px;
+		    text-align: center;
+		    line-height: 16px;
+		    font-size: 12px;
+		    font-weight: bold;
+		    margin-left: 4px;
+		    user-select: none; /* 텍스트 선택 방지 */
+		    vertical-align: middle; /* 텍스트와 수직 정렬 */
+		}
+		
+		#skinInfoPopup {
+		    display: none; /* 초기에는 숨김 */
+		    position: fixed;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    background-color: rgba(30, 30, 30, 0.95); /* 배경은 약간 투명하게 */
+		    border: 2px solid #ff4081;
+		    border-radius: 10px;
+		    padding: 15px;
+		    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+		    z-index: 3000; /* 다른 요소들 위에 표시 */
+		    max-width: 90vw; /* 화면 너비의 최대 90% */
+		    max-height: 90vh; /* 화면 높이의 최대 90% */
+		    overflow: auto; /* 내용이 크면 스크롤 */
+		}
+		
+		#skinInfoPopupImage {
+		    display: block; /* 이미지 하단 여백 제거 */
+		    max-width: 100%; /* 팝업 컨테이너 너비에 맞춤 */
+		    max-height: calc(90vh - 34px); /* 팝업 패딩 고려 (15px*2 + border 2px*2 근사치) */
+		    border-radius: 5px;
+		    object-fit: contain; /* 이미지 비율 유지 */
+		}
     </style>
 </head>
 <body>
@@ -593,7 +642,12 @@
     <div class="character-grid" id="characterGrid"></div>
     <button id="filterButton">Apply Filter</button>
 	<div id="copyInstruction">
-	  All accounts have the <strong style="color: skyblue;">Klukai skin & colphne skin</strong><br>
+	  All accounts have the
+	  <strong style="color: skyblue;">
+	    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
+	      Klukai skin & colphne skin <span class="skin-tooltip-icon">?</span>
+	    </span>
+	  </strong><br>
 	  ※ Click on an item to see similar items or copy
 	</div>
     <div id="results"></div>
@@ -1800,6 +1854,70 @@
         }, 200);
 
         window.addEventListener('resize', optimizedResize, { passive: true });
+
+		document.addEventListener('DOMContentLoaded', () => {
+		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
+		    const skinPopupElement = document.getElementById('skinInfoPopup');
+		    // const skinPopupImageElement = document.getElementById('skinInfoPopupImage'); // 필요시 사용
+		
+		    if (skinTriggerElement && skinPopupElement) {
+		        let isPopupPinnedByClick = false; // 클릭으로 팝업이 고정되었는지 여부
+		
+		        const showPopup = () => {
+		            skinPopupElement.style.display = 'block';
+		            // 이미지는 HTML src에 이미 경로가 설정되어 있습니다.
+		        };
+		
+		        const hidePopup = () => {
+		            skinPopupElement.style.display = 'none';
+		        };
+		
+		        skinTriggerElement.addEventListener('mouseover', () => {
+		            if (!isPopupPinnedByClick) { // 클릭으로 고정되지 않았을 때만 호버로 표시
+		                showPopup();
+		            }
+		        });
+		
+		        skinTriggerElement.addEventListener('mouseout', () => {
+		            if (!isPopupPinnedByClick) { // 클릭으로 고정되지 않았을 때만 호버로 숨김
+		                hidePopup();
+		            }
+		        });
+		
+		        skinTriggerElement.addEventListener('click', (event) => {
+		            event.stopPropagation(); // document 클릭 이벤트로의 전파를 막음
+		            if (isPopupPinnedByClick) {
+		                hidePopup();
+		                isPopupPinnedByClick = false;
+		            } else {
+		                showPopup();
+		                isPopupPinnedByClick = true;
+		            }
+		        });
+		
+		        // 팝업 외부 클릭 시 닫기 (클릭으로 띄운 팝업만 해당)
+		        document.addEventListener('click', (event) => {
+		            if (isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
+		                // 클릭된 대상이 팝업 자신이 아니고, 트리거 요소도 아닌 경우
+		                if (!skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target) ) {
+		                    hidePopup();
+		                    isPopupPinnedByClick = false;
+		                }
+		            }
+		        });
+		
+		        // ESC 키로 팝업 닫기 (선택적)
+		        document.addEventListener('keydown', (event) => {
+		            if (event.key === 'Escape' && isPopupPinnedByClick && skinPopupElement.style.display === 'block') {
+		                hidePopup();
+		                isPopupPinnedByClick = false;
+		            }
+		        });
+		    }
+		});
     </script>
+	<div id="skinInfoPopup">
+	  <img id="skinInfoPopupImage" src="/Portrait/스킨2종.png" alt="스킨 2종 이미지">
+	</div>
 </body>
 </html>
