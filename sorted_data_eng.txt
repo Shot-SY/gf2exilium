@@ -518,7 +518,6 @@ A1QJ klukai1 suomi1 vector2 gyunggu1 tororo2 sabrina1 peritia1 bepri1 113PickupT
 1S1 klukai1 suomi1 vector2 gyunggu2 tororo1 sabrina2 peritia2 mosinnagang1 stonepillar1 154PickupTicket = $93.60
 
 === kl1_su2_ve0_ma1_yo0_me0_ce0_gy1_to2 ===
-1MX klukai1 suomi2 makiato1 gyunggu1 tororo2 sabrina1 peritia2 mosinnagang2 105PickupTicket GUARANTEED = $81.40
 1LB klukai1 suomi2 makiato1 gyunggu1 tororo2 sabrina3 peritia1 bepri1 mosinnagang1 100PickupTicket GUARANTEED = $80.70
 
 === kl1_su2_ve1_ma0_yo0_me0_ce0_gy1_to2 ===
