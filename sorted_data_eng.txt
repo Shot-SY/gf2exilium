@@ -1330,7 +1330,6 @@ A20D klukai1 suomi1 gyunggu2 tororo1 sabrina1 mosinnagang2 120PickupTicket = $32
 A1PA klukai1 suomi1 gyunggu2 tororo1 sabrina1 peritia1 bepri1 119PickupTicket = $32.10
 
 === kl1_su0_ve0_ma1_yo0_me0_ce0_gy1_to1 ===
-1GE klukai1 makiato1 gyunggu1 tororo1 sabrina1 peritia3 mosinnagang1 163PickupTicket GUARANTEED = $42.10
 1Q1 klukai1 makiato1 gyunggu1 tororo1 sabrina3 peritia2 mosinnagang1 160PickupTicket GUARANTEED = $42.10
 1NQ klukai1 makiato1 gyunggu1 tororo1 sabrina3 mosinnagang1 157PickupTicket GUARANTEED = $40.70
 
