@@ -416,32 +416,36 @@
             transform: translateZ(0);
             contain: layout paint;
         }
-        .item-box {
-            display: inline-flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 62px;
-            height: 62px;
-            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-            border-radius: 10px;
-            margin: 0 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            transform: translateZ(0);
-            contain: layout paint;
-        }
-        .item-title {
-            color: #ff4081;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .item-count {
-            color: #fff;
-            font-size: 12px;
-            font-weight: 500;
-        }
+		
+		.item-box {
+		    display: inline-flex;
+		    flex-direction: column;
+		    justify-content: center;
+		    align-items: center;
+		    width: 62px;
+		    height: 62px;
+		    
+		    background: linear-gradient(145deg, #4a3800, #332600); /* 깊이 있는 금색 계열 배경 */
+		    border: 2px solid #ffb300; /* 밝은 주황-금색 테두리 (기존 border 대체) */
+		    box-shadow: 0 0 10px rgba(255, 179, 0, 0.65), /* 주황-금색 글로우 효과 */
+		                0 2px 4px rgba(0,0,0,0.3);       /* 부드러운 기본 그림자 */
+		    
+		    border-radius: 10px;
+		    margin: 0 5px;
+		    transform: translateZ(0);
+		    contain: layout paint;
+		}
+		.item-box .item-title {
+		    color: #ffc107;   /* 기존 #ff4081 에서 금색 계열로 변경 */
+		    font-size: 14px;
+		    font-weight: bold; /* 텍스트 강조 */
+		    margin-bottom: 4px;
+		}
+		.item-box .item-count {
+		    color: #fff;       /* 흰색으로 가독성 확보 */
+		    font-size: 12px;
+		    font-weight: 600;  /* 기존 500에서 두께를 살짝 올려 강조 */
+		}
         @media (max-width: 768px) {
             .item-box {
                 width: 47px;
