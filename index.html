@@ -66,8 +66,8 @@
             contain: layout paint;
         }
         .character-box.rare {
-            border: 2px solid #ff9800;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.7);
+            border: 2px solid #ff4081; /* 금색 테두리(#ff9800)를 테마 색상으로 변경 */
+            box-shadow: 0 4px 12px rgba(255,64,129,0.7); /* 금색 그림자(rgba(255,152,0,0.7))를 테마 색상 계열로 변경 */
         }
         .character-box.selected {
             background-color: rgba(255,64,129,0.9);
@@ -288,8 +288,8 @@
             contain: paint;
         }
         .small-character-img.rare {
-            border: 2px solid #ff9800;
-            box-shadow: 0 2px 8px rgba(255,152,0,0.7);
+            border: 2px solid #ff4081; /* 금색 테두리(#ff9800)를 테마 색상으로 변경 */
+            box-shadow: 0 2px 8px rgba(255,64,129,0.7); /* 금색 그림자(rgba(255,152,0,0.7))를 테마 색상 계열로 변경 */
         }
         body::before {
             content: "";
@@ -425,9 +425,9 @@
 		    width: 62px;
 		    height: 62px;
 		    
-		    background: linear-gradient(145deg, #4a3800, #332600); /* 깊이 있는 금색 계열 배경 */
-		    border: 2px solid #ffb300; /* 밝은 주황-금색 테두리 (기존 border 대체) */
-		    box-shadow: 0 0 10px rgba(255, 179, 0, 0.65), /* 주황-금색 글로우 효과 */
+		    background: linear-gradient(145deg, #4f1a30, #330e1e); /* 금색 계열 배경을 테마에 맞는 어두운 핑크/마젠타 계열로 변경 */
+		    border: 2px solid #ff4081; /* 금색 테두리(#ffb300)를 테마 색상으로 변경 */
+		    box-shadow: 0 0 10px rgba(255, 64, 129, 0.65), /* 금색 글로우(rgba(255, 179, 0, 0.65))를 테마 색상 계열 글로우로 변경 */
 		                0 2px 4px rgba(0,0,0,0.3);       /* 부드러운 기본 그림자 */
 		    
 		    border-radius: 10px;
@@ -436,7 +436,7 @@
 		    contain: layout paint;
 		}
 		.item-box .item-title {
-		    color: #ffc107;   /* 기존 #ff4081 에서 금색 계열로 변경 */
+		    color: #ff4081;   /* 금색 계열 텍스트(#ffc107)를 테마 색상으로 변경 */
 		    font-size: 14px;
 		    font-weight: bold; /* 텍스트 강조 */
 		    margin-bottom: 4px;
