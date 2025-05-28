@@ -1455,7 +1455,7 @@
                 papashaImg.decoding = 'async';
                 imgs.appendChild(papashaImg);
                 imageObserver.observe(papashaImg);
-/*
+
                 // PickupTicket 아이템 박스 추가 (loadData에서 gemsCount 사용)
                 if (itemDetails.gemsCount > 0) {
                     const gemsBox = document.createElement('div');
@@ -1471,7 +1471,7 @@
                     guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
                     imgs.appendChild(guaranteedBox);
                 }
-*/
+
                 item.appendChild(imgs);
                 item.addEventListener('click', () => showSimilarItems(item));
                 container.appendChild(item);
