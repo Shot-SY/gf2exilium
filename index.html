@@ -241,18 +241,27 @@
             box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
             position: relative;
             z-index: 1;
+            will-change: scroll-position;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
-		    scroll-behavior: auto; /* smooth 대신 auto 사용 */
-		    overflow-anchor: none; /* 스크롤 앵커링 비활성화 */
+            contain: strict;
+            transform: translateZ(0);
         }
         #results .content-container {
-            will-change: auto;
+            transform: translateZ(0);
+            will-change: opacity;
             transition: opacity 0.2s ease;
+            contain: layout paint style;
+            backface-visibility: hidden;
         }
 
         #results.filtering .content-container {
             opacity: 0;
+        }
+
+        /* 스크롤 최적화 스타일 */
+        #results.scrolling .result-item {
+            transition: none !important;
         }
 
         .result-item {
@@ -269,12 +278,6 @@
             transform: translateZ(0);
             contain: layout paint;
         }
-
-        #results.scrolling .result-item {
-            transition: none !important;
-			box-shadow: none !important;
-        }
-	    
         .small-character-img {
             width: auto;
             height: 80px;
@@ -741,19 +744,27 @@
                             let lastScrollTime = 0;
                             const scrollThreshold = 16; // 약 60fps에 해당하는 시간
 
-							results.addEventListener('scroll', function(e) {
-							    // 단순한 스크롤 처리만 유지
-							    if (!results.isScrolling) {
-							        results.isScrolling = true;
-							        results.classList.add('scrolling');
-							    }
-							
-							    clearTimeout(results.scrollEndTimer);
-							    results.scrollEndTimer = setTimeout(function() {
-							        results.isScrolling = false;
-							        results.classList.remove('scrolling');
-							    }, 150);
-							}, { passive: true });
+                            results.addEventListener('scroll', function(e) {
+                                const now = performance.now();
+
+                                // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
+                                if (now - lastScrollTime >= scrollThreshold) {
+                                    lastScrollTime = now;
+
+                                    if (!results.isScrolling) {
+                                        results.isScrolling = true;
+                                        results.classList.add('scrolling');
+                                        document.body.classList.add('is-scrolling');
+                                    }
+
+                                    clearTimeout(results.scrollEndTimer);
+                                    results.scrollEndTimer = setTimeout(function() {
+                                        results.isScrolling = false;
+                                        results.classList.remove('scrolling');
+                                        document.body.classList.remove('is-scrolling');
+                                    }, 100);
+                                }
+                            }, { passive: true });
 
                             // 스크롤 시작/종료 이벤트 추가
                             results.addEventListener('touchstart', function() {
@@ -1444,7 +1455,7 @@
                 papashaImg.decoding = 'async';
                 imgs.appendChild(papashaImg);
                 imageObserver.observe(papashaImg);
-
+/*
                 // PickupTicket 아이템 박스 추가 (loadData에서 gemsCount 사용)
                 if (itemDetails.gemsCount > 0) {
                     const gemsBox = document.createElement('div');
@@ -1460,7 +1471,7 @@
                     guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
                     imgs.appendChild(guaranteedBox);
                 }
-
+*/
                 item.appendChild(imgs);
                 item.addEventListener('click', () => showSimilarItems(item));
                 container.appendChild(item);
@@ -1846,7 +1857,7 @@
                 }
             }
         });
-	    
+
         // 터치 이벤트 최적화
         document.addEventListener('touchstart', () => {
             document.body.classList.add('touch-active');
