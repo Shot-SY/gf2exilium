@@ -1456,17 +1456,21 @@
                 imgs.appendChild(papashaImg);
                 imageObserver.observe(papashaImg);
 
-				const gemsBox = document.createElement('div');
-				gemsBox.className = 'item-box';
-				// itemDetails.gemsCount > 0 가 false일 때도 빈 박스나 플레이스홀더를 넣도록
-				gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount > 0 ? itemDetails.gemsCount : '-'}</div>`;
-				imgs.appendChild(gemsBox);
-				
-				// if (itemDetails.guaranteed) { ... } -> 항상 실행되도록 조건 제거 또는 수정
-				const guaranteedBox = document.createElement('div');
-				guaranteedBox.className = 'item-box';
-				guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">${itemDetails.guaranteed ? 'GuaranT' : '-'}</div>`;
-				imgs.appendChild(guaranteedBox);
+                // PickupTicket 아이템 박스 추가 (loadData에서 gemsCount 사용)
+                if (itemDetails.gemsCount > 0) {
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box';
+                    gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    imgs.appendChild(gemsBox);
+                }
+
+                // GUARANTEED 아이템 박스 추가
+                if (itemDetails.guaranteed) {
+                    const guaranteedBox = document.createElement('div');
+                    guaranteedBox.className = 'item-box';
+                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
+                    imgs.appendChild(guaranteedBox);
+                }
 
                 item.appendChild(imgs);
                 item.addEventListener('click', () => showSimilarItems(item));
