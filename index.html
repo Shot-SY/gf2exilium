@@ -422,46 +422,42 @@
 		    flex-direction: column;
 		    justify-content: center;
 		    align-items: center;
-		    width: 62px;                     /* 이전과 동일 */
-		    height: 62px;                    /* 이전과 동일 */
-		
-		    background: linear-gradient(145deg, #4a3800, #332600); /* 디자인 유지 */
-		    /* border: 1px solid rgba(255,255,255,0.1); */ /* 이전 border 방식, 현재 디자인과 충돌 가능성 있으므로 주석 처리. 새 디자인 border 유지 */
-		    border: 1px solid #ffb300;       /* 새 디자인 border 유지 */
-		    box-shadow: 0 0 5px rgba(255, 179, 0, 0.65), /* 새 디자인 box-shadow 유지 */
-		                0 2px 4px rgba(0,0,0,0.3);       /* 새 디자인 box-shadow 유지 */
-		
-		    border-radius: 10px;             /* 이전과 동일 (또는 유사) */
-		    margin: 0 5px;                   /* 이전과 동일 */
-		    /* transform: translateZ(0); */  /* 스크롤 문제 해결을 위해 제거 */
-		    /* contain: layout paint; */    /* 스크롤 문제 해결을 위해 제거 */
+		    width: 62px;
+		    height: 62px;
+		    
+		    background: linear-gradient(145deg, #4a3800, #332600); /* 깊이 있는 금색 계열 배경 */
+		    border: 2px solid #ffb300; /* 밝은 주황-금색 테두리 (기존 border 대체) */
+		    box-shadow: 0 0 10px rgba(255, 179, 0, 0.65), /* 주황-금색 글로우 효과 */
+		                0 2px 4px rgba(0,0,0,0.3);       /* 부드러운 기본 그림자 */
+		    
+		    border-radius: 10px;
+		    margin: 0 5px;
+		    transform: translateZ(0);
+		    contain: layout paint;
 		}
-		
 		.item-box .item-title {
-		    color: #ffc107;                  /* 새 디자인 color 유지 */
-		    font-size: 14px;                 /* 이전과 동일 */
-		    font-weight: bold;               /* 이전과 동일 (bold는 구체적 수치보다 의미론적) */
-		    margin-bottom: 4px;              /* 이전과 동일 */
+		    color: #ffc107;   /* 기존 #ff4081 에서 금색 계열로 변경 */
+		    font-size: 14px;
+		    font-weight: bold; /* 텍스트 강조 */
+		    margin-bottom: 4px;
 		}
-		
 		.item-box .item-count {
-		    color: #fff;                     /* 이전과 동일 (또는 유사) */
-		    font-size: 12px;                 /* 이전과 동일 */
-		    font-weight: 500;                /* 이전 수치로 원복 */
+		    color: #fff;       /* 흰색으로 가독성 확보 */
+		    font-size: 12px;
+		    font-weight: 600;  /* 기존 500에서 두께를 살짝 올려 강조 */
 		}
-		
-		@media (max-width: 768px) {
-		    .item-box {
-		        width: 47px;                 /* 이전 수치로 원복 */
-		        height: 47px;                /* 이전 수치로 원복 */
-		    }
-		    .item-title {
-		        font-size: 12px;             /* 이전과 동일 */
-		    }
-		    .item-count {
-		        font-size: 10px;             /* 이전과 동일 */
-		    }
-		}
+	    @media (max-width: 768px) {
+	        .item-box {
+	            width: 49px;
+	            height: 49px;
+	        }
+	        .item-title {
+	            font-size: 12px;
+	        }
+	        .item-count {
+	            font-size: 10px;
+	        }
+	    }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
