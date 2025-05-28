@@ -241,18 +241,14 @@
             box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
             position: relative;
             z-index: 1;
-            will-change: scroll-position;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
-            contain: strict;
-            transform: translateZ(0);
+		    scroll-behavior: auto; /* smooth 대신 auto 사용 */
+		    overflow-anchor: none; /* 스크롤 앵커링 비활성화 */
         }
         #results .content-container {
-            transform: translateZ(0);
-            will-change: opacity;
+            will-change: auto;
             transition: opacity 0.2s ease;
-            contain: layout paint style;
-            backface-visibility: hidden;
         }
 
         #results.filtering .content-container {
