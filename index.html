@@ -1804,12 +1804,16 @@
             }, 2000);
         }
 
-        function getSelectedCharacters(){
-            return [...document.getElementsByClassName('character-box')]
-                .filter(b => b.classList.contains('selected'))
-                .map(b => `${b.dataset.engName}:${b.querySelector('input').value}`)
-                .join(',');
-        }
+		function getSelectedCharacters(){
+		    return [...document.getElementsByClassName('character-box')]
+		        .filter(b => b.classList.contains('selected'))
+		        .map(b => {
+		            const engName = b.dataset.engName;
+		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
+		            return `${shortName}:${b.querySelector('input').value}`;
+		        })
+		        .join(',');
+		}
 
         // 쓰로틀링 함수
         function throttle(func, delay) {
