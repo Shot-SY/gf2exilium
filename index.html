@@ -41,8 +41,6 @@
             margin-bottom: 30px;
             position: relative;
             z-index: 1;
-            transform: translateZ(0);
-            contain: layout paint;
         }
         .character-box {
             background: url('https://www.transparenttextures.com/patterns/gplay.png'), rgba(26,26,26,0.2);
@@ -97,8 +95,6 @@
             margin-bottom: 10px;
             border-radius: 10px;
             transition: transform 0.3s;
-            transform: translateZ(0);
-            backface-visibility: hidden;
         }
         .character-name {
             font-size: 16px;
@@ -244,7 +240,6 @@
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
             overflow-y: auto;
-            transform: translateZ(0);
         }
         #results .content-container {
             transform: translateZ(0);
@@ -254,11 +249,6 @@
 
         #results.filtering .content-container {
             opacity: 0;
-        }
-
-        /* 스크롤 최적화 스타일 */
-        #results.scrolling .result-item {
-            will-change: transform;
         }
 
         .result-item {
@@ -278,9 +268,6 @@
             height: 80px;
             object-fit: contain;
             border-radius: 8px;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            contain: paint;
         }
         .small-character-img.rare {
             border: 2px solid #ff9800;
@@ -319,7 +306,6 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 10px;
-            transform: translateZ(0);
         }
         .result-text .item {
             color: #fff;
@@ -408,8 +394,6 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            transform: translateZ(0);
-            contain: layout paint;
         }
 		
 		.item-box {
@@ -427,8 +411,6 @@
 		    
 		    border-radius: 10px;
 		    margin: 0 5px;
-		    transform: translateZ(0);
-		    contain: layout paint;
 		}
 		.item-box .item-title {
 		    color: #ffc107;   /* 기존 #ff4081 에서 금색 계열로 변경 */
