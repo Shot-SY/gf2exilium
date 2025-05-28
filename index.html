@@ -740,27 +740,19 @@
                             let lastScrollTime = 0;
                             const scrollThreshold = 16; // 약 60fps에 해당하는 시간
 
-                            results.addEventListener('scroll', function(e) {
-                                const now = performance.now();
-
-                                // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
-                                if (now - lastScrollTime >= scrollThreshold) {
-                                    lastScrollTime = now;
-
-                                    if (!results.isScrolling) {
-                                        results.isScrolling = true;
-                                        results.classList.add('scrolling');
-                                        document.body.classList.add('is-scrolling');
-                                    }
-
-                                    clearTimeout(results.scrollEndTimer);
-                                    results.scrollEndTimer = setTimeout(function() {
-                                        results.isScrolling = false;
-                                        results.classList.remove('scrolling');
-                                        document.body.classList.remove('is-scrolling');
-                                    }, 100);
-                                }
-                            }, { passive: true });
+							results.addEventListener('scroll', function(e) {
+							    // 단순한 스크롤 처리만 유지
+							    if (!results.isScrolling) {
+							        results.isScrolling = true;
+							        results.classList.add('scrolling');
+							    }
+							
+							    clearTimeout(results.scrollEndTimer);
+							    results.scrollEndTimer = setTimeout(function() {
+							        results.isScrolling = false;
+							        results.classList.remove('scrolling');
+							    }, 150);
+							}, { passive: true });
 
                             // 스크롤 시작/종료 이벤트 추가
                             results.addEventListener('touchstart', function() {
@@ -1853,17 +1845,6 @@
                 }
             }
         });
-
-		// 스크롤 이벤트 쓰로틀링 추가
-		let scrollTimeout;
-		resultsElement.addEventListener('scroll', () => {
-		    resultsElement.classList.add('scrolling');
-		    
-		    clearTimeout(scrollTimeout);
-		    scrollTimeout = setTimeout(() => {
-		        resultsElement.classList.remove('scrolling');
-		    }, 150);
-		});
 	    
         // 터치 이벤트 최적화
         document.addEventListener('touchstart', () => {
