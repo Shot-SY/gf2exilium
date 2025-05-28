@@ -239,7 +239,8 @@
             box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
             position: relative;
             z-index: 1;
-            will-change: scroll-position;
+            will-change: auto; /* 필요할 때만 설정 */
+            scroll-behavior: auto; /* smooth 제거 */
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
             overflow-y: auto;
