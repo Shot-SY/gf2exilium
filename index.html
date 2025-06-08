@@ -593,7 +593,6 @@
 		
 		@media (max-width: 768px) {
 		    .character-grid {
-		        /* 목표: 한 줄에 4~5개 표시 */
 		        grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
 		        gap: 10px;
 		    }
@@ -601,7 +600,6 @@
 		        height: 125px; 
 		        padding: 8px;
 		    }
-		    /* 캐릭터 박스 내부 이미지와 이름 크기 조정 */
 		    .character-box .character-img {
 		        width: 60px;
 		        height: 70px;
@@ -622,7 +620,6 @@
 		        padding: 12px;
 		    }
 		    .small-character-img {
-		        /* 목표: 한 줄에 7~8개 표시 */
 		        width: 40px;
 		        height: 40px;
 		    }
@@ -637,20 +634,18 @@
 		        padding: 15px 20px;
 		    }
 		    .item-box {
-		        /* 캐릭터 이미지와 크기를 맞춤 (51px -> 40px) */
 		        width: 40px;
 		        height: 40px;
 		    }
-		    .item-title {
-		        /* 작아진 박스에 맞게 폰트 크기 조정 (10px -> 9px) */
-		        font-size: 11px;
+		    /* 명시도 문제를 해결하기 위해 선택자를 수정 (.item-box 추가) */
+		    .item-box .item-title {
+		        font-size: 8px;
 		        margin-bottom: 2px;
 		    }
-		    .item-count {
-		        /* 작아진 박스에 맞게 폰트 크기 조정 (10px -> 9px) */
-		        font-size: 11px;
+		    /* 명시도 문제를 해결하기 위해 선택자를 수정 (.item-box 추가) */
+		    .item-box .item-count {
+		        font-size: 8px;
 		    }
-		    /* skinInfoPopup 관련 미디어 쿼리 (기존 유지) */
 		    #skinInfoPopup {
 		        padding: 10px;
 		        width: calc(100vw - 30px);
