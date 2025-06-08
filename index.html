@@ -338,40 +338,6 @@
             color: #ff9800;
             font-weight: 500;
         }
-        @media (max-width: 768px) {
-            .character-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
-                gap: 15px;
-            }
-            .character-box {
-                height: 140px;
-                padding: 10px;
-            }
-            .spinbox-container input[type="number"] {
-                width: 45px;
-            }
-            #filterButton {
-                font-size: 16px;
-                padding: 12px;
-            }
-            .result-item {
-                padding: 12px;
-            }
-            .small-character-img {
-                width: 60px;
-                height: 60px;
-            }
-            .result-text {
-                gap: 5px;
-            }
-            #copyInstruction {
-                font-size: 1em;
-            }
-            #copyMessage {
-                font-size: 1em;
-                padding: 15px 20px;
-            }
-        }
         #tsparticles {
             position: fixed;
             top: 0;
@@ -446,18 +412,6 @@
 		    font-size: 12px;
 		    font-weight: 600;  /* 기존 500에서 두께를 살짝 올려 강조 */
 		}
-	    @media (max-width: 768px) {
-	        .item-box {
-	            width: 51px;
-	            height: 51px;
-	        }
-	        .item-title {
-	            font-size: 10px;
-	        }
-	        .item-count {
-	            font-size: 10px;
-	        }
-	    }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -637,15 +591,72 @@
 		    object-fit: contain;
 		}
 		
-		/* 모바일 화면(예: 768px 이하)에 대한 추가 미디어 쿼리 (선택적, 좀 더 세밀한 제어) */
 		@media (max-width: 768px) {
-		    #skinInfoPopup {
-		        padding: 10px; /* 모바일에서 패딩을 약간 줄임 */
-		        width: calc(100vw - 30px); /* 화면 너비에서 양쪽 여백(예: 15px씩)을 뺀 값 */
+		    .character-grid {
+		        /* 목표: 한 줄에 4~5개 표시 */
+		        grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
+		        gap: 10px;
+		    }
+		    .character-box {
+		        height: 125px; 
+		        padding: 8px;
+		    }
+		    /* 캐릭터 박스 내부 이미지와 이름 크기 조정 */
+		    .character-box .character-img {
+		        width: 60px;
+		        height: 70px;
+		        margin-bottom: 5px;
+		    }
+		    .character-box .character-name {
+		        font-size: 14px;
 		    }
 		
+		    .spinbox-container input[type="number"] {
+		        width: 45px;
+		    }
+		    #filterButton {
+		        font-size: 16px;
+		        padding: 12px;
+		    }
+		    .result-item {
+		        padding: 12px;
+		    }
+		    .small-character-img {
+		        /* 목표: 한 줄에 7~8개 표시 */
+		        width: 40px;
+		        height: 40px;
+		    }
+		    .result-text {
+		        gap: 5px;
+		    }
+		    #copyInstruction {
+		        font-size: 1em;
+		    }
+		    #copyMessage {
+		        font-size: 1em;
+		        padding: 15px 20px;
+		    }
+		    .item-box {
+		        /* 캐릭터 이미지와 크기를 맞춤 (51px -> 40px) */
+		        width: 40px;
+		        height: 40px;
+		    }
+		    .item-title {
+		        /* 작아진 박스에 맞게 폰트 크기 조정 (10px -> 9px) */
+		        font-size: 9px;
+		        margin-bottom: 2px;
+		    }
+		    .item-count {
+		        /* 작아진 박스에 맞게 폰트 크기 조정 (10px -> 9px) */
+		        font-size: 9px;
+		    }
+		    /* skinInfoPopup 관련 미디어 쿼리 (기존 유지) */
+		    #skinInfoPopup {
+		        padding: 10px;
+		        width: calc(100vw - 30px);
+		    }
 		    #skinInfoPopupImage {
-		        max-height: calc(90vh - 24px - 20px); /* 모바일 팝업 패딩(10px*2)과 테두리 + 추가 여유 고려 */
+		        max-height: calc(90vh - 24px - 20px);
 		    }
 		}
     </style>
