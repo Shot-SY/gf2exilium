@@ -1,3 +1,12 @@
+=== kl4_su1_ve0_ma0_yo0_me1_ce1_gy3_to1 ===
+1EC klukai4 suomi1 mechty1 centaureissi1 gyunggu3 tororo1 sabrina4 peritia2 20PickupTicket = $96.40
+
+=== kl4_su1_ve1_ma0_yo0_me0_ce1_gy1_to3 ===
+1RH klukai4 suomi1 vector1 centaureissi1 gyunggu1 tororo3 sabrina2 peritia1 bepri1 mosinnagang1 0PickupTicket = $91.40
+
+=== kl4_su1_ve1_ma1_yo0_me0_ce0_gy3_to1 ===
+1J5 klukai4 suomi1 vector1 makiato1 gyunggu3 tororo1 sabrina1 peritia2 mosinnagang1 12PickupTicket = $93.60
+
 === kl1_su1_ve0_ma1_yo3_me0_ce0_gy3_to1 ===
 A1XJ klukai1 suomi1 makiato1 yoohee3 gyunggu3 tororo1 sabrina1 peritia1 211PickupTicket = $117.10
 
@@ -14,6 +23,9 @@ A22R klukai4 suomi1 makiato1 gyunggu3 tororo2 sabrina1 peritia2 mosinnagang1 90P
 === kl4_su1_ve0_ma1_yo0_me0_ce0_gy1_to4 ===
 1H3 klukai4 suomi1 makiato1 gyunggu1 tororo4 sabrina2 peritia3 bepri1 41PickupTicket = $88.60
 
+=== kl4_su0_ve0_ma1_yo1_me0_ce0_gy2_to2 ===
+1KQ klukai4 makiato1 yoohee1 gyunggu2 tororo2 sabrina1 peritia1 mosinnagang1 shootingstar1 64PickupTicket = $90.00
+
 === kl4_su1_ve0_ma0_yo0_me0_ce1_gy2_to2 ===
 A1QG klukai4 suomi1 centaureissi1 gyunggu2 tororo2 sabrina1 peritia1 bepri1 mosinnagang3 shootingstar1 136PickupTicket = $107.10
 
@@ -24,6 +36,9 @@ A1OC klukai4 suomi1 makiato1 gyunggu1 tororo3 sabrina1 bepri1 210PickupTicket = 
 === kl4_su1_ve0_ma1_yo0_me0_ce0_gy3_to1 ===
 1U3 klukai4 suomi1 makiato1 gyunggu3 tororo1 sabrina2 mosinnagang1 175PickupTicket = $110.00
 1LE klukai4 suomi1 makiato1 gyunggu3 tororo1 sabrina1 bepri1 174PickupTicket = $109.30
+
+=== kl4_su1_ve0_ma0_yo0_me0_ce1_gy2_to1 ===
+A1S9 klukai4 suomi1 centaureissi1 gyunggu2 tororo1 sabrina1 peritia5 bepri2 107PickupTicket = $94.30
 
 === kl4_su1_ve0_ma1_yo0_me0_ce0_gy2_to1 ===
 1MH klukai4 suomi1 makiato1 gyunggu2 tororo1 sabrina1 peritia2 mosinnagang1 115PickupTicket = $92.90
@@ -54,12 +69,6 @@ A1WK klukai1 suomi1 vector1 makiato1 centaureissi1 gyunggu1 tororo2 sabrina1 per
 === kl1_su1_ve0_ma0_yo2_me1_ce0_gy1_to4 ===
 A1PN klukai1 suomi1 yoohee2 mechty1 gyunggu1 tororo4 sabrina1 peritia2 276PickupTicket = $119.30
 
-=== kl2_su1_ve0_ma0_yo0_me1_ce1_gy3_to1 ===
-1EC klukai2 suomi1 mechty1 centaureissi1 gyunggu3 tororo1 sabrina2 peritia2 223PickupTicket = $103.60
-
-=== kl2_su1_ve1_ma0_yo0_me0_ce1_gy1_to3 ===
-1RH klukai2 suomi1 vector1 centaureissi1 gyunggu1 tororo3 sabrina2 peritia1 bepri1 152PickupTicket = $88.60
-
 === kl1_su1_ve0_ma0_yo2_me0_ce1_gy2_to1 ===
 A1X4 klukai1 suomi1 yoohee2 centaureissi1 gyunggu2 tororo1 sabrina2 peritia1 317PickupTicket = $117.10
 
@@ -75,9 +84,6 @@ A1TA klukai1 suomi1 makiato1 yoohee2 gyunggu2 tororo1 sabrina3 299PickupTicket =
 A1OO klukai1 suomi1 makiato1 yoohee2 gyunggu2 tororo1 sabrina2 mosinnagang1 shootingstar1 249PickupTicket = $106.40
 A1U9 klukai1 suomi1 makiato1 yoohee2 gyunggu2 tororo1 sabrina1 shootingstar1 208PickupTicket GUARANTEED = $100.00
 
-=== kl2_su1_ve1_ma1_yo0_me0_ce0_gy2_to1 ===
-1J5 klukai2 suomi1 vector1 makiato1 gyunggu2 tororo1 sabrina1 peritia2 mosinnagang1 173PickupTicket = $87.90
-
 === kl1_su1_ve0_ma1_yo0_me2_ce0_gy1_to1 ===
 A1ZJ klukai1 suomi1 makiato1 mechty2 gyunggu1 tororo1 sabrina1 peritia2 300PickupTicket = $94.30
 
@@ -92,6 +98,13 @@ A1ZA klukai1 suomi1 makiato1 yoohee2 tororo1 sabrina2 peritia1 bepri1 243PickupT
 
 === kl1_su3_ve1_ma0_yo0_me0_ce0_gy1_to3 ===
 A1TV klukai1 suomi3 vector1 gyunggu1 tororo3 sabrina2 peritia2 bepri1 153PickupTicket = $76.40
+
+=== kl4_su0_ve0_ma1_yo0_me0_ce0_gy1_to3 ===
+1QR klukai4 makiato1 gyunggu1 tororo3 sabrina1 peritia2 182PickupTicket = $94.30
+
+=== kl4_su0_ve0_ma1_yo0_me0_ce0_gy2_to1 ===
+1JF klukai4 makiato1 gyunggu2 tororo1 sabrina3 265PickupTicket = $106.40
+1PT klukai4 makiato1 gyunggu2 tororo1 sabrina3 peritia1 132PickupTicket GUARANTEED = $82.90
 
 === kl4_su1_ve0_ma0_yo0_me0_ce0_gy1_to2 ===
 A1ZT klukai4 suomi1 gyunggu1 tororo2 sabrina2 peritia1 mosinnagang1 103PickupTicket = $72.90
@@ -514,12 +527,6 @@ A1QJ klukai1 suomi1 vector2 gyunggu1 tororo2 sabrina1 peritia2 bepri1 228PickupT
 
 === kl1_su2_ve1_ma0_yo0_me0_ce0_gy1_to2 ===
 1JQ klukai1 suomi2 vector1 gyunggu1 tororo2 sabrina2 peritia2 175PickupTicket = $66.40
-
-=== kl2_su0_ve0_ma1_yo1_me0_ce0_gy1_to2 ===
-1KQ klukai2 makiato1 yoohee1 gyunggu1 tororo2 sabrina1 peritia1 shootingstar1 277PickupTicket = $89.30
-
-=== kl2_su1_ve0_ma0_yo0_me0_ce1_gy2_to1 ===
-A1S9 klukai2 suomi1 centaureissi1 gyunggu2 tororo1 sabrina1 peritia4 bepri2 237PickupTicket = $81.40
 
 === kl1_su0_ve2_ma1_yo0_me0_ce0_gy1_to1 ===
 A1YZ klukai1 vector2 makiato1 gyunggu1 tororo1 sabrina1 peritia3 mosinnagang1 239PickupTicket = $75.70
@@ -1111,13 +1118,6 @@ A1RS klukai1 suomi1 makiato1 tororo1 sabrina1 peritia3 287PickupTicket GUARANTEE
 A1R9 klukai1 suomi1 makiato1 tororo1 sabrina1 peritia3 mosinnagang1 276PickupTicket = $59.30
 A1S8 klukai1 suomi1 makiato1 tororo1 sabrina2 peritia1 bepri2 232PickupTicket = $50.70
 A1XH klukai1 suomi1 makiato1 tororo1 sabrina2 peritia3 mosinnagang1 220PickupTicket = $48.60
-
-=== kl2_su0_ve0_ma1_yo0_me0_ce0_gy1_to2 ===
-1QR klukai2 makiato1 gyunggu1 tororo2 sabrina1 peritia2 292PickupTicket = $69.30
-
-=== kl2_su0_ve0_ma1_yo0_me0_ce0_gy2_to1 ===
-1JF klukai2 makiato1 gyunggu2 tororo1 sabrina3 285PickupTicket = $67.90
-1PT klukai2 makiato1 gyunggu2 tororo1 sabrina2 272PickupTicket = $65.00
 
 === kl1_su1_ve0_ma0_yo0_me0_ce0_gy2_to5 ===
 A280 klukai1 suomi1 gyunggu2 tororo5 sabrina1 bepri1 mosinnagang1 263PickupTicket = $56.40
