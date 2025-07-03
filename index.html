@@ -69,16 +69,6 @@
             border: 2px solid #ff9800;
             box-shadow: 0 4px 12px rgba(255,152,0,0.7);
         }
-        /* NEW: Luxurious red outline for other rare characters */
-        .character-box.rare-special {
-            border: 2px solid #D2122E;
-            box-shadow: 0 4px 12px rgba(210, 18, 46, 0.7);
-        }
-        /* NEW: Gold outline for PickupTicket box */
-        .character-box.pickup-ticket-box {
-            border: 2px solid #ffb300;
-            box-shadow: 0 0 12px rgba(255, 179, 0, 0.7), 0 4px 12px rgba(0,0,0,0.7);
-        }
         .character-box.selected {
             background-color: rgba(255,64,129,0.9);
             box-shadow: 0 8px 20px rgba(255,64,129,0.8);
@@ -300,11 +290,6 @@
         .small-character-img.rare {
             border: 2px solid #ff9800;
             box-shadow: 0 2px 8px rgba(255,152,0,0.7);
-        }
-        /* NEW: Red outline for small images */
-        .small-character-img.rare-special {
-            border: 2px solid #D2122E;
-            box-shadow: 0 2px 8px rgba(210, 18, 46, 0.7);
         }
         body::before {
             content: "";
@@ -973,16 +958,9 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
 
-                // MODIFIED: 레어 캐릭터 종류에 따라 다른 클래스 적용
-                const isRare = rareCharacters.some(([rareEng]) => rareEng === eng);
-                if (isRare) {
-                    // gy, to는 주황색 외곽선 유지
-                    if (eng === 'gyunggu' || eng === 'tororo') {
-                        charBox.classList.add('rare');
-                    } else {
-                        // 그 외 레어 캐릭터는 고급스러운 적색 외곽선
-                        charBox.classList.add('rare-special');
-                    }
+                // 레어 캐릭터인지 확인하고 클래스 추가
+                if (rareCharacters.some(([rareEng]) => rareEng === eng)) {
+                    charBox.classList.add('rare');
                 }
 
                 const img = document.createElement('img');
@@ -1027,7 +1005,7 @@
 
             // PickupTicket 박스 추가
             const ticketBox = document.createElement('div');
-            ticketBox.className = 'character-box pickup-ticket-box'; // MODIFIED: 금색 외곽선 클래스 추가
+            ticketBox.className = 'character-box'; // 기존 박스와 동일한 클래스
             ticketBox.dataset.engName = 'PickupTicket'; // 데이터 식별자
 
             const ticketImg = document.createElement('img');
@@ -1425,8 +1403,7 @@
 		                    charImages.push({
 		                        src: `Portrait/${korName}.png`,
 		                        alt: korName,
-		                        isRare: isRare,
-                                code: code // MODIFIED: Pass the code for specific styling
+		                        isRare: isRare
 		                    });
 		                }
 		            }
@@ -1441,14 +1418,9 @@
 		            img.loading = 'lazy';
 		            img.decoding = 'async';
 		
-		            // MODIFIED: Apply different classes based on rare character type
-                    if (imgData.isRare) {
-                        if (imgData.code === 'gy' || imgData.code === 'to') {
-                            img.classList.add('rare'); // Orange outline
-                        } else {
-                            img.classList.add('rare-special'); // Red outline
-                        }
-                    }
+		            if (imgData.isRare) {
+		                img.classList.add('rare');
+		            }
 		            imgs.appendChild(img);
 		        });
 		
@@ -1590,8 +1562,7 @@
                             charImages.push({
                                 src: `Portrait/${korName}.png`,
                                 alt: korName,
-                                isRare: isRare,
-                                code: code // MODIFIED: Pass the code
+                                isRare: isRare
                             });
                         }
                     }
@@ -1608,13 +1579,9 @@
                     img.loading = 'lazy';
                     img.decoding = 'async';
 
-                    // MODIFIED: 레어 캐릭터인 경우 클래스 추가
+                    // 레어 캐릭터인 경우 클래스 추가
                     if (imgData.isRare) {
-                        if (imgData.code === 'gy' || imgData.code === 'to') {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('rare-special');
-                        }
+                        img.classList.add('rare');
                     }
 
                     imgs.appendChild(img);
