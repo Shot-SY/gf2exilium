@@ -291,7 +291,6 @@
             border: 2px solid #ff9800;
             box-shadow: 0 2px 8px rgba(255,152,0,0.7);
         }
-        /* START: MODIFIED/NEW CSS */
         .character-box.super-rare {
             border: 2px solid #D32F2F; /* Luxurious red */
             box-shadow: 0 4px 12px rgba(211, 47, 47, 0.7); /* Red glow */
@@ -304,7 +303,6 @@
             border: 2px solid #FFD700; /* Gold color */
             box-shadow: 0 4px 12px rgba(255, 215, 0, 0.7); /* Gold glow */
         }
-        /* END: MODIFIED/NEW CSS */
         body::before {
             content: "";
             position: absolute;
@@ -430,30 +428,24 @@
 		}
         .price-box {
             display: inline-flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center;   /* 수직 중앙 정렬 */
             width: 62px;
             height: 62px;
-            background: linear-gradient(145deg, #008c4a, #00592f); /* Deep green background */
-            border: 2px solid #00e676; /* Bright green border */
-            box-shadow: 0 0 10px rgba(0, 230, 118, 0.65), /* Green glow effect */
-                        0 2px 4px rgba(0,0,0,0.3);       /* Soft base shadow */
+            background: linear-gradient(145deg, #104020, #052912); 
+            border: 2px solid #27ae60;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), 
+                        0 2px 4px rgba(0,0,0,0.3);
             border-radius: 10px;
             margin: 0 5px;
             transform: translateZ(0);
             contain: layout paint;
-        }
-        .price-box .item-title {
-            color: #00e676;   /* Bright green */
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .price-box .item-count {
-            color: #fff;       /* White for contrast */
-            font-size: 12px;
-            font-weight: 600;
+            
+            /* 텍스트 스타일을 여기에 직접 적용 */
+            color: #90ee90; /* 어두운 배경에 잘 보이는 밝은 연두색 */
+            font-size: 16px;
+            font-weight: 700; /* Bold */
+            font-family: 'Poppins', sans-serif; /* 다른 UI와 폰트 통일 */
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -669,7 +661,6 @@
 		    .result-text {
 		        gap: 5px;
 		    }
-            /* MODIFIED: 모바일 환경에서 결과 아이템 간격 조정 */
             .item-images {
                 gap: 5px;
             }
@@ -683,17 +674,19 @@
 		    .item-box, .price-box {
 		        width: 40px;
 		        height: 40px;
-                margin: 0 2px; /* MODIFIED: 모바일 환경에서 결과 아이템 간격 조정 */
+                margin: 0 2px;
 		    }
-		    /* 명시도 문제를 해결하기 위해 선택자를 수정 (.item-box 추가) */
-		    .item-box .item-title, .price-box .item-title {
+		    .item-box .item-title {
 		        font-size: 10px;
 		        margin-bottom: 2px;
 		    }
-		    /* 명시도 문제를 해결하기 위해 선택자를 수정 (.item-box 추가) */
-		    .item-box .item-count, .price-box .item-count {
+		    .item-box .item-count {
 		        font-size: 10px;
 		    }
+            /* 모바일에서 가격 폰트 크기 조정 */
+            .price-box {
+                font-size: 12px;
+            }
 		    #skinInfoPopup {
 		        padding: 10px;
 		        width: calc(100vw - 30px);
@@ -788,20 +781,17 @@
                         // 스크롤 성능 최적화
                         const results = document.getElementById('results');
                         if (results) {
-                            // 스크롤 성능 최적화를 위한 설정
                             results.style.willChange = 'scroll-position';
                             results.style.webkitOverflowScrolling = 'touch';
                             results.style.overscrollBehavior = 'contain';
                             results.style.contain = 'strict';
 
-                            // 스크롤 이벤트 최적화 - 쓰로틀링 적용
                             let lastScrollTime = 0;
-                            const scrollThreshold = 16; // 약 60fps에 해당하는 시간
+                            const scrollThreshold = 16; 
 
                             results.addEventListener('scroll', function(e) {
                                 const now = performance.now();
 
-                                // 쓰로틀링 - 마지막 스크롤 이벤트로부터 일정 시간이 지났을 때만 처리
                                 if (now - lastScrollTime >= scrollThreshold) {
                                     lastScrollTime = now;
 
@@ -820,7 +810,6 @@
                                 }
                             }, { passive: true });
 
-                            // 스크롤 시작/종료 이벤트 추가
                             results.addEventListener('touchstart', function() {
                                 results.classList.add('scrolling');
                                 document.body.classList.add('is-scrolling');
@@ -834,10 +823,8 @@
                             }, { passive: true });
                         }
 
-                        // 시그니처 팝업 스크롤 최적화
                         const signaturePopup = document.getElementById('signaturePopup');
                         if (signaturePopup) {
-                            // 스크롤 이벤트 최적화 - 쓰로틀링 적용
                             let lastPopupScrollTime = 0;
                             const popupScrollThreshold = 16;
 
@@ -861,7 +848,6 @@
                             }, { passive: true });
                         }
 
-                        // 페이지 로드 후 추가 최적화
                         optimizeImages();
                         optimizeParticles();
                     }, 500);
@@ -886,9 +872,7 @@
             retina_detect: true
         });
 
-        // tsParticles 최적화 함수
         function optimizeParticles() {
-            // 파티클 제어 헬퍼 함수
             const pauseParticles = () => {
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).pause();
@@ -901,7 +885,6 @@
                 }
             };
 
-            // 결과 영역의 스크롤 이벤트 처리
             const results = document.getElementById('results');
             if (results) {
                 results.addEventListener('scroll', () => {
@@ -913,12 +896,10 @@
                         results.particlesTimer = setTimeout(() => {
                             resumeParticles();
                             results.particlesPaused = false;
-                            console.log("파티클 재개됨 - 스크롤 후 200ms");
-                        }, 200); // 200ms로 설정하여 빠른 재개
+                        }, 200); 
                     }
                 }, { passive: true });
 
-                // 터치 이벤트 처리
                 results.addEventListener('touchstart', () => {
                     if (!results.particlesPaused) {
                         pauseParticles();
@@ -931,24 +912,21 @@
                     results.particlesTimer = setTimeout(() => {
                         resumeParticles();
                         results.particlesPaused = false;
-                        console.log("파티클 재개됨 - 터치 종료 후");
                     }, 200);
                 }, { passive: true });
             }
 
-            // 페이지 가시성 변경 이벤트 처리
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'hidden') {
                     pauseParticles();
                 } else {
                     resumeParticles();
-                    console.log("파티클 재개됨 - 페이지 가시성 변경");
                 }
             });
         }
 
         let characters = [];
-        let rareCharacters = []; // 레어 캐릭터 리스트
+        let rareCharacters = [];
 
         function loadCharacters() {
             const ts = new Date().getTime();
@@ -956,7 +934,7 @@
                 .then(r => r.text())
                 .then(text => {
                     characters = [];
-                    rareCharacters = []; // 레어 캐릭터 리스트 초기화
+                    rareCharacters = [];
 
                     let foundSabrina = false;
 
@@ -966,7 +944,6 @@
                             const eng = parts[0];
                             const kor = parts.slice(1).join(' ');
 
-                            // 'sabrina 사브리나' 줄을 만나면 플래그 설정
                             if (eng === 'sabrina' && kor === '사브리나') {
                                 foundSabrina = true;
                             }
@@ -974,18 +951,12 @@
                             if (eng && kor) {
                                 characters.push([eng, kor]);
 
-                                // 'sabrina 사브리나' 이전의 캐릭터들은 레어 캐릭터로 분류
                                 if (!foundSabrina) {
                                     rareCharacters.push([eng, kor]);
                                 }
                             }
                         }
                     });
-
-                    console.log('캐릭터 데이터 로드됨:', characters);
-                    console.log('레어 캐릭터 데이터:', rareCharacters);
-
-                    // 데이터 로드 후 캐릭터 박스 생성
                     createCharacterBoxes();
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
@@ -996,9 +967,8 @@
 
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
-            characterGrid.innerHTML = ''; // 기존 박스 제거
+            characterGrid.innerHTML = '';
 
-            // DocumentFragment 사용하여 DOM 조작 최소화
             const fragment = document.createDocumentFragment();
 
             characters.forEach(([eng, kor]) => {
@@ -1006,24 +976,21 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
 
-                // START: MODIFIED CODE
-                // 레어 캐릭터인지 확인하고 조건에 따라 다른 클래스 추가
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
                 if (isGenerallyRare) {
                     if (eng.startsWith('gy') || eng.startsWith('to')) {
-                        charBox.classList.add('rare'); // 주황색 외곽선
+                        charBox.classList.add('rare');
                     } else {
-                        charBox.classList.add('super-rare'); // 적색 외곽선
+                        charBox.classList.add('super-rare');
                     }
                 }
-                // END: MODIFIED CODE
 
                 const img = document.createElement('img');
                 img.src = `Portrait/${kor}.png`;
                 img.alt = kor;
                 img.className = 'character-img';
-                img.loading = 'lazy'; // 지연 로딩 적용
-                img.decoding = 'async'; // 비동기 디코딩 적용
+                img.loading = 'lazy';
+                img.decoding = 'async';
 
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'character-name';
@@ -1058,32 +1025,28 @@
                 });
             });
 
-            // PickupTicket 박스 추가
             const ticketBox = document.createElement('div');
-            // START: MODIFIED CODE
-            ticketBox.className = 'character-box gold-border'; // 금색 외곽선 추가
-            // END: MODIFIED CODE
-            ticketBox.dataset.engName = 'PickupTicket'; // 데이터 식별자
+            ticketBox.className = 'character-box gold-border';
+            ticketBox.dataset.engName = 'PickupTicket';
 
             const ticketImg = document.createElement('img');
-            ticketImg.src = `Portrait/픽업티켓.png`; // 이미지 경로
+            ticketImg.src = `Portrait/픽업티켓.png`;
             ticketImg.alt = 'PickupTicket';
-            ticketImg.className = 'character-img'; // 기존 이미지와 동일한 클래스
+            ticketImg.className = 'character-img';
             ticketImg.loading = 'lazy';
             ticketImg.decoding = 'async';
 
             const ticketNameSpan = document.createElement('span');
-            ticketNameSpan.className = 'character-name'; // 기존 이름과 동일한 클래스
-            ticketNameSpan.textContent = 'PickupTicket'; // 박스 이름
+            ticketNameSpan.className = 'character-name';
+            ticketNameSpan.textContent = 'PickupTicket';
 
             const ticketSpinboxContainer = document.createElement('div');
-            ticketSpinboxContainer.className = 'spinbox-container'; // 스핀박스 컨테이너
+            ticketSpinboxContainer.className = 'spinbox-container';
 
             const ticketSpinbox = document.createElement('input');
             ticketSpinbox.type = 'number';
-            ticketSpinbox.id = 'PickupTicket-spin'; // 스핀박스 ID
+            ticketSpinbox.id = 'PickupTicket-spin';
             ticketSpinbox.min = 0;
-            // ticketSpinbox.max = 8; // 최대값은 필요에 따라 설정 (일단 제거)
             ticketSpinbox.value = 0;
             ticketSpinbox.disabled = true;
 
@@ -1091,7 +1054,6 @@
             ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
             fragment.appendChild(ticketBox);
 
-            // PickupTicket 박스 클릭 이벤트 리스너 추가
             ticketBox.addEventListener('click', (e) => {
                 if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
             });
@@ -1101,11 +1063,9 @@
                 if(!ticketBox.classList.contains('selected')) {
                     ticketBox.classList.add('selected');
                     ticketSpinbox.disabled = false;
-                    if(ticketSpinbox.value === '0') ticketSpinbox.value = '1'; // 최소 1개부터 시작
+                    if(ticketSpinbox.value === '0') ticketSpinbox.value = '1';
                 }
             });
-
-            // 한 번에 DOM에 추가
             characterGrid.appendChild(fragment);
         }
 
@@ -1122,18 +1082,15 @@
 
         function filterValidCharacters(charString) {
             const validCharCodes = new Set(characters.map(([eng]) => eng.slice(0, 2)));
-
             const charGroups = charString.match(/.{1,3}/g) || [];
-
             const validGroups = charGroups.filter(group => {
                 const code = group.slice(0, 2);
                 return validCharCodes.has(code);
             });
-
             return validGroups.join('');
         }
 
-        let itemDetailsMap = {}; // 아이템 상세 정보 저장용 맵
+        let itemDetailsMap = {};
 
         function loadData() {
             const ts = new Date().getTime();
@@ -1141,28 +1098,24 @@
                 .then(r => r.text())
                 .then(text => {
                     luaData = {};
-                    itemDetailsMap = {}; // 아이템 상세 정보 초기화
+                    itemDetailsMap = {};
 
-                    // 텍스트를 줄 단위로 분할
                     const lines = text.split('\n');
                     let currentSection = null;
 
                     for (let i = 0; i < lines.length; i++) {
                         const line = lines[i].trim();
 
-                        // 섹션 헤더 처리
                         if (line.startsWith('===') && line.endsWith('===')) {
-                            currentSection = line.slice(4, -4).trim(); // === 제거
+                            currentSection = line.slice(4, -4).trim();
                             continue;
                         }
 
-                        // 제목 줄이 아니고 콘텐츠가 있는 줄만 처리
                         if (line && !line.startsWith('===') && currentSection !== null) {
-                            // 공백으로 분할
                             const parts = line.split(' ');
-                            if (parts.length < 2) continue; // 충분한 부분이 없으면 건너뛰기
+                            if (parts.length < 2) continue;
 
-                            const key = parts[0]; // 첫 번째 부분이 키
+                            const key = parts[0];
                             let charString = '';
                             let j = 1;
                             let itemDetails = {
@@ -1170,75 +1123,53 @@
                                 price: 0,
                                 guaranteed: line.includes('GUARANTEED'),
                                 displayText: '',
-                                gemsCount: 0 // PickupTicket 개수 초기화
+                                gemsCount: 0
                             };
 
-                            // '$' 기호를 찾아 가격 추출
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
                                 itemDetails.price = parseFloat(priceMatch[1]);
                             }
 
-                            // 캐릭터 정보 추출 (숫자로 시작하는 단어를 만나기 전까지)
                             while (j < parts.length && !/^\d/.test(parts[j])) {
-                                // 캐릭터 정보 추출 (예: suomi1 -> su1)
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
                                 if (match) {
-                                    const charName = match[1].toLowerCase(); // 소문자로 변환
+                                    const charName = match[1].toLowerCase();
                                     const count = match[2];
-
-                                    // 캐릭터 이름을 코드로 변환 (첫 두 글자 사용)
                                     charString += charName.slice(0, 2) + count;
                                 }
                                 j++;
                             }
 
-                            // PickupTicket 부분 찾기 (숫자+PickupTicket)
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
-                                itemDetails.gemsCount = parseInt(gemsMatch[1]); // 정수로 파싱하여 저장
-                                itemDetails.gemsText = gemsMatch[0]; // 텍스트도 저장 (기존 로직 유지)
+                                itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                                itemDetails.gemsText = gemsMatch[0];
                             }
-
-                            // 표시 텍스트 설정 (키와 = 기호 제외)
                             itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
-
-                            // 필터링 된 캐릭터 문자열이 있을 경우만 저장
-                            // 캐릭터 문자열이 없어도 PickupTicket 등의 정보가 있을 수 있으므로 항상 저장
-                            luaData[key] = charString; // 캐릭터 문자열은 그대로 저장
-                            itemDetailsMap[key] = itemDetails; // 상세 정보 저장
+                            luaData[key] = charString;
+                            itemDetailsMap[key] = itemDetails;
                         }
                     }
-
-                    console.log('데이터 로드됨:', luaData);
-                    console.log('아이템 상세 정보:', itemDetailsMap);
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
 		function generateRareSignature(charString) {
 			const chars = charString.match(/.{1,3}/g) || [];
 			let signature = {};
-
-			// 제외할 캐릭터 코드 목록 (gyunggu -> gy, tororo -> to)
 			const excludedRareCodes = ['gy', 'to'];
 
 			chars.forEach(char => {
 				const code = char.slice(0, 2);
 				const count = parseInt(char[2]);
-
-				// 1. 원래 rareCharacters 리스트에 포함되는지 확인
 				const isGenerallyRare = rareCharacters.some(([eng]) => eng.slice(0, 2) === code);
-
-				// 2. 제외 목록에 포함되지 않는지 확인
 				const isExcluded = excludedRareCodes.includes(code);
 
-				// 3. 원래 레어 캐릭터이면서 제외 목록에 없을 경우에만 시그니처에 추가
 				if (isGenerallyRare && !isExcluded) {
 					signature[code] = (signature[code] || 0) + count;
 				}
 			});
 
-			// 정렬된 문자열 형태로 시그니처 반환 (이 부분은 변경 없음)
 			return Object.entries(signature)
 				.sort((a, b) => a[0].localeCompare(b[0]))
 				.map(([code, count]) => `${code}${count}`)
@@ -1249,7 +1180,6 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('filtering');
 
-            // 파티클 효과 일시 중지 (필터링 중 성능 향상)
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
@@ -1258,11 +1188,9 @@
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g)||[];
-                    // checkConditions에 k (itemKey) 전달
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
 
-                // 가격 순으로 정렬 (높은 가격부터)
                 const sortedKeys = Object.keys(filtered).sort((a, b) => {
                     return itemDetailsMap[b].price - itemDetailsMap[a].price;
                 });
@@ -1272,7 +1200,6 @@
                     final[key] = filtered[key];
                 });
 
-                // 각 아이템의 레어 캐릭터 시그니처 계산
                 for (const key in final) {
                     itemDetailsMap[key].rareSignature = generateRareSignature(final[key]);
                 }
@@ -1280,44 +1207,35 @@
                 displayResults(final);
                 resultsDiv.classList.remove('filtering');
 
-                // 파티클 효과 재개
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }, 200);
         }
 
-        // 선택된 캐릭터들의 총합을 계산하는 함수
         function getSelectedCharacterSum(luaString) {
             const chars = luaString.match(/.{1,3}/g) || [];
             let sum = 0;
-
             chars.forEach(char => {
                 const name = char.slice(0, 2);
                 const num = parseInt(char[2]);
-
-                // 선택된 캐릭터인 경우에만 합산
                 const box = [...document.getElementsByClassName('character-box')]
                     .find(b => b.dataset.engName.startsWith(name));
                 if (box && box.classList.contains('selected')) {
                     sum += num;
                 }
             });
-
             return sum;
         }
 
-        // itemKey 인자 추가
         function checkConditions(chars, itemKey) {
             const count = {};
-
             chars.forEach(c => {
                 const name = c.slice(0,2);
                 const num = parseInt(c[2]);
                 count[name] = (count[name]||0)+num;
             });
 
-            // 캐릭터 조건 검사
             const characterCondition = characters.every(([eng, kor]) => {
                 const box = [...document.getElementsByClassName('character-box')]
                     .find(b => b.dataset.engName === eng);
@@ -1328,32 +1246,23 @@
                 return true;
             });
 
-            // 캐릭터 조건 불충족 시 바로 false 반환
             if (!characterCondition) {
                 return false;
             }
 
-            // PickupTicket 조건 검사
             const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
             if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
                 const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
                 const itemDetails = itemDetailsMap[itemKey];
-                const hasTickets = itemDetails?.gemsCount || 0; // itemDetailsMap에서 티켓 개수 가져오기
-
-                // 티켓 개수가 요구사항보다 적으면 false 반환
+                const hasTickets = itemDetails?.gemsCount || 0;
                 if (hasTickets < requiredTickets) {
                     return false;
                 }
             }
-
-            // 모든 조건 충족 시 true 반환
             return true;
         }
 
-
-        // 이미지 로딩 최적화 함수
         function optimizeImages() {
-            // 이미지 지연 로딩 설정
             const images = document.querySelectorAll('img');
             images.forEach(img => {
                 if (!img.hasAttribute('loading')) {
@@ -1363,32 +1272,23 @@
                     img.decoding = 'async';
                 }
             });
-
-            // 이미지 사전 로딩을 위한 Set
             const imagesToPreload = new Set();
-
-            // 자주 사용되는 이미지만 사전 로드
             characters.slice(0, 10).forEach(([_, name]) => {
                 imagesToPreload.add(`Portrait/${name}.png`);
             });
-            imagesToPreload.add('픽업티켓.png'); // PickupTicket 이미지도 사전 로드
-
-            // 이미지 사전 로딩 함수
+            imagesToPreload.add('픽업티켓.png');
             function preloadImages() {
                 const imagePromises = Array.from(imagesToPreload).map(src => {
                     return new Promise((resolve, reject) => {
                         const img = new Image();
                         img.decoding = 'async';
                         img.onload = resolve;
-                        img.onerror = resolve; // 에러가 발생해도 계속 진행
+                        img.onerror = resolve;
                         img.src = src;
                     });
                 });
-
                 return Promise.all(imagePromises);
             }
-
-            // 이미지 사전 로딩 시작
             preloadImages();
         }
 
@@ -1396,18 +1296,15 @@
 		    const res = document.getElementById('results');
 		    res.scrollTop = 0;
 		
-		    // 기존 스크롤 이벤트 리스너 정리
 		    if (res.scrollHandler) {
 		        res.removeEventListener('scroll', res.scrollHandler);
 		    }
 		
-		    // DOM 조작 최적화를 위한 DocumentFragment 사용
 		    const fragment = document.createDocumentFragment();
 		    const container = document.createElement('div');
 		    container.className = 'content-container';
 		    fragment.appendChild(container);
 		
-		    // 가격 기준 내림차순 정렬
 		    const sortedKeys = Object.keys(data).sort((a, b) => {
 		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
 		    });
@@ -1423,11 +1320,9 @@
 		        const charValue = data[k];
 		        const itemDetails = itemDetailsMap[k];
 		
-		        // 이미지 컨테이너 생성
 		        const imgs = document.createElement('div');
 		        imgs.className = 'item-images';
 		
-		        // 캐릭터 문자열 파싱하여 이미지 데이터 생성
 		        const charImages = [];
 		        const charPattern = /([a-z]{2})(\d)/g;
 		        let match;
@@ -1438,11 +1333,9 @@
 		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
 		            
 		            if (charInfo) {
-                        // START: MODIFIED CODE
                         const [engName, korName] = charInfo;
 		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
 		                
-		                // 개수만큼 이미지 데이터 추가
 		                for (let i = 0; i < count; i++) {
 		                    charImages.push({
 		                        src: `Portrait/${korName}.png`,
@@ -1451,11 +1344,9 @@
                                 engName: engName
 		                    });
 		                }
-                        // END: MODIFIED CODE
 		            }
 		        }
 		
-		        // 캐릭터 이미지 요소 생성
 		        charImages.forEach(imgData => {
 		            const img = document.createElement('img');
 		            img.src = imgData.src;
@@ -1464,19 +1355,16 @@
 		            img.loading = 'lazy';
 		            img.decoding = 'async';
 		
-		            // START: MODIFIED CODE
                     if (imgData.isRare) {
                         if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
-                            img.classList.add('rare'); // 주황색
+                            img.classList.add('rare');
                         } else {
-                            img.classList.add('super-rare'); // 적색
+                            img.classList.add('super-rare');
                         }
                     }
-                    // END: MODIFIED CODE
 		            imgs.appendChild(img);
 		        });
 		
-		        // 파파샤 이미지 추가
 		        const papashaImg = document.createElement('img');
 		        papashaImg.src = 'Portrait/파파샤.png';
 		        papashaImg.alt = '파파샤';
@@ -1485,7 +1373,6 @@
 		        papashaImg.decoding = 'async';
 		        imgs.appendChild(papashaImg);
 		
-		        // 픽업 티켓 박스 추가
 		        if (itemDetails.gemsCount > 0) {
 		            const gemsBox = document.createElement('div');
 		            gemsBox.className = 'item-box';
@@ -1493,7 +1380,6 @@
 		            imgs.appendChild(gemsBox);
 		        }
 		
-		        // 보장 픽업 박스 추가
 		        if (itemDetails.guaranteed) {
 		            const guaranteedBox = document.createElement('div');
 		            guaranteedBox.className = 'item-box';
@@ -1501,11 +1387,12 @@
 		            imgs.appendChild(guaranteedBox);
 		        }
 
-                // 가격 박스 추가
+                // 가격 박스 추가 (수정됨)
                 const priceBox = document.createElement('div');
                 priceBox.className = 'price-box';
                 const priceString = `$${itemDetails.price.toFixed(2)}`;
-                priceBox.innerHTML = `<div class="item-title">Price</div><div class="item-count">${priceString}</div>`;
+                // 'Price' 텍스트를 제거하고 가격만 중앙에 표시하도록 textContent 사용
+                priceBox.textContent = priceString;
                 imgs.appendChild(priceBox);
 		
 		        item.appendChild(imgs);
@@ -1513,51 +1400,41 @@
 		        container.appendChild(item);
 		    });
 		
-		    // 결과를 한 번에 DOM에 추가
 		    res.innerHTML = '';
 		    res.appendChild(fragment);
 		
 		    document.getElementById('copyInstruction').style.display = 'block';
 		}
 
-        // 동일 시그니처 아이템 팝업 표시 함수
         function showSimilarItems(item) {
             const itemKey = item.dataset.itemKey;
             const rareSignature = item.dataset.rareSignature;
 
-            // 레어 시그니처가 없으면 바로 복사
             if (!rareSignature || rareSignature === '') {
                 copyToClipboard(item);
                 return;
             }
 
-            // 동일한 레어 시그니처를 가진 아이템들 찾기
             const similarItems = Array.from(document.querySelectorAll('.result-item'))
                 .filter(otherItem => otherItem.dataset.rareSignature === rareSignature);
 
-            // 동일한 시그니처 아이템이 자기 자신뿐이면 바로 복사
             if (similarItems.length <= 1) {
                 copyToClipboard(item);
                 return;
             }
 
-            // 파티클 효과 일시 중지 (팝업 표시 중 성능 향상)
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
 
-            // 팝업 내용 채우기
             const popupItemsContainer = document.getElementById('signaturePopupItems');
             popupItemsContainer.innerHTML = '';
 
-            // DocumentFragment 사용하여 DOM 조작 최소화
             const fragment = document.createDocumentFragment();
 
-            // 팝업 제목 설정
             const popupTitle = document.querySelector('.signature-popup-title');
             popupTitle.textContent = `Items with same limited character set (${formatRareSignature(rareSignature)})`;
 
-            // 이미지 지연 로딩을 위한 IntersectionObserver 설정
             const popupImageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1575,7 +1452,6 @@
                 threshold: 0.01
             });
 
-            // 유사 아이템들 추가
             similarItems.forEach(similarItem => {
                 const similarItemKey = similarItem.dataset.itemKey;
                 const itemDetails = itemDetailsMap[similarItemKey];
@@ -1585,28 +1461,9 @@
                 popupItem.className = 'signature-popup-item';
                 popupItem.dataset.itemKey = similarItemKey;
 
-                // MODIFIED: 팝업창 텍스트 부분 제거 (시작)
-                // 원본 텍스트에서 가격 부분 및 = 제거
-                // let displayText = itemDetails.displayText;
-                // displayText = displayText.replace(/\$[\d.]+/g, '').trim();
-                // displayText = displayText.replace(/=\s*/g, '').trim();
-
-                // 텍스트 부분 생성
-                // const txt = document.createElement('div');
-                // txt.className = 'result-text';
-                // txt.innerHTML = `
-                //     <span class="item">${displayText}</span>
-                //     <span class="price">$${itemDetails.price.toFixed(2)}</span>
-                //     <span class="key" style="color: orange;">(${similarItemKey})</span>
-                // `;
-                // MODIFIED: 팝업창 텍스트 부분 제거 (끝)
-
-
-                // 이미지 부분 생성
                 const imgs = document.createElement('div');
                 imgs.className = 'item-images';
 
-                // 캐릭터 이미지 추가
                 const charImages = [];
                 const charPattern = /([a-z]{2})(\d)/g;
                 let match;
@@ -1617,7 +1474,6 @@
 
                     const charInfo = characters.find(([eng]) => eng.startsWith(code));
                     if (charInfo) {
-                        // START: MODIFIED CODE
                         const [engName, korName] = charInfo;
                         const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
 
@@ -1629,14 +1485,11 @@
                                 engName: engName
                             });
                         }
-                        // END: MODIFIED CODE
                     }
                 }
 
-                // 캐릭터 이미지 추가
                 charImages.forEach(imgData => {
                     const img = document.createElement('img');
-                    // 지연 로딩을 위해 data-src 속성 사용
                     img.setAttribute('data-src', imgData.src);
                     img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                     img.alt = imgData.alt;
@@ -1644,22 +1497,18 @@
                     img.loading = 'lazy';
                     img.decoding = 'async';
 
-                    // START: MODIFIED CODE
-                    // 레어 캐릭터인 경우 클래스 추가
                     if (imgData.isRare) {
                         if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
-                            img.classList.add('rare'); // 주황색
+                            img.classList.add('rare');
                         } else {
-                            img.classList.add('super-rare'); // 적색
+                            img.classList.add('super-rare');
                         }
                     }
-                    // END: MODIFIED CODE
 
                     imgs.appendChild(img);
                     popupImageObserver.observe(img);
                 });
 
-                // 파파샤 이미지 추가
                 const papashaImg = document.createElement('img');
                 papashaImg.setAttribute('data-src', 'Portrait/파파샤.png');
                 papashaImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -1670,7 +1519,6 @@
                 imgs.appendChild(papashaImg);
                 popupImageObserver.observe(papashaImg);
 
-                // PickupTicket 아이템 박스 추가
                 if (itemDetails.gemsCount > 0) {
                     const gemsBox = document.createElement('div');
                     gemsBox.className = 'item-box';
@@ -1678,7 +1526,6 @@
                     imgs.appendChild(gemsBox);
                 }
 
-                // GUARANTEED 아이템 박스 추가
                 if (itemDetails.guaranteed) {
                     const guaranteedBox = document.createElement('div');
                     guaranteedBox.className = 'item-box';
@@ -1686,13 +1533,10 @@
                     imgs.appendChild(guaranteedBox);
                 }
 
-                // 현재 선택된 아이템 강조
                 if (similarItemKey === itemKey) {
                     popupItem.style.border = '2px solid #ff4081';
                 }
 
-                // MODIFIED: 팝업창 텍스트 부분 제거
-                // popupItem.appendChild(txt); 
                 popupItem.appendChild(imgs);
 
                 popupItem.addEventListener('click', () => {
@@ -1703,43 +1547,30 @@
                 fragment.appendChild(popupItem);
             });
 
-            // 모든 DOM 요소를 한 번에 추가
             popupItemsContainer.appendChild(fragment);
 
-            // 팝업 가져오기
             const popup = document.getElementById('signaturePopup');
             const overlay = document.getElementById('overlay');
 
-            // 오버레이 표시
             overlay.style.display = 'block';
-
-            // 팝업 표시 (애니메이션 적용)
             popup.style.display = 'block';
-
-            // 스크롤 위치 초기화
             popup.scrollTop = 0;
             popupItemsContainer.scrollTop = 0;
 
-            // 약간의 지연 후 애니메이션 클래스 추가
             setTimeout(() => {
                 popup.classList.add('show');
                 overlay.classList.add('show');
             }, 10);
         }
 
-        // 레어 시그니처를 읽기 쉬운 형태로 변환
         function formatRareSignature(signature) {
             if (!signature) return '';
-
             const charPattern = /([a-z]{2})(\d)/g;
             let match;
             let result = [];
-
             while ((match = charPattern.exec(signature)) !== null) {
                 const code = match[1];
                 const count = match[2];
-
-                // 코드에 해당하는 영어 이름 찾기
                 const charInfo = rareCharacters.find(([eng]) => eng.startsWith(code));
                 if (charInfo) {
                     result.push(`${charInfo[0]}${count}`);
@@ -1747,55 +1578,39 @@
                     result.push(`${code}${count}`);
                 }
             }
-
             return result.join(' ');
         }
 
-        // 시그니처 팝업 닫기
         function closeSignaturePopup() {
             const popup = document.getElementById('signaturePopup');
             const overlay = document.getElementById('overlay');
-
             popup.classList.remove('show');
             overlay.classList.remove('show');
-
-            // 애니메이션 완료 후 display none 설정
             setTimeout(() => {
                 popup.style.display = 'none';
                 overlay.style.display = 'none';
-
-                // 파티클 효과 재개
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
-            }, 300); // 애니메이션 지속 시간과 동일하게 설정
+            }, 300);
         }
 
-        // 팝업 닫기 버튼 이벤트 리스너
         document.getElementById('signaturePopupClose').addEventListener('click', closeSignaturePopup);
-
-        // 팝업 외부 클릭 시 닫기
         window.addEventListener('click', (event) => {
             const popup = document.getElementById('signaturePopup');
             if (event.target === popup) {
                 closeSignaturePopup();
             }
         });
-
-        // 오버레이 클릭 시 팝업 닫기
         document.getElementById('overlay').addEventListener('click', closeSignaturePopup);
 
-        // 캐릭터 코드를 읽기 쉬운 형태로 변환하는 함수
         function formatCharacterString(charString) {
             let result = [];
             const charPattern = /([a-z]{2})(\d)/g;
             let match;
-
             while ((match = charPattern.exec(charString)) !== null) {
                 const code = match[1];
                 const count = match[2];
-
-                // 코드에 해당하는 한글 이름 찾기
                 const charInfo = characters.find(([eng]) => eng.startsWith(code));
                 if (charInfo) {
                     const engName = charInfo[0];
@@ -1804,19 +1619,14 @@
                     result.push(`${code}${count}`);
                 }
             }
-
             return result.join(' ');
         }
 
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
             const itemDetails = itemDetailsMap[itemKey];
-
             if (!itemDetails) return;
-
-            // 원본 텍스트 전체를 복사
             const originalText = itemDetails.originalText;
-
             navigator.clipboard.writeText(originalText).then(
                 () => showCopyMessage(),
                 err => console.error('Copy failed: ', err)
@@ -1842,7 +1652,6 @@
 		        .join(',');
 		}
 
-        // 쓰로틀링 함수
         function throttle(func, delay) {
             let lastCall = 0;
             return function(...args) {
@@ -1854,7 +1663,6 @@
             };
         }
 
-        // 필터 버튼 클릭 이벤트 리스너 (쓰로틀링 적용)
         const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
@@ -1866,26 +1674,22 @@
             .catch(error => {
                 console.error('필터 적용 에러:', error);
             });
-        }, 300); // 300ms 쓰로틀링
+        }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
 
-        // 페이지 가시성 변경 이벤트 처리
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
-                // 페이지가 숨겨질 때 파티클 일시 중지
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).pause();
                 }
             } else {
-                // 페이지가 다시 보일 때 파티클 재개
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }
         });
 
-        // 터치 이벤트 최적화
         document.addEventListener('touchstart', () => {
             document.body.classList.add('touch-active');
         }, { passive: true });
@@ -1896,10 +1700,7 @@
             }, 100);
         }, { passive: true });
 
-        // 리사이즈 이벤트 최적화
-        const optimizedResize = throttle(() => {
-            // 리사이즈 시 필요한 작업
-        }, 200);
+        const optimizedResize = throttle(() => {}, 200);
 
         window.addEventListener('resize', optimizedResize, { passive: true });
 
@@ -1918,7 +1719,7 @@
 		        };
 		
 		        skinTriggerElement.addEventListener('click', (event) => {
-		            event.stopPropagation(); // 중요: document 클릭 이벤트로의 전파 방지
+		            event.stopPropagation();
 		            if (skinPopupElement.style.display === 'block') {
 		                hidePopup();
 		            } else {
@@ -1926,9 +1727,7 @@
 		            }
 		        });
 		
-		        // 팝업 외부 클릭 시 닫기
 		        document.addEventListener('click', (event) => {
-		            // 팝업이 열려 있고, 클릭된 대상이 팝업 자신이 아니고, 트리거 요소도 아닌 경우
 		            if (skinPopupElement.style.display === 'block' &&
 		                !skinPopupElement.contains(event.target) &&
 		                event.target !== skinTriggerElement &&
