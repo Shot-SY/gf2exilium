@@ -655,6 +655,10 @@
 		    .result-text {
 		        gap: 5px;
 		    }
+            /* MODIFIED: 모바일 환경에서 결과 아이템 간격 조정 */
+            .item-images {
+                gap: 5px;
+            }
 		    #copyInstruction {
 		        font-size: 1em;
 		    }
@@ -665,6 +669,7 @@
 		    .item-box, .price-box {
 		        width: 40px;
 		        height: 40px;
+                margin: 0 2px; /* MODIFIED: 모바일 환경에서 결과 아이템 간격 조정 */
 		    }
 		    /* 명시도 문제를 해결하기 위해 선택자를 수정 (.item-box 추가) */
 		    .item-box .item-title, .price-box .item-title {
@@ -1548,19 +1553,22 @@
                 popupItem.className = 'signature-popup-item';
                 popupItem.dataset.itemKey = similarItemKey;
 
+                // MODIFIED: 팝업창 텍스트 부분 제거 (시작)
                 // 원본 텍스트에서 가격 부분 및 = 제거
-                let displayText = itemDetails.displayText;
-                displayText = displayText.replace(/\$[\d.]+/g, '').trim();
-                displayText = displayText.replace(/=\s*/g, '').trim();
+                // let displayText = itemDetails.displayText;
+                // displayText = displayText.replace(/\$[\d.]+/g, '').trim();
+                // displayText = displayText.replace(/=\s*/g, '').trim();
 
                 // 텍스트 부분 생성
-                const txt = document.createElement('div');
-                txt.className = 'result-text';
-                txt.innerHTML = `
-                    <span class="item">${displayText}</span>
-                    <span class="price">$${itemDetails.price.toFixed(2)}</span>
-                    <span class="key" style="color: orange;">(${similarItemKey})</span>
-                `;
+                // const txt = document.createElement('div');
+                // txt.className = 'result-text';
+                // txt.innerHTML = `
+                //     <span class="item">${displayText}</span>
+                //     <span class="price">$${itemDetails.price.toFixed(2)}</span>
+                //     <span class="key" style="color: orange;">(${similarItemKey})</span>
+                // `;
+                // MODIFIED: 팝업창 텍스트 부분 제거 (끝)
+
 
                 // 이미지 부분 생성
                 const imgs = document.createElement('div');
@@ -1642,7 +1650,8 @@
                     popupItem.style.border = '2px solid #ff4081';
                 }
 
-                popupItem.appendChild(txt);
+                // MODIFIED: 팝업창 텍스트 부분 제거
+                // popupItem.appendChild(txt); 
                 popupItem.appendChild(imgs);
 
                 popupItem.addEventListener('click', () => {
