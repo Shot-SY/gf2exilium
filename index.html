@@ -291,6 +291,20 @@
             border: 2px solid #ff9800;
             box-shadow: 0 2px 8px rgba(255,152,0,0.7);
         }
+        /* START: MODIFIED/NEW CSS */
+        .character-box.super-rare {
+            border: 2px solid #D32F2F; /* Luxurious red */
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.7); /* Red glow */
+        }
+        .small-character-img.super-rare {
+            border: 2px solid #D32F2F;
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.7);
+        }
+        .character-box.gold-border {
+            border: 2px solid #FFD700; /* Gold color */
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.7); /* Gold glow */
+        }
+        /* END: MODIFIED/NEW CSS */
         body::before {
             content: "";
             position: absolute;
@@ -992,10 +1006,17 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
 
-                // 레어 캐릭터인지 확인하고 클래스 추가
-                if (rareCharacters.some(([rareEng]) => rareEng === eng)) {
-                    charBox.classList.add('rare');
+                // START: MODIFIED CODE
+                // 레어 캐릭터인지 확인하고 조건에 따라 다른 클래스 추가
+                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
+                if (isGenerallyRare) {
+                    if (eng.startsWith('gy') || eng.startsWith('to')) {
+                        charBox.classList.add('rare'); // 주황색 외곽선
+                    } else {
+                        charBox.classList.add('super-rare'); // 적색 외곽선
+                    }
                 }
+                // END: MODIFIED CODE
 
                 const img = document.createElement('img');
                 img.src = `Portrait/${kor}.png`;
@@ -1039,7 +1060,9 @@
 
             // PickupTicket 박스 추가
             const ticketBox = document.createElement('div');
-            ticketBox.className = 'character-box'; // 기존 박스와 동일한 클래스
+            // START: MODIFIED CODE
+            ticketBox.className = 'character-box gold-border'; // 금색 외곽선 추가
+            // END: MODIFIED CODE
             ticketBox.dataset.engName = 'PickupTicket'; // 데이터 식별자
 
             const ticketImg = document.createElement('img');
@@ -1415,17 +1438,20 @@
 		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
 		            
 		            if (charInfo) {
-		                const korName = charInfo[1];
-		                const isRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        // START: MODIFIED CODE
+                        const [engName, korName] = charInfo;
+		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
 		                
 		                // 개수만큼 이미지 데이터 추가
 		                for (let i = 0; i < count; i++) {
 		                    charImages.push({
 		                        src: `Portrait/${korName}.png`,
 		                        alt: korName,
-		                        isRare: isRare
+                                isRare: isGenerallyRare,
+                                engName: engName
 		                    });
 		                }
+                        // END: MODIFIED CODE
 		            }
 		        }
 		
@@ -1438,9 +1464,15 @@
 		            img.loading = 'lazy';
 		            img.decoding = 'async';
 		
-		            if (imgData.isRare) {
-		                img.classList.add('rare');
-		            }
+		            // START: MODIFIED CODE
+                    if (imgData.isRare) {
+                        if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
+                            img.classList.add('rare'); // 주황색
+                        } else {
+                            img.classList.add('super-rare'); // 적색
+                        }
+                    }
+                    // END: MODIFIED CODE
 		            imgs.appendChild(img);
 		        });
 		
@@ -1585,16 +1617,19 @@
 
                     const charInfo = characters.find(([eng]) => eng.startsWith(code));
                     if (charInfo) {
-                        const korName = charInfo[1];
-                        const isRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        // START: MODIFIED CODE
+                        const [engName, korName] = charInfo;
+                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
 
                         for (let i = 0; i < count; i++) {
                             charImages.push({
                                 src: `Portrait/${korName}.png`,
                                 alt: korName,
-                                isRare: isRare
+                                isRare: isGenerallyRare,
+                                engName: engName
                             });
                         }
+                        // END: MODIFIED CODE
                     }
                 }
 
@@ -1609,10 +1644,16 @@
                     img.loading = 'lazy';
                     img.decoding = 'async';
 
+                    // START: MODIFIED CODE
                     // 레어 캐릭터인 경우 클래스 추가
                     if (imgData.isRare) {
-                        img.classList.add('rare');
+                        if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
+                            img.classList.add('rare'); // 주황색
+                        } else {
+                            img.classList.add('super-rare'); // 적색
+                        }
                     }
+                    // END: MODIFIED CODE
 
                     imgs.appendChild(img);
                     popupImageObserver.observe(img);
