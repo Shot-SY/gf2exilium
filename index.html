@@ -381,6 +381,8 @@
             flex-wrap: wrap;
             transform: translateZ(0);
             contain: layout paint;
+            gap: 10px; /* 아이템 사이의 가로/세로 간격 추가 */
+            overflow: auto; /* 컨테이너가 자신의 높이를 정확히 계산하도록 강제 */
         }
 		
 		.item-box {
