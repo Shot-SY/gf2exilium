@@ -1533,6 +1533,13 @@
                     imgs.appendChild(guaranteedBox);
                 }
 
+                // [수정된 부분] 팝업창에 가격 박스 추가
+                const priceBox = document.createElement('div');
+                priceBox.className = 'price-box';
+                const priceString = `$${itemDetails.price.toFixed(2)}`;
+                priceBox.textContent = priceString;
+                imgs.appendChild(priceBox);
+
                 if (similarItemKey === itemKey) {
                     popupItem.style.border = '2px solid #ff4081';
                 }
