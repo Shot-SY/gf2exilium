@@ -646,16 +646,81 @@
         });
 
         tsParticles.load("tsparticles", {
-            particles: {
-                number: { value: 50, density: { enable: true, value_area: 800 }},
-                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
-                size: { value: 3, random: { enable: true, minimumValue: 1 }},
-                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
-                color: { value: ["#FF0000","#FF7F00","#FFFF00","#00FF00","#0000FF","#4B0082","#8F00FF"] },
-                opacity: { value: 0.8, random: false }
+            // 테마에 맞게 완전히 재설계된 파티클 설정
+            fullScreen: {
+                enable: true,
+                zIndex: 0 // CSS와 동일하게 z-index 설정
             },
-            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
-            retina_detect: true
+            particles: {
+                number: {
+                    value: 80, // 파티클 개수를 약간 늘려 풍성하게
+                    density: {
+                        enable: true,
+                        area: 800
+                    }
+                },
+                color: {
+                    // 색상: 사이트의 주요 색상(핑크, 오렌지)과 흰색을 사용해 통일감을 줍니다.
+                    value: ["#ff4081", "#ff9800", "#ffffff"]
+                },
+                shape: {
+                    // 모양: 원과 삼각형을 섞어 기하학적이고 세련된 느낌을 줍니다.
+                    type: ["circle", "triangle"]
+                },
+                opacity: {
+                    // 투명도: 랜덤 값을 주어 깊이감을 표현합니다.
+                    value: { min: 0.1, max: 0.6 },
+                    animation: {
+                        enable: true,
+                        speed: 0.5,
+                        sync: false
+                    }
+                },
+                size: {
+                    // 크기: 랜덤 값을 주어 원근감을 느끼게 합니다.
+                    value: { min: 0.5, max: 2.5 }
+                },
+                links: {
+                    // 파티클 연결선: 활성화하여 네트워크/성운 효과를 줍니다.
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff", // 연결선은 은은한 흰색으로
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    // 움직임: 속도를 줄여 차분하고 고급스러운 분위기를 연출합니다.
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    outModes: {
+                        default: "out"
+                    }
+                }
+            },
+            interactivity: {
+                events: {
+                    onHover: {
+                        // 마우스 호버 시 상호작용
+                        enable: true,
+                        mode: "grab" // 주변 파티클을 잡는 듯한 효과
+                    },
+                    onClick: {
+                        enable: false // 클릭 이벤트는 비활성화
+                    }
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        links: {
+                            opacity: 0.4 // 상호작용 시 연결선은 조금 더 진하게
+                        }
+                    }
+                }
+            },
+            detectRetina: true // 고해상도 디스플레이에서 선명하게 표시
         });
 
         function optimizeParticles() {
