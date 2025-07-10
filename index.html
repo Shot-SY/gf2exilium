@@ -645,67 +645,91 @@
                 });
         });
 
-        tsParticles.load("tsparticles", {
-            particles: {
-                // 입자 수를 약간 줄여 은은함을 강조하고 성능을 확보합니다.
-                number: { value: 40, density: { enable: true, value_area: 1200 } },
-                
-                // 모양을 'star'에서 'circle'로 변경하여 부드러운 빛무리 효과를 줍니다.
-                shape: { type: "circle" },
-
-                // 크기를 다양하게 하여 원근감을 부여합니다.
-                size: {
-                    value: { min: 0.5, max: 2.5 }
-                },
-                
-                // 움직임을 더 느리고 우아하게 변경합니다.
-                move: {
-                    enable: true,
-                    speed: 1, // 속도를 줄여 차분한 느낌을 줍니다.
-                    direction: "top-right", // 한 방향으로 부유하여 안정감을 줍니다.
-                    random: false,
-                    straight: false,
-                    out_mode: "out",
-                    // 미세한 떨림(wobble)을 추가해 자연스러운 움직임을 만듭니다.
-                    wobble: { 
-                        enable: true,
-                        distance: 5,
-                        speed: 10
-                    }
-                },
-
-                // 색상 팔레트를 사이트 테마에 맞춰 세련되게 변경합니다.
-                color: {
-                    value: ["#FFFFFF", "#FFD700", "#FF8AB4"] // 흰색, 금색, 부드러운 핑크
-                },
-
-                // 투명도에 애니메이션을 주어 '깜빡이는' 효과를 만듭니다. (가장 중요한 부분)
-                opacity: {
-                    value: { min: 0.1, max: 0.6 }, // 투명도를 랜덤하게 설정
-                    animation: {
-                        enable: true,
-                        speed: 0.8,
-                        minimumValue: 0.1,
-                        sync: false // 각 입자가 개별적으로 깜빡이도록 설정
-                    }
-                },
-
-                // 그림자를 이용해 '빛 번짐(Glow)' 효과를 만듭니다.
-                shadow: {
-                    enable: true,
-                    color: "#FFD700", // 금색 빛 번짐 효과
-                    blur: 5
-                }
-            },
-            interactivity: {
-                // 상호작용은 성능을 위해 비활성화 상태를 유지합니다.
-                events: { 
-                    onhover: { enable: false }, 
-                    onclick: { enable: false } 
-                }
-            },
-            retina_detect: true
-        });
+		tsParticles.load("tsparticles", {
+		    // 풀스크린 배경으로 사용 시 유용한 설정
+		    fullScreen: {
+		        enable: true,
+		        zIndex: -1 // 다른 콘텐츠 뒤에 위치하도록 설정
+		    },
+		    particles: {
+		        // 파티클 수를 약간 늘리고 밀도를 조절하여 자연스럽게 채웁니다.
+		        number: {
+		            value: 80,
+		            density: {
+		                enable: true,
+		                value_area: 800
+		            }
+		        },
+		        // 기존 색상을 그대로 사용합니다.
+		        color: {
+		            value: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"]
+		        },
+		        // 별 모양은 유지합니다.
+		        shape: {
+		            type: "star",
+		        },
+		        // ★ 핵심: 투명도를 랜덤하게 조절하여 깊이감을 줍니다.
+		        opacity: {
+		            value: { min: 0.1, max: 0.8 }, // 최소, 최대값을 주어 일부는 희미하게, 일부는 선명하게
+		            animation: {
+		                enable: true, // 투명도가 서서히 변하며 깜빡이는 효과
+		                speed: 1,
+		                sync: false
+		            }
+		        },
+		        // ★ 핵심: 크기를 다양화하고, 크기에 따라 속도를 조절해 원근감을 줍니다.
+		        size: {
+		            value: { min: 0.5, max: 4 }, // 크기 범위를 넓혀 작은 별과 큰 별이 섞이게
+		            animation: {
+		                enable: true, // 크기가 미세하게 변하는 효과
+		                speed: 2,
+		                sync: false
+		            }
+		        },
+		        // ★ 핵심: 움직임을 더 자연스럽고 몽환적으로 만듭니다.
+		        move: {
+		            enable: true,
+		            speed: { min: 0.5, max: 2 }, // 속도도 랜덤하게 부여
+		            direction: "none",
+		            random: true, // 방향을 랜덤하게 하여 예측 불가능하게
+		            straight: false,
+		            outModes: {
+		                default: "out", // 화면 밖으로 나가면 사라짐
+		            },
+		            // 흔들리는 움직임을 추가하여 둥실둥실 떠다니는 느낌을 줍니다.
+		            wobble: {
+		                enable: true,
+		                distance: 10,
+		                speed: 10
+		            },
+		            // 크기가 큰 파티클이 더 빠르게 움직여 원근감을 극대화합니다.
+		            size: true,
+		        },
+		        // ★ 추가 효과: 파티클끼리 연결되는 선을 제거합니다 (취향에 따라 사용).
+		        links: {
+		            enable: false,
+		        },
+		        // ★ 추가 효과: 반짝이는 효과를 추가하여 밤하늘 별처럼 보이게 합니다.
+		        twinkle: {
+		            particles: {
+		                enable: true,
+		                frequency: 0.05,
+		                opacity: 1
+		            }
+		        }
+		    },
+		    interactivity: {
+		        events: {
+		            onHover: {
+		                enable: false, // 마우스 호버 효과는 끕니다.
+		            },
+		            onClick: {
+		                enable: false, // 클릭 효과도 끕니다.
+		            }
+		        }
+		    },
+		    retina_detect: true
+		});
 
         function optimizeParticles() {
             const pauseParticles = () => {
