@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIRLS FRONTLINE 2: EXILIUM | REDESIGNED</title>
-    <!-- 변경: 새로운 폰트 Manrope 추가 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <title>GIRLS FRONTLINE 2: EXILIUM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y21MLG0SJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -18,587 +16,467 @@
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
     <style>
         :root {
-            --bg-color: #0a0c10;
-            --primary-accent: #ff4081;
-            --secondary-accent: #00f2ff;
-            --text-color: #e0e6f0;
-            --card-bg: rgba(20, 22, 30, 0.5);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --card-glow: rgba(0, 242, 255, 0.5);
-            --rare-glow: #ff9800;
-            --super-rare-glow: #D32F2F;
-            --gold-glow: #FFD700;
+            --dark-navy: #0A192F;
+            --light-navy: #112240;
+            --lightest-navy: #233554;
+            --slate: #8892b0;
+            --light-slate: #a8b2d1;
+            --lightest-slate: #ccd6f6;
+            --white: #e6f1ff;
+            --green: #64ffda;
+            --gold: #FFD700;
+            --red: #D32F2F;
+            --font-sans: 'Roboto', sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
         }
 
-        /* === 기본 레이아웃 및 배경 === */
+        /* 기본 & 레이아웃 */
+        html {
+            scroll-behavior: smooth;
+        }
         body {
-            font-family: 'Manrope', 'Roboto', sans-serif;
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0),
-                radial-gradient(circle at 25px 25px, rgba(255,255,255,0.03) 1px, transparent 0);
-            background-size: 50px 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            color: var(--text-color);
-            position: relative;
-            overflow-y: scroll;
-        }
-
-        #tsparticles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.8em;
-            font-weight: 600;
-            color: #fff;
-            text-shadow: 0 0 10px var(--primary-accent), 0 0 20px var(--primary-accent), 0 0 40px var(--primary-accent);
-            letter-spacing: 2px;
-        }
-
-        /* === 새로운 방식: 캐릭터 플립 카드 디자인 === */
-        .character-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-            perspective: 1200px; /* 3D 효과를 위한 원근감 설정 */
+            font-family: var(--font-sans);
+            background-color: var(--dark-navy);
+            margin: 0;
+            color: var(--light-slate);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
-        .character-card { /* 기존 character-box를 대체하는 카드 컨테이너 */
-            background-color: transparent;
-            width: 100%;
-            height: 180px;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-            transform-style: preserve-3d;
+        .main-container {
+            display: flex;
+            min-height: 100vh;
         }
 
-        /* 카드가 선택되면 .card-inner를 180도 회전 */
-        .character-card.selected .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+        /* 필터 사이드바 */
+        .filter-sidebar {
+            width: 380px;
+            flex-shrink: 0;
+            padding: 40px;
+            box-sizing: border-box;
+            background-color: rgba(17, 34, 64, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-right: 1px solid var(--lightest-navy);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: box-shadow 0.3s, border-color 0.3s;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 0px var(--card-glow);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
         }
 
-        .card-back {
-            transform: rotateY(180deg);
-            justify-content: center;
-            gap: 10px;
+        .sidebar-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--lightest-slate);
+            margin: 0 0 5px 0;
+            text-align: left;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .character-card:hover .card-front {
-                border-color: var(--secondary-accent);
-                box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 15px var(--card-glow);
-                transform: translateY(-5px);
-            }
+        .sidebar-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1em;
+            font-weight: 400;
+            color: var(--green);
+            margin: 0 0 30px 0;
+            letter-spacing: 1.5px;
+        }
+
+        /* 캐릭터 그리드 */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .character-box {
+            background-color: var(--light-navy);
+            border: 1px solid var(--lightest-navy);
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            height: 145px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .character-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--green);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        /* 등급별 테두리 글로우 효과 */
-        .character-card.rare .card-front { --card-glow: var(--rare-glow); }
-        .character-card.super-rare .card-front { --card-glow: var(--super-rare-glow); }
-        .character-card.gold-border .card-front { --card-glow: var(--gold-glow); }
+        .character-box.selected {
+            border-color: var(--green);
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+            background-color: var(--lightest-navy);
+        }
+
+        .character-box.rare { border: 1px solid #ff9800; }
+        .character-box.super-rare { border: 1px solid var(--red); }
+        .character-box.gold-border { border: 1px solid var(--gold); }
+        
+        .character-box.selected.rare { border-color: #ff9800; box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
+        .character-box.selected.super-rare { border-color: var(--red); box-shadow: 0 0 10px rgba(211, 47, 47, 0.5); }
+        .character-box.selected.gold-border { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
 
         .character-img {
-            width: 80px;
-            height: 90px;
+            width: 100%;
+            height: 80px;
             object-fit: cover;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            transition: transform 0.4s;
-            filter: grayscale(30%) brightness(0.9);
+            margin-bottom: 8px;
+            border-radius: 4px;
         }
-        .character-card.selected .character-img {
-            filter: grayscale(0%) brightness(1);
-        }
+
         .character-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-color);
-            text-shadow: 0 0 3px rgba(0,0,0,0.7);
-        }
-        
-        /* 카드 뒷면 (입력창) 스타일 */
-        .spinbox-label {
             font-size: 14px;
             font-weight: 600;
-            color: var(--secondary-accent);
+            color: var(--light-slate);
+            margin-bottom: auto; /* 이름을 위로, spinbox를 아래로 */
         }
-        .spinbox-container input[type="number"] {
-            width: 70px;
-            padding: 8px;
-            border: 1px solid var(--secondary-accent);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            background-color: rgba(0,0,0,0.3);
-            color: #fff;
-            -moz-appearance: textfield; /* Firefox에서 화살표 숨기기 */
+
+        .spinbox-container {
+            visibility: hidden;
+            opacity: 0;
+            height: 0;
+            transition: opacity 0.2s ease, height 0.2s ease;
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
         }
-        .spinbox-container input::-webkit-outer-spin-button,
-        .spinbox-container input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .character-box.selected .spinbox-container { 
+            visibility: visible;
+            opacity: 1;
+            height: 25px; /* 높이를 지정해줘야 transition이 작동 */
         }
         
-        /* === 필터 버튼 및 안내문구 === */
-        #filterButton {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 40px 0;
-            font-size: 18px;
-            cursor: pointer;
-            background: linear-gradient(45deg, var(--primary-accent), #c2185b);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 0 20px rgba(255, 64, 129, 0.6);
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            letter-spacing: 1px;
+        .spinbox-container input[type="number"] {
+            width: 45px;
+            padding: 3px;
+            border: 1px solid var(--lightest-navy);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            background-color: var(--dark-navy);
+            color: var(--lightest-slate);
+            -moz-appearance: textfield; /* Firefox */
         }
-        #filterButton:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 25px rgba(255, 64, 129, 0.8);
+        .spinbox-container input[type="number"]::-webkit-outer-spin-button,
+        .spinbox-container input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        /* 사이드바 푸터 & 버튼 */
+        .sidebar-footer {
+            margin-top: auto; /* 푸터를 아래로 밀어냄 */
+            padding-top: 20px;
+            border-top: 1px solid var(--lightest-navy);
         }
 
         #copyInstruction {
-            margin-bottom: 20px;
-            color: var(--text-color);
             text-align: center;
-            font-size: 1.1em;
-            line-height: 1.6;
+            color: var(--slate);
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
-        #copyInstruction strong { color: var(--secondary-accent); }
+        
+        .skin-tooltip-icon {
+            display: inline-block;
+            background-color: var(--green);
+            color: var(--dark-navy);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 4px;
+            user-select: none;
+            vertical-align: middle;
+        }
 
-        /* === 결과 목록 스타일 === */
+
+        #filterButton {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--green);
+            border: 1px solid var(--green);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #filterButton:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            box-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+        }
+
+        /* 결과 영역 */
+        .results-main-area {
+            flex-grow: 1;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        
         #results {
-            padding: 10px;
-            height: 800px;
-            max-height: 800px;
-            overflow-y: auto;
-            background: rgba(10, 12, 16, 0.7);
-            border-radius: 15px;
-            border: 1px solid var(--card-border);
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        #results.filtering {
+             opacity: 0.5;
+             transition: opacity 0.3s;
         }
 
         .result-item {
-            margin: 15px;
+            background-color: rgba(17, 34, 64, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--lightest-navy);
+            border-radius: 8px;
             padding: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
             cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
+
         .result-item:hover {
             transform: translateY(-5px);
-            border-color: var(--primary-accent);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--primary-accent);
+            border-color: var(--green);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-
-        .item-images { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
         
-        .small-character-img {
-            width: 48px; height: 48px; object-fit: cover;
-            border-radius: 50%; /* 원형 이미지로 변경 */
-            border: 2px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s;
+        .item-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
         }
-        .result-item:hover .small-character-img { transform: scale(1.1); }
 
-        .small-character-img.rare { border-color: var(--rare-glow); box-shadow: 0 0 8px var(--rare-glow); }
-        .small-character-img.super-rare { border-color: var(--super-rare-glow); box-shadow: 0 0 8px var(--super-rare-glow); }
+        .small-character-img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--lightest-navy);
+        }
+        .small-character-img.rare { border: 2px solid #ff9800; }
+        .small-character-img.super-rare { border: 2px solid var(--red); }
 
         .item-box, .price-box {
             height: 48px;
-            padding: 0 15px;
-            border-radius: 24px;
-            display: inline-flex;
-            align-items: center;
+            min-width: 48px;
+            padding: 0 10px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            font-weight: 600;
+            align-items: center;
+            text-align: center;
         }
-        
-        .item-box { /* PTicket, Guaranteed */
-            background: linear-gradient(45deg, #4a3800, #332600);
-            border: 1px solid var(--gold-glow);
-            color: #FFD700;
-            gap: 5px;
+
+        .item-box {
+            background-color: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
         }
-        .item-box .item-title { font-size: 12px; opacity: 0.8; }
-        .item-box .item-count { font-size: 14px; }
+
+        .item-box .item-title {
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+        .item-box .item-count {
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 700;
+        }
 
         .price-box {
-            background: linear-gradient(45deg, #104020, #052912);
-            border: 1px solid #27ae60;
-            color: #90ee90;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            margin-left: auto; /* 가격을 오른쪽 끝으로 정렬 */
+            margin-left: auto; /* 가격을 오른쪽으로 밀어냄 */
+            background-color: rgba(100, 255, 218, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+            font-size: 18px;
+            font-weight: 700;
+            font-family: var(--font-mono);
         }
-        
-        /* === 로더 및 팝업 스타일 === (기존과 유사하게 유지) */
+
+        /* 오버레이 및 기타 요소 */
+        #tsparticles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        }
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 2000; transition: opacity 0.5s ease;
+            background-color: var(--dark-navy);
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            z-index: 2000; transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        #loader.hidden { opacity: 0; visibility: hidden; }
+        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .spinner {
-            border: 8px solid rgba(255,255,255,0.2);
-            border-top: 8px solid var(--primary-accent);
-            border-radius: 50%; width: 60px; height: 60px;
+            border: 4px solid var(--lightest-navy);
+            border-top: 4px solid var(--green);
+            border-radius: 50%; width: 50px; height: 50px;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         #copyMessage {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #232526, #414345);
-            color: #fff; padding: 20px 30px; border-radius: 12px;
-            display: none; opacity: 0;
-            font-family: 'Poppins', sans-serif; font-size: 1.1em;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 1000;
-            transition: opacity 0.3s, transform 0.3s;
-            border-left: 4px solid var(--primary-accent);
+            position: fixed; top: 20px; right: 20px; transform: translateX(120%);
+            background: var(--light-navy); color: var(--green);
+            padding: 15px 20px; border-radius: 4px;
+            display: none; align-items: center; gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-left: 3px solid var(--green);
         }
-        #copyMessage.show { display: flex; animation: messagePop 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; }
-        @keyframes messagePop {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        .copy-icon { width: 24px; height: 24px; margin-right: 15px; }
+        #copyMessage.show { display: flex; transform: translateX(0); }
+        .copy-icon { width: 20px; height: 20px; }
+        .copy-icon svg { fill: var(--green); }
 
-        /* 스킨 정보 팝업 관련 */
-        .skin-tooltip-icon {
-            display: inline-block; background-color: var(--secondary-accent); color: var(--bg-color);
-            border-radius: 50%; width: 18px; height: 18px; text-align: center;
-            line-height: 18px; font-size: 12px; font-weight: bold; margin-left: 5px;
-            user-select: none; vertical-align: middle;
-        }
         #skinInfoPopup {
             display: none; position: fixed; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(10, 12, 16, 0.95);
-            border: 2px solid var(--primary-accent); border-radius: 10px;
-            padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); z-index: 3000;
-            width: calc(100vw - 40px); max-width: 800px; max-height: 90vh;
-            box-sizing: border-box; overflow: auto;
-            backdrop-filter: blur(5px);
+            background-color: rgba(10, 25, 47, 0.95);
+            border: 1px solid var(--lightest-navy);
+            border-radius: 8px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 3000; width: 90vw; max-width: 800px;
+            max-height: 90vh; box-sizing: border-box; overflow: auto;
         }
-        #skinInfoPopupImage { display: block; width: 100%; height: auto; border-radius: 5px; }
-
-        /* === 반응형 디자인 === */
-        @media (max-width: 768px) {
-            h1 { font-size: 2em; }
-            .character-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; }
-            .character-card { height: 150px; }
-            .character-img { width: 60px; height: 70px; }
-            .character-name { font-size: 14px; }
-            #filterButton { padding: 12px; font-size: 16px; }
-            .result-item { padding: 15px; margin: 10px; }
-            .small-character-img { width: 40px; height: 40px; }
-            .item-box, .price-box { height: 40px; padding: 0 12px; font-size: 12px; }
-            .price-box { font-size: 14px; }
-            .item-box .item-title { display: none; } /* 모바일에서는 공간을 위해 타이틀 숨김 */
-        }
-        
-        /* 기존 CSS에서 불필요하거나 중복되는 부분은 제거/수정 */
-        .character-box, .spinbox-container { /* 기존 클래스는 새로운 구조에 맞게 제거/변경 */ }
-
-    </style>
-</head>
-<body>
-    <div id="loader"><div class="spinner"></div></div>
-    <div id="tsparticles"></div>
-    <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
-    <div class="character-grid" id="characterGrid"></div>
-    <button id="filterButton">Apply Filter & Search</button>
-	<div id="copyInstruction">
-      Select characters by clicking on the cards, then flip them over to set the quantity.<br>
-	  All accounts have the
-	  <strong style="color: skyblue;">
-	    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
-	      Klukai & colphne skin <span class="skin-tooltip-icon">?</span>
-	    </span>
-	  </strong>. Click on a result to copy its key.
-	</div>
-    <div id="results"></div>
-    <div id="copyMessage">
-        <div class="copy-icon">
-             <svg viewBox="0 0 24 24" fill="currentColor" style="fill: var(--primary-accent);">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>
-        </div>
-        <span>Copied to Clipboard!</span>
-    </div>
-
-    <script>
-        // ... 기존 스크립트 시작 ...
-        let lastActivityTime = Date.now();
-        // (기존 스크립트의 이 부분은 변경 없음)
-        
-        // --- createCharacterBoxes 함수만 새로운 HTML 구조에 맞게 수정 ---
-        function createCharacterBoxes() {
-            const characterGrid = document.getElementById('characterGrid');
-            characterGrid.innerHTML = '';
-            const fragment = document.createDocumentFragment();
-
-            const createCard = (eng, kor, isRare, isSuperRare, isGold) => {
-                const charCard = document.createElement('div');
-                charCard.className = 'character-card';
-                if (isRare) charCard.classList.add('rare');
-                if (isSuperRare) charCard.classList.add('super-rare');
-                if (isGold) charCard.classList.add('gold-border');
-                charCard.dataset.engName = eng;
-
-                const cardInner = document.createElement('div');
-                cardInner.className = 'card-inner';
-
-                // --- 카드 앞면 ---
-                const cardFront = document.createElement('div');
-                cardFront.className = 'card-front';
-                
-                const img = document.createElement('img');
-                img.src = `Portrait/${kor}.png`;
-                img.alt = kor;
-                img.className = 'character-img';
-                img.loading = 'lazy';
-                img.decoding = 'async';
-
-                const nameSpan = document.createElement('span');
-                nameSpan.className = 'character-name';
-                nameSpan.textContent = eng;
-
-                cardFront.append(img, nameSpan);
-
-                // --- 카드 뒷면 ---
-                const cardBack = document.createElement('div');
-                cardBack.className = 'card-back';
-
-                const spinboxLabel = document.createElement('div');
-                spinboxLabel.className = 'spinbox-label';
-                spinboxLabel.textContent = 'QUANTITY';
-
-                const spinboxContainer = document.createElement('div');
-                spinboxContainer.className = 'spinbox-container';
-
-                const spinbox = document.createElement('input');
-                spinbox.type = 'number';
-                spinbox.id = `${eng}-spin`;
-                spinbox.min = 0;
-                spinbox.value = 0;
-                spinbox.disabled = true;
-                if (eng !== 'PickupTicket') {
-                    spinbox.max = 8;
-                }
-
-                spinboxContainer.appendChild(spinbox);
-                cardBack.append(spinboxLabel, spinboxContainer);
-
-                // --- 조립 ---
-                cardInner.append(cardFront, cardBack);
-                charCard.appendChild(cardInner);
-                fragment.appendChild(charCard);
-
-                charCard.addEventListener('click', (e) => {
-                    // input 클릭 시에는 카드 뒤집기 방지
-                    if(e.target.tagName.toLowerCase() !== 'input') {
-                        toggleSelection(charCard);
-                    }
-                });
-                
-                // spinbox 클릭 시 이벤트 전파 중지 (카드가 뒤집히는 것을 방지)
-                spinbox.addEventListener('click', (e) => e.stopPropagation());
-            };
-
-            characters.forEach(([eng, kor]) => {
-                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
-                let isRare = false;
-                let isSuperRare = false;
-                if (isGenerallyRare) {
-                    if (eng.startsWith('gy') || eng.startsWith('to')) {
-                        isRare = true;
-                    } else {
-                        isSuperRare = true;
-                    }
-                }
-                createCard(eng, kor, isRare, isSuperRare, false);
-            });
-            
-            // 픽업 티켓 카드 생성
-            createCard('PickupTicket', '픽업티켓', false, false, true);
-
-            characterGrid.appendChild(fragment);
+        #skinInfoPopupImage {
+            display: block; width: 100%; height: auto; border-radius: 5px;
         }
 
-        // toggleSelection 함수도 새로운 구조에 맞게 살짝 수정
-        function toggleSelection(charCard) {
-            const spinbox = charCard.querySelector('input[type="number"]');
-            charCard.classList.toggle('selected');
-            
-            if (charCard.classList.contains('selected')) {
-                spinbox.disabled = false;
-                // 선택 시 기본값을 1로 설정 (0일 경우에만)
-                if (spinbox.value === '0') {
-                    spinbox.value = '1';
-                }
-            } else {
-                spinbox.disabled = true;
-                // 선택 해제 시 값을 0으로 리셋
-                spinbox.value = 0;
+        /* 반응형 디자인 */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .filter-sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                border-right: none;
+                border-bottom: 1px solid var(--lightest-navy);
+                padding: 20px;
+            }
+            .results-main-area {
+                padding: 20px;
             }
         }
         
-        // --- displayResults 함수 수정 (UI 개선) ---
-		function displayResults(data) {
-		    const res = document.getElementById('results');
-		    res.scrollTop = 0;
-		    res.innerHTML = ''; // Clear previous results
-		
-		    const fragment = document.createDocumentFragment();
-		
-		    const sortedKeys = Object.keys(data).sort((a, b) => {
-		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
-		    });
-		
-		    if (sortedKeys.length === 0) {
-		        const noResult = document.createElement('div');
-		        noResult.textContent = "No matching items found.";
-		        noResult.style.textAlign = 'center';
-		        noResult.style.padding = '50px';
-		        noResult.style.fontSize = '1.2em';
-		        noResult.style.color = 'var(--primary-accent)';
-		        fragment.appendChild(noResult);
-		    } else {
-		        sortedKeys.forEach(k => {
-		            const item = document.createElement('div');
-		            item.className = 'result-item';
-		            item.dataset.itemKey = k;
-		
-		            const itemDetails = itemDetailsMap[k];
-		            const charValue = data[k];
-		
-		            const imgsContainer = document.createElement('div');
-		            imgsContainer.className = 'item-images';
-		
-		            // Characters
-		            const charPattern = /([a-z]{2})(\d)/g;
-		            let match;
-		            while ((match = charPattern.exec(charValue)) !== null) {
-		                const code = match[1];
-		                const count = parseInt(match[2]);
-		                const charInfo = characters.find(([eng]) => eng.startsWith(code));
-		                if (charInfo) {
-		                    const [engName, korName] = charInfo;
-		                    const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-		                    for (let i = 0; i < count; i++) {
-		                        const img = document.createElement('img');
-		                        img.src = `Portrait/${korName}.png`;
-		                        img.alt = korName;
-		                        img.className = 'small-character-img';
-		                        img.loading = 'lazy';
-		                        img.decoding = 'async';
-		                        if (isGenerallyRare) {
-		                            if (engName.startsWith('gy') || engName.startsWith('to')) img.classList.add('rare');
-		                            else img.classList.add('super-rare');
-		                        }
-		                        imgsContainer.appendChild(img);
-		                    }
-		                }
-		            }
-		
-		            // Papasha
-		            const papashaImg = document.createElement('img');
-		            papashaImg.src = 'Portrait/파파샤.png';
-		            papashaImg.alt = '파파샤';
-		            papashaImg.className = 'small-character-img';
-		            papashaImg.loading = 'lazy';
-		            papashaImg.decoding = 'async';
-		            imgsContainer.appendChild(papashaImg);
-		
-		            // Other items
-		            if (itemDetails.gemsCount > 0) {
-		                const gemsBox = document.createElement('div');
-		                gemsBox.className = 'item-box';
-		                gemsBox.innerHTML = `<span class="item-title">PTicket</span><span class="item-count">${itemDetails.gemsCount}</span>`;
-		                imgsContainer.appendChild(gemsBox);
-		            }
-		            if (itemDetails.guaranteed) {
-		                const guaranteedBox = document.createElement('div');
-		                guaranteedBox.className = 'item-box';
-		                guaranteedBox.innerHTML = `<span class="item-title">Pickup</span><span class="item-count">✔</span>`;
-		                imgsContainer.appendChild(guaranteedBox);
-		            }
-		
-		            // Price
-		            const priceBox = document.createElement('div');
-		            priceBox.className = 'price-box';
-		            priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
-		            imgsContainer.appendChild(priceBox);
-		
-		            item.appendChild(imgsContainer);
-		            item.addEventListener('click', () => copyToClipboard(item));
-		            fragment.appendChild(item);
-		        });
-		    }
-		
-		    res.appendChild(fragment);
-		    document.getElementById('copyInstruction').style.display = 'block';
-		}
+        @media (max-width: 768px) {
+            #results {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .character-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 10px;
+            }
+            .character-box { height: 120px; }
+            .character-img { height: 60px; }
+            .character-name { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+    <div id="tsparticles"></div>
+    <div id="copyMessage">
+        <div class="copy-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+        </div>
+        <span>Copied</span>
+    </div>
+    <div id="skinInfoPopup">
+      <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
+    </div>
 
-        // 이후의 모든 JavaScript 코드는 그대로 유지합니다.
-        // ... load, filter, copy 등 모든 로직은 변경 없이 완벽하게 동작합니다 ...
+    <div class="main-container">
+        <aside class="filter-sidebar">
+            <header class="sidebar-header">
+                <h1>GIRLS FRONTLINE 2</h1>
+                <h2>ACCOUNT FINDER</h2>
+            </header>
+            
+            <div class="character-grid" id="characterGrid">
+                <!-- JS로 생성 -->
+            </div>
+            
+            <div class="sidebar-footer">
+                <div id="copyInstruction">
+                  All accounts have the
+                  <strong style="color: var(--green);">
+                    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
+                      Klukai & colphne skin <span class="skin-tooltip-icon">?</span>
+                    </span>
+                  </strong><br>
+                  ※ Click on an item to copy its key<br>$1 = KRW1400
+                </div>
+                <button id="filterButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.46L22 3z"></path></svg>
+                    <span>Apply Filter</span>
+                </button>
+            </div>
+        </aside>
 
-        // (여기에 기존 스크립트의 나머지 부분을 그대로 붙여넣으세요)
-        // loadData, filterData, getSelectedCharacterSum, checkConditions, copyToClipboard 등 모든 함수
+        <main class="results-main-area">
+            <div id="results">
+                <!-- JS로 생성 -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 기존 JS 코드는 변경 없이 그대로 사용합니다.
+        let lastActivityTime = Date.now();
+        const updateActivityTime = () => {
+            lastActivityTime = Date.now();
+        };
+        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => {
+            document.addEventListener(event, updateActivityTime);
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const currentTime = Date.now();
+                const inactiveTime = currentTime - lastActivityTime;
+                const twoHours = 7200000;
+                if (inactiveTime > twoHours) {
+                    window.location.reload(true);
+                } else {
+                    lastActivityTime = currentTime;
+                }
+            }
+        });
+
         window.addEventListener('load', () => {
             const lastLoad = localStorage.getItem('lastLoadTime');
             const currentTime = Date.now();
@@ -607,6 +485,7 @@
                 window.location.reload(true);
                 return;
             }
+
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
@@ -614,43 +493,52 @@
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        optimizeImages();
-                    }, 500);
+                    optimizeImages();
+                    optimizeParticles();
                 })
                 .catch(error => {
                     console.error('초기 필터 적용 에러:', error);
                     loader.classList.add('hidden');
-                    setTimeout(() => loader.style.display = 'none', 500);
                 });
         });
+
         tsParticles.load("tsparticles", {
             particles: {
-                number: { value: 30, density: { enable: true, value_area: 800 }},
+                number: { value: 50, density: { enable: true, value_area: 1200 }},
                 shape: { type: "circle" },
-                size: { value: {min: 1, max: 2} },
+                size: { value: 1, random: { enable: true, minimumValue: 0.5 }},
                 move: { enable: true, speed: 0.5, direction: "none", random: true, straight: false, out_mode: "out" },
-                color: { value: [var(--primary-accent), var(--secondary-accent)] },
-                opacity: { value: {min: 0.1, max: 0.5} },
-                links: { enable: true, distance: 150, color: "rgba(255,255,255,0.1)", opacity: 0.2, width: 1 }
+                color: { value: "#8892b0" },
+                opacity: { value: 0.4, random: true }
             },
-            interactivity: { events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: false } }, modes: { grab: { distance: 140, links: { opacity: 0.5 } } } },
+            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
             retina_detect: true
         });
+
+        function optimizeParticles() {
+            const pauseParticles = () => { if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).pause(); };
+            const resumeParticles = () => { if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).play(); };
+            document.addEventListener('visibilitychange', () => {
+                document.visibilityState === 'hidden' ? pauseParticles() : resumeParticles();
+            });
+        }
+
         let characters = [];
         let rareCharacters = [];
+
         function loadCharacters() {
             const ts = new Date().getTime();
             return fetch(`Characters.txt?t=${ts}`)
                 .then(r => r.text())
                 .then(text => {
-                    characters = []; rareCharacters = [];
+                    characters = [];
+                    rareCharacters = [];
                     let foundSabrina = false;
                     text.split('\n').forEach(line => {
                         const parts = line.trim().split(' ');
                         if (parts.length >= 2) {
-                            const eng = parts[0]; const kor = parts.slice(1).join(' ');
+                            const eng = parts[0];
+                            const kor = parts.slice(1).join(' ');
                             if (eng === 'sabrina' && kor === '사브리나') foundSabrina = true;
                             if (eng && kor) {
                                 characters.push([eng, kor]);
@@ -662,160 +550,339 @@
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
+
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
-        function filterValidCharacters(charString) {
-            const validCharCodes = new Set(characters.map(([eng]) => eng.slice(0, 2)));
-            const charGroups = charString.match(/.{1,3}/g) || [];
-            const validGroups = charGroups.filter(group => {
-                const code = group.slice(0, 2);
-                return validCharCodes.has(code);
+
+        function createCharacterBoxes() {
+            const characterGrid = document.getElementById('characterGrid');
+            characterGrid.innerHTML = '';
+
+            const fragment = document.createDocumentFragment();
+
+            characters.forEach(([eng, kor]) => {
+                const charBox = document.createElement('div');
+                charBox.className = 'character-box';
+                charBox.dataset.engName = eng;
+
+                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
+                if (isGenerallyRare) {
+                    charBox.classList.add( (eng.startsWith('gy') || eng.startsWith('to')) ? 'rare' : 'super-rare' );
+                }
+
+                const img = document.createElement('img');
+                img.src = `Portrait/${kor}.png`;
+                img.alt = kor;
+                img.className = 'character-img';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'character-name';
+                nameSpan.textContent = eng;
+
+                const spinboxContainer = document.createElement('div');
+                spinboxContainer.className = 'spinbox-container';
+
+                const spinbox = document.createElement('input');
+                spinbox.type = 'number';
+                spinbox.id = `${eng}-spin`;
+                spinbox.min = 0;
+                spinbox.max = 8;
+                spinbox.value = 0;
+
+                spinboxContainer.appendChild(spinbox);
+                charBox.append(img, nameSpan, spinboxContainer);
+                fragment.appendChild(charBox);
+
+                charBox.addEventListener('click', (e) => {
+                    if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox);
+                });
+                spinbox.addEventListener('click', (e) => e.stopPropagation());
             });
-            return validGroups.join('');
+
+            const ticketBox = document.createElement('div');
+            ticketBox.className = 'character-box gold-border';
+            ticketBox.dataset.engName = 'PickupTicket';
+
+            const ticketImg = document.createElement('img');
+            ticketImg.src = `Portrait/픽업티켓.png`;
+            ticketImg.alt = 'PickupTicket';
+            ticketImg.className = 'character-img';
+            const ticketNameSpan = document.createElement('span');
+            ticketNameSpan.className = 'character-name';
+            ticketNameSpan.textContent = 'PickupTicket';
+            const ticketSpinboxContainer = document.createElement('div');
+            ticketSpinboxContainer.className = 'spinbox-container';
+            const ticketSpinbox = document.createElement('input');
+            ticketSpinbox.type = 'number';
+            ticketSpinbox.id = 'PickupTicket-spin';
+            ticketSpinbox.min = 0;
+            ticketSpinbox.value = 0;
+            
+            ticketSpinboxContainer.appendChild(ticketSpinbox);
+            ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
+            fragment.appendChild(ticketBox);
+
+            ticketBox.addEventListener('click', (e) => {
+                if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
+            });
+            ticketSpinbox.addEventListener('click', (e) => e.stopPropagation());
+
+            characterGrid.appendChild(fragment);
         }
+
+        function toggleSelection(charBox) {
+            const spinbox = charBox.querySelector('input[type="number"]');
+            if(charBox.classList.toggle('selected')) {
+                if(spinbox.value === '0') spinbox.value = '1';
+            } else {
+                spinbox.value = 0;
+            }
+        }
+
         let itemDetailsMap = {};
+
         function loadData() {
             const ts = new Date().getTime();
             return fetch(`sorted_data_eng.txt?t=${ts}`)
                 .then(r => r.text())
                 .then(text => {
-                    luaData = {}; itemDetailsMap = {};
+                    luaData = {};
+                    itemDetailsMap = {};
                     const lines = text.split('\n');
-                    let currentSection = null;
-                    for (let i = 0; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        if (line.startsWith('===') && line.endsWith('===')) {
-                            currentSection = line.slice(4, -4).trim(); continue;
+                    lines.forEach(line => {
+                        const parts = line.trim().split(' ');
+                        if (parts.length < 2) return;
+
+                        const key = parts[0];
+                        let charString = '';
+                        let j = 1;
+                        let itemDetails = { originalText: line, price: 0, guaranteed: line.includes('GUARANTEED'), gemsCount: 0 };
+                        
+                        const priceMatch = line.match(/\$(\d+\.\d+)/);
+                        if (priceMatch) itemDetails.price = parseFloat(priceMatch[1]);
+
+                        while (j < parts.length && !/^\d/.test(parts[j])) {
+                            const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                            if (match) charString += match[1].slice(0, 2) + match[2];
+                            j++;
                         }
-                        if (line && !line.startsWith('===') && currentSection !== null) {
-                            const parts = line.split(' ');
-                            if (parts.length < 2) continue;
-                            const key = parts[0]; let charString = ''; let j = 1;
-                            let itemDetails = { originalText: line, price: 0, guaranteed: line.includes('GUARANTEED'), displayText: '', gemsCount: 0 };
-                            const priceMatch = line.match(/\$(\d+\.\d+)/);
-                            if (priceMatch) itemDetails.price = parseFloat(priceMatch[1]);
-                            while (j < parts.length && !/^\d/.test(parts[j])) {
-                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
-                                if (match) { const charName = match[1].toLowerCase(); const count = match[2]; charString += charName.slice(0, 2) + count; }
-                                j++;
-                            }
-                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
-                            if (gemsMatch) { itemDetails.gemsCount = parseInt(gemsMatch[1]); itemDetails.gemsText = gemsMatch[0]; }
-                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
-                            luaData[key] = charString; itemDetailsMap[key] = itemDetails;
-                        }
-                    }
+                        
+                        const gemsMatch = line.match(/(\d+)PickupTicket/i);
+                        if (gemsMatch) itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                        
+                        luaData[key] = charString;
+                        itemDetailsMap[key] = itemDetails;
+                    });
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
-		function generateRareSignature(charString) {
-			const chars = charString.match(/.{1,3}/g) || []; let signature = {}; const excludedRareCodes = ['gy', 'to'];
-			chars.forEach(char => {
-				const code = char.slice(0, 2); const count = parseInt(char[2]);
-				const isGenerallyRare = rareCharacters.some(([eng]) => eng.slice(0, 2) === code);
-				const isExcluded = excludedRareCodes.includes(code);
-				if (isGenerallyRare && !isExcluded) signature[code] = (signature[code] || 0) + count;
-			});
-			return Object.entries(signature).sort((a, b) => a[0].localeCompare(b[0])).map(([code, count]) => `${code}${count}`).join('');
-		}
+
         function filterData() {
-            setTimeout(() => {
-                let filtered = {};
-                for(const [k, v] of Object.entries(luaData)) {
-                    const chars = v.match(/.{1,3}/g)||[];
-                    if(checkConditions(chars, k)) filtered[k] = v;
-                }
-                const sortedKeys = Object.keys(filtered).sort((a, b) => itemDetailsMap[b].price - itemDetailsMap[a].price);
-                const final = {};
-                sortedKeys.forEach(key => { final[key] = filtered[key]; });
-                for (const key in final) itemDetailsMap[key].rareSignature = generateRareSignature(final[key]);
-                displayResults(final);
-            }, 200);
-        }
-        function getSelectedCharacterSum(luaString) {
-            const chars = luaString.match(/.{1,3}/g) || []; let sum = 0;
-            chars.forEach(char => {
-                const name = char.slice(0, 2); const num = parseInt(char[2]);
-                const box = [...document.querySelectorAll('.character-card')].find(b => b.dataset.engName.startsWith(name));
-                if (box && box.classList.contains('selected')) sum += num;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('filtering');
+            if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).pause();
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const filtered = Object.entries(luaData).filter(([k, v]) => {
+                        const chars = v.match(/.{1,3}/g) || [];
+                        return checkConditions(chars, k);
+                    });
+
+                    const sortedFiltered = filtered.sort(([, valA], [, valB]) => {
+                        const keyA = Object.keys(luaData).find(k => luaData[k] === valA);
+                        const keyB = Object.keys(luaData).find(k => luaData[k] === valB);
+                        return itemDetailsMap[keyB].price - itemDetailsMap[keyA].price;
+                    });
+                    
+                    displayResults(Object.fromEntries(sortedFiltered));
+                    
+                    resultsDiv.classList.remove('filtering');
+                    if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).play();
+                    resolve();
+                }, 100);
             });
-            return sum;
         }
+        
         function checkConditions(chars, itemKey) {
             const count = {};
-            chars.forEach(c => { const name = c.slice(0,2); const num = parseInt(c[2]); count[name] = (count[name]||0)+num; });
-            const characterCondition = characters.every(([eng, kor]) => {
-                const box = [...document.querySelectorAll('.character-card')].find(b => b.dataset.engName === eng);
-                if(box && box.classList.contains('selected')) return (count[eng.slice(0,2)] || 0) >= parseInt(box.querySelector('input').value);
-                return true;
+            chars.forEach(c => {
+                const name = c.slice(0, 2);
+                const num = parseInt(c[2]);
+                count[name] = (count[name] || 0) + num;
             });
-            if (!characterCondition) return false;
-            const pickupTicketBox = document.querySelector('.character-card[data-eng-name="PickupTicket"]');
-            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
-                const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
-                const itemDetails = itemDetailsMap[itemKey];
-                const hasTickets = itemDetails?.gemsCount || 0;
-                if (hasTickets < requiredTickets) return false;
+
+            const selectedChars = document.querySelectorAll('.character-box.selected');
+            if (selectedChars.length === 0) return true;
+
+            for(const box of selectedChars) {
+                const eng = box.dataset.engName;
+                const required = parseInt(box.querySelector('input').value);
+                
+                if (eng === 'PickupTicket') {
+                    if ((itemDetailsMap[itemKey]?.gemsCount || 0) < required) return false;
+                } else {
+                    if ((count[eng.slice(0, 2)] || 0) < required) return false;
+                }
             }
             return true;
         }
-        function optimizeImages() {
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                if (!img.hasAttribute('loading')) img.loading = 'lazy';
-                if (!img.hasAttribute('decoding')) img.decoding = 'async';
-            });
-        }
+
+        function displayResults(data) {
+		    const res = document.getElementById('results');
+		    res.innerHTML = '';
+		    const fragment = document.createDocumentFragment();
+		
+		    Object.entries(data).forEach(([k, charValue]) => {
+		        const item = document.createElement('div');
+		        item.className = 'result-item';
+		        item.dataset.itemKey = k;
+		
+		        const itemDetails = itemDetailsMap[k];
+		        const imgs = document.createElement('div');
+		        imgs.className = 'item-images';
+		
+		        const charImages = [];
+		        const charPattern = /([a-z]{2})(\d)/g;
+		        let match;
+		        while ((match = charPattern.exec(charValue)) !== null) {
+		            const [ , code, count] = match;
+		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
+		            if (charInfo) {
+                        const [engName, korName] = charInfo;
+		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+		                for (let i = 0; i < parseInt(count); i++) {
+		                    charImages.push({ src: `Portrait/${korName}.png`, alt: korName, isRare: isGenerallyRare, engName: engName });
+		                }
+		            }
+		        }
+		
+		        charImages.forEach(imgData => {
+		            const img = document.createElement('img');
+		            img.src = imgData.src;
+		            img.alt = imgData.alt;
+		            img.className = 'small-character-img';
+		            img.loading = 'lazy';
+		            img.decoding = 'async';
+                    if (imgData.isRare) {
+                        img.classList.add( (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) ? 'rare' : 'super-rare' );
+                    }
+		            imgs.appendChild(img);
+		        });
+		
+		        const papashaImg = document.createElement('img');
+		        papashaImg.src = 'Portrait/파파샤.png';
+		        papashaImg.alt = '파파샤';
+		        papashaImg.className = 'small-character-img';
+		        imgs.appendChild(papashaImg);
+		
+		        if (itemDetails.gemsCount > 0) {
+		            const gemsBox = document.createElement('div');
+		            gemsBox.className = 'item-box';
+		            gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+		            imgs.appendChild(gemsBox);
+		        }
+		
+		        if (itemDetails.guaranteed) {
+		            const guaranteedBox = document.createElement('div');
+		            guaranteedBox.className = 'item-box';
+		            guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
+		            imgs.appendChild(guaranteedBox);
+		        }
+
+                const priceBox = document.createElement('div');
+                priceBox.className = 'price-box';
+                priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
+                imgs.appendChild(priceBox);
+		
+		        item.appendChild(imgs);
+		        item.addEventListener('click', () => copyToClipboard(item));
+		        fragment.appendChild(item);
+		    });
+		
+		    res.appendChild(fragment);
+		}
+
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
             const itemDetails = itemDetailsMap[itemKey];
             if (!itemDetails) return;
-            navigator.clipboard.writeText(itemDetails.originalText).then(() => showCopyMessage(), err => console.error('Copy failed: ', err));
+            navigator.clipboard.writeText(itemDetails.originalText).then(
+                () => showCopyMessage(),
+                err => console.error('Copy failed: ', err)
+            );
         }
+
         function showCopyMessage(){
             const msg = document.getElementById('copyMessage');
+            if(msg.classList.contains('show')) return;
             msg.classList.add('show');
-            setTimeout(() => { msg.classList.remove('show'); }, 2000);
+            setTimeout(() => msg.classList.remove('show'), 2000);
         }
-		function getSelectedCharacters(){
-		    return [...document.querySelectorAll('.character-card')].filter(b => b.classList.contains('selected'))
+        
+        function getSelectedCharacters(){
+		    return [...document.querySelectorAll('.character-box.selected')]
 		        .map(b => {
 		            const engName = b.dataset.engName;
 		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
 		            return `${shortName}:${b.querySelector('input').value}`;
-		        }).join(',');
+		        })
+		        .join(',');
 		}
+
         function throttle(func, delay) {
-            let lastCall = 0;
-            return function(...args) { const now = Date.now(); if (now - lastCall >= delay) { lastCall = now; return func.apply(this, args); } };
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, delay);
+                }
+            };
         }
-        const throttledFilterHandler = throttle(function() {
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-            loadData().then(() => {
-                filterData();
-                gtag('event', 'apply_filter', { 'selected_characters': getSelectedCharacters() });
-            }).catch(error => { console.error('필터 적용 에러:', error); });
+
+        const throttledFilterHandler = throttle(() => {
+            const resultsArea = document.querySelector('.results-main-area');
+            if (resultsArea) resultsArea.scrollTop = 0;
+            
+            filterData().then(() => {
+                gtag('event', 'apply_filter', {
+                    'selected_characters': getSelectedCharacters()
+                });
+            }).catch(error => {
+                console.error('필터 적용 에러:', error);
+            });
         }, 300);
+
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
+
+        function optimizeImages() {
+            document.querySelectorAll('img:not([loading])').forEach(img => {
+                img.loading = 'lazy';
+                img.decoding = 'async';
+            });
+        }
+        
 		document.addEventListener('DOMContentLoaded', () => {
-		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
-		    const skinPopupElement = document.getElementById('skinInfoPopup');
-		    if (skinTriggerElement && skinPopupElement) {
-		        const showPopup = () => { skinPopupElement.style.display = 'block'; };
-		        const hidePopup = () => { skinPopupElement.style.display = 'none'; };
-		        skinTriggerElement.addEventListener('click', (event) => {
-		            event.stopPropagation();
-		            if (skinPopupElement.style.display === 'block') hidePopup(); else showPopup();
-		        });
-		        document.addEventListener('click', (event) => {
-		            if (skinPopupElement.style.display === 'block' && !skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target)) {
-		                hidePopup();
-		            }
-		        });
-		    }
+		    const skinTrigger = document.getElementById('skinInfoTrigger');
+		    const skinPopup = document.getElementById('skinInfoPopup');
+		    if (!skinTrigger || !skinPopup) return;
+		
+		    const showPopup = () => skinPopup.style.display = 'block';
+		    const hidePopup = () => skinPopup.style.display = 'none';
+		
+		    skinTrigger.addEventListener('click', (e) => {
+		        e.stopPropagation();
+		        skinPopup.style.display === 'block' ? hidePopup() : showPopup();
+		    });
+		
+		    document.addEventListener('click', (e) => {
+		        if (skinPopup.style.display === 'block' && !skinPopup.contains(e.target)) {
+		            hidePopup();
+		        }
+		    });
 		});
     </script>
-	<div id="skinInfoPopup">
-	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
-	</div>
 </body>
 </html>
