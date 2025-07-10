@@ -659,10 +659,12 @@
                     value: { min: 0, max: 1 },
                     animation: {
                         enable: true,
-                        // 속도를 범위로 지정하여 최소 속도를 보장하고 자연스러운 변화를 줌
-                        speed: { min: 3, max: 6 }, // 값이 높을수록 빠릅니다.
+                        // 속도 범위를 더 높고 좁게 설정하여 '느린' 파티클을 제거
+                        speed: { min: 8, max: 15 },
                         sync: false,
-                        startValue: "random"
+                        startValue: "random",
+                        // 애니메이션 모드를 명시하여 의도치 않은 동작 방지 (기본값이지만 명확히 함)
+                        mode: "auto"
                     }
                 }
                 // --- 수정된 부분 끝 ---
