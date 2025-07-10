@@ -658,20 +658,28 @@
                     value: { min: 0, max: 1 },
                     animation: {
                         enable: true,
-                        speed: 4,
+                        speed: 4, // '최대' 깜빡임 속도
                         sync: false,
-                        startValue: "random"
+                        startValue: "random",
+                        // --- 속도 범위 제어 추가 ---
+                        random: {
+                            enable: true,
+                            minimumValue: 2 // '최소' 깜빡임 속도
+                        }
                     }
                 },
-                // --- 회전 효과 추가 ---
                 rotate: {
                     animation: {
-                        enable: true, // 회전 애니메이션 활성화
-                        speed: 10,    // 요청하신 회전 속도
-                        sync: false   // 각 파티클이 독립적으로 회전
+                        enable: true,
+                        speed: 10, // '최대' 회전 속도
+                        sync: false,
+                        // --- 속도 범위 제어 추가 ---
+                        random: {
+                            enable: true,
+                            minimumValue: 5 // '최소' 회전 속도
+                        }
                     }
                 }
-                // --- 추가 끝 ---
             },
             interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
             retina_detect: true
