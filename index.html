@@ -13,517 +13,520 @@
       gtag('config', 'G-6Y21MLG0SJ');
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
-            color: #e0e0e0;
-            position: relative;
-            overflow-y: scroll;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.5em;
-            color: #ff4081;
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.2);
-            position: relative;
-            z-index: 1;
-        }
-        .character-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-            transform: translateZ(0);
-            contain: layout paint;
-        }
-        .character-box {
-            background: rgba(26,26,26,0.2);
-            border: none;
-            padding: 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
-            position: relative;
-            height: 160px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 1;
-            transform: translateZ(0);
-            contain: layout paint;
-            overflow: hidden;
-        }
-        .character-box.rare {
-            border: 2px solid #ff9800;
-            box-shadow: 0 0 15px rgba(255,152,0,0.5), 0 4px 12px rgba(255,152,0,0.7);
-        }
-        .character-box.selected {
-            background-color: rgba(255,64,129,0.9);
-            box-shadow: 0 0 20px rgba(255,64,129,0.7), 0 8px 20px rgba(255,64,129,0.8);
-            transform: translateY(-5px);
-        }
-        @media (hover: hover) and (pointer: fine) {
-            .character-box:hover {
-                transform: scale(1.05);
-                box-shadow: 0 6px 20px rgba(255,255,255,0.2);
-				z-index: 10;
-            }
-            .character-box:hover .character-img {
-                transform: rotate(5deg);
-            }
-            #filterButton:hover {
-                background: linear-gradient(45deg, #ff4081, #f50057);
-                box-shadow: 0 6px 20px rgba(255,64,129,0.8);
-                transform: translateY(-3px);
-            }
-            .result-item:hover {
-                background: linear-gradient(135deg, #3a3a3a, #2c2c2c);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-                border-color: rgba(255, 64, 129, 0.5);
-                transform: translateY(-3px);
-            }
-        }
-        .character-img {
-            width: 80px;
-            height: 90px;
-            object-fit: cover;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            transition: transform 0.3s;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-        .character-name {
-            font-size: 16px;
-            margin-bottom: 10px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .spinbox-container {
-            width: 80%;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
-            justify-content: center;
-            margin-top: -5px;
-            transform: translateY(-10px);
-        }
-        .character-box.selected .spinbox-container {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .spinbox-container input[type="number"] {
-            width: 50px;
-            padding: 5px;
-            border: 1px solid #555;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .spinbox-container input[type="number"]:focus {
-            border-color: #ff4081;
-            box-shadow: 0 0 5px rgba(255,64,129,0.5);
-            outline: none;
-            background-color: #2a2a2a;
-        }
-        #filterButton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 15px;
-            margin: 25px 0;
-            font-size: 18px;
-            cursor: pointer;
-            background: linear-gradient(45deg, #ff4081, #f50057);
-            color: #fff;
-            border: none;
-            border-radius: 30px;
-            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
-            transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            position: relative;
-            z-index: 1;
-            transform: translateZ(0);
-        }
-        #filterButton:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
-        }
-        #copyInstruction {
-            margin-bottom: 15px;
-            font-style: italic;
-            color: #ff4081;
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: 600;
-            position: relative;
-            z-index: 1;
-        }
-        #copyMessage {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: linear-gradient(135deg, #232526 0%, #414345 100%);
-            color: #fff;
-            padding: 20px 30px;
-            border-radius: 12px;
-            display: none;
-            opacity: 0;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1em;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            z-index: 1000;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            border-left: 4px solid #ff4081;
-            will-change: transform, opacity;
-        }
-        #copyMessage.show {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: messagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes messagePop {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        .copy-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #ff4081;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 1s infinite;
-            transform: translateZ(0);
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 64, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
-        }
-        .copy-icon svg {
-            width: 14px;
-            height: 14px;
-            fill: white;
-            transform: translateZ(0);
-        }
-        #results {
-            padding: 20px;
-            height: 800px;
-            max-height: 800px;
-            overflow-y: auto;
-            background-color: rgba(20,20,20,0.8);
-            border-radius: 15px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            position: relative;
-            z-index: 1;
-            will-change: scroll-position;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-            contain: strict;
-            transform: translateZ(0);
-        }
-        #results .content-container {
-            transform: translateZ(0);
-            will-change: opacity;
-            transition: opacity 0.2s ease;
-            contain: layout paint style;
-            backface-visibility: hidden;
-        }
-        #results.filtering .content-container {
-            opacity: 0;
-        }
-        #results.scrolling .result-item {
-            transition: none !important;
-        }
-        .result-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #2a2a2a, #202020);
-            cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.2s;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transform: translateZ(0);
-            contain: layout paint;
-        }
-        .small-character-img {
-            width: auto;
-            height: 60px;
-            object-fit: contain;
-            border-radius: 8px;
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            contain: paint;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .small-character-img.rare {
-            border: 2px solid #ff9800;
-            box-shadow: 0 0 8px rgba(255,152,0,0.6);
-        }
-        .character-box.super-rare {
-            border: 2px solid #D32F2F;
-            box-shadow: 0 0 15px rgba(211, 47, 47, 0.5), 0 4px 12px rgba(211, 47, 47, 0.7);
-        }
-        .small-character-img.super-rare {
-            border: 2px solid #D32F2F;
-            box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
-        }
-        .character-box.gold-border {
-            border: 2px solid #FFD700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 4px 12px rgba(255, 215, 0, 0.7);
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/dark-matter.png') repeat;
-            opacity: 0.1;
-            z-index: -1;
-        }
-        .character-box::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-            opacity: 0.1;
-            border-radius: 15px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .character-box > * {
-            position: relative;
-            z-index: 1;
-        }
-        .item-images {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            transform: translateZ(0);
-            contain: layout paint;
-            gap: 8px;
-            overflow: auto;
-        }
-		.item-box {
-		    display: inline-flex;
-		    flex-direction: column;
-		    justify-content: center;
-		    align-items: center;
-		    width: 70px;
-		    height: 60px;
-		    background: linear-gradient(145deg, #4a3800, #332600);
-		    border: 2px solid #ffb300;
-		    box-shadow: 0 0 10px rgba(255, 179, 0, 0.65), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,215,0,0.2);
-		    border-radius: 10px;
-		    transform: translateZ(0);
-		    contain: layout paint;
-		}
-		.item-box .item-title {
-		    color: #ffc107;
-		    font-size: 14px;
-		    font-weight: bold;
-		    text-shadow: 1px 1px 2px #000;
-		    margin-bottom: 4px;
-		}
-		.item-box .item-count {
-		    color: #fff;
-		    font-size: 12px;
-		    font-weight: 600;
-		}
-        .price-box {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 70px;
-            height: 60px;
-            background: linear-gradient(145deg, #104020, #052912); 
-            border: 2px solid #27ae60;
-            box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(46, 204, 113, 0.2);
-            border-radius: 10px;
-            transform: translateZ(0);
-            contain: layout paint;
-            color: #90ee90;
-            font-size: 14px;
-            font-weight: 700;
-            font-family: 'Poppins', sans-serif;
-            text-shadow: 1px 1px 2px #000;
-        }
-        #tsparticles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(18,18,18,0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 2000;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        #loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #ff4081;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-            transform: translateZ(0);
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #skinInfoTrigger {
-		    position: relative;
-		}
-		.skin-tooltip-icon {
-		    display: inline-block;
-		    background-color: #ff4081;
-		    color: white;
-		    border-radius: 50%;
-		    width: 16px;
-		    height: 16px;
-		    text-align: center;
-		    line-height: 16px;
-		    font-size: 12px;
-		    font-weight: bold;
-		    margin-left: 4px;
-		    user-select: none;
-		    vertical-align: middle;
-		}
-		#skinInfoPopup {
-		    display: none;
-		    position: fixed;
-		    top: 50%;
-		    left: 50%;
-		    transform: translate(-50%, -50%);
-		    background-color: rgba(30, 30, 30, 0.95);
-		    border: 2px solid #ff4081;
-		    border-radius: 10px;
-		    padding: 15px;
-		    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-		    z-index: 3000;
-		    width: calc(100vw - 40px);
-		    max-width: 800px;
-		    max-height: 90vh;
-		    box-sizing: border-box;
-		    overflow: auto;
-		}
-		#skinInfoPopupImage {
-		    display: block;
-		    width: 100%;
-		    height: auto;
-		    max-height: calc(90vh - 34px - 30px);
-		    border-radius: 5px;
-		    object-fit: contain;
-		}
-		@media (max-width: 768px) {
-		    .character-grid {
-		        grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
-		        gap: 10px;
-		    }
-		    .character-box {
-		        height: 125px; 
-		        padding: 8px;
-		    }
-		    .character-box .character-img {
-		        width: 60px;
-		        height: 70px;
-		        margin-bottom: 5px;
-		    }
-		    .character-box .character-name {
-		        font-size: 14px;
-		    }
-		    .spinbox-container input[type="number"] {
-		        width: 45px;
-		    }
-		    #filterButton {
-		        font-size: 16px;
-		        padding: 12px;
-		    }
-		    .result-item {
-		        padding: 12px;
-		    }
-		    .small-character-img {
-		        height: 45px;
-		    }
-		    .item-images {
-		        gap: 5px;
-            }
-		    #copyInstruction {
-		        font-size: 1em;
-		    }
-		    #copyMessage {
-		        font-size: 1em;
-		        padding: 15px 20px;
-		    }
-		    .item-box, .price-box {
-		        width: 55px;
-		        height: 45px;
-		    }
-		    .item-box .item-title {
-		        font-size: 10px;
-		        margin-bottom: 2px;
-		    }
-		    .item-box .item-count, .price-box {
-		        font-size: 10px;
-		    }
-		    #skinInfoPopup {
-		        padding: 10px;
-		        width: calc(100vw - 30px);
-		    }
-		    #skinInfoPopupImage {
-		        max-height: calc(90vh - 24px - 20px);
-		    }
-		}
-    </style>
+	<style>
+	    body {
+	        font-family: 'Roboto', sans-serif;
+	        background-color: #121212;
+	        max-width: 1200px;
+	        margin: 0 auto;
+	        padding: 30px 20px;
+	        color: #e0e0e0;
+	        position: relative;
+	        overflow-y: scroll;
+	    }
+	    h1 {
+	        text-align: center;
+	        margin-bottom: 30px;
+	        font-family: 'Poppins', sans-serif;
+	        font-size: 2.5em;
+	        color: #ff4081;
+	        text-shadow: 2px 2px 4px rgba(255,255,255,0.2);
+	        position: relative;
+	        z-index: 1;
+	    }
+	    .character-grid {
+	        display: grid;
+	        grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+	        gap: 20px;
+	        margin-bottom: 30px;
+	        position: relative;
+	        z-index: 1;
+	        transform: translateZ(0);
+	        /* [제거] 이 속성이 자식 요소의 오버플로우 렌더링을 방해했습니다. */
+	        /* contain: layout paint; */
+	    }
+	    .character-box {
+	        background: rgba(26,26,26,0.2);
+	        border: none;
+	        padding: 15px;
+	        text-align: center;
+	        display: flex;
+	        flex-direction: column;
+	        align-items: center;
+	        cursor: pointer;
+	        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, z-index 0s 0.3s; /* z-index 트랜지션 딜레이 조정 */
+	        position: relative;
+	        height: 160px;
+	        border-radius: 15px;
+	        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+	        backdrop-filter: blur(5px);
+	        z-index: 1;
+	        transform: translateZ(0);
+	        /* [제거] 이 속성들이 transform:scale 효과를 잘리게 만드는 주된 원인이었습니다. */
+	        /* contain: layout paint; */
+	        /* overflow: hidden; */
+	    }
+	    .character-box.rare {
+	        border: 2px solid #ff9800;
+	        box-shadow: 0 0 15px rgba(255,152,0,0.5), 0 4px 12px rgba(255,152,0,0.7);
+	    }
+	    .character-box.selected {
+	        background-color: rgba(255,64,129,0.9);
+	        box-shadow: 0 0 20px rgba(255,64,129,0.7), 0 8px 20px rgba(255,64,129,0.8);
+	        transform: translateY(-5px);
+	        z-index: 2; /* 선택된 카드가 일반 카드보다 위에 오도록 설정 */
+	    }
+	    @media (hover: hover) and (pointer: fine) {
+	        .character-box:hover {
+	            transform: scale(1.05);
+	            box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+	            z-index: 10; /* [수정 및 유지] 호버 시 z-index를 높여 다른 요소 위에 렌더링되도록 함 */
+	            transition: transform 0.3s, box-shadow 0.3s; /* z-index는 즉시 변경되도록 hover시에만 transition 재정의 */
+	        }
+	        .result-item:hover {
+	            background: linear-gradient(135deg, #3a3a3a, #2c2c2c);
+	            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+	            border-color: rgba(255, 64, 129, 0.5);
+	            transform: translateY(-3px);
+	            z-index: 5;
+	        }
+	    }
+	    .character-img {
+	        width: 80px;
+	        height: 90px;
+	        object-fit: cover;
+	        margin-bottom: 10px;
+	        border-radius: 10px;
+	        transition: transform 0.3s;
+	        transform: translateZ(0);
+	        backface-visibility: hidden;
+	    }
+	    .character-name {
+	        font-size: 16px;
+	        margin-bottom: 10px;
+	        font-weight: 700;
+	        color: #fff;
+	    }
+	    .spinbox-container {
+	        width: 80%;
+	        visibility: hidden;
+	        opacity: 0;
+	        transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
+	        justify-content: center;
+	        margin-top: -5px;
+	        transform: translateY(-10px);
+	    }
+	    .character-box.selected .spinbox-container {
+	        visibility: visible;
+	        opacity: 1;
+	        transform: translateY(0);
+	    }
+	    .spinbox-container input[type="number"] {
+	        width: 50px;
+	        padding: 5px;
+	        border: 1px solid #555;
+	        border-radius: 8px;
+	        text-align: center;
+	        font-size: 14px;
+	        background-color: #1e1e1e;
+	        color: #e0e0e0;
+	        transition: border-color 0.3s, box-shadow 0.3s;
+	    }
+	    .spinbox-container input[type="number"]:focus {
+	        border-color: #ff4081;
+	        box-shadow: 0 0 5px rgba(255,64,129,0.5);
+	        outline: none;
+	        background-color: #2a2a2a;
+	    }
+	    #filterButton {
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        width: 100%;
+	        padding: 15px;
+	        margin: 25px 0;
+	        font-size: 18px;
+	        cursor: pointer;
+	        background: linear-gradient(45deg, #ff4081, #f50057);
+	        color: #fff;
+	        border: none;
+	        border-radius: 30px;
+	        box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+	        transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+	        font-family: 'Poppins', sans-serif;
+	        font-weight: 600;
+	        position: relative;
+	        z-index: 1;
+	        transform: translateZ(0);
+	    }
+	     #filterButton:hover {
+	        background: linear-gradient(45deg, #ff4081, #f50057);
+	        box-shadow: 0 6px 20px rgba(255,64,129,0.8);
+	        transform: translateY(-3px);
+	    }
+	    #filterButton:active {
+	        transform: translateY(0);
+	        box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+	    }
+	    #copyInstruction {
+	        margin-bottom: 15px;
+	        font-style: italic;
+	        color: #ff4081;
+	        text-align: center;
+	        font-size: 1.2em;
+	        font-weight: 600;
+	        position: relative;
+	        z-index: 1;
+	    }
+	    #copyMessage {
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%) scale(0.8);
+	        background: linear-gradient(135deg, #232526 0%, #414345 100%);
+	        color: #fff;
+	        padding: 20px 30px;
+	        border-radius: 12px;
+	        display: none;
+	        opacity: 0;
+	        font-family: 'Poppins', sans-serif;
+	        font-size: 1.1em;
+	        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+	        z-index: 1000;
+	        transition: opacity 0.3s ease, transform 0.3s ease;
+	        border-left: 4px solid #ff4081;
+	        will-change: transform, opacity;
+	    }
+	    #copyMessage.show {
+	        display: flex;
+	        align-items: center;
+	        gap: 15px;
+	        animation: messagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+	    }
+	    @keyframes messagePop {
+	        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+	        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+	        100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+	    }
+	    .copy-icon {
+	        width: 24px;
+	        height: 24px;
+	        background-color: #ff4081;
+	        border-radius: 50%;
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        animation: pulse 1s infinite;
+	        transform: translateZ(0);
+	    }
+	    @keyframes pulse {
+	        0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
+	        70% { box-shadow: 0 0 0 10px rgba(255, 64, 129, 0); }
+	        100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
+	    }
+	    .copy-icon svg {
+	        width: 14px;
+	        height: 14px;
+	        fill: white;
+	        transform: translateZ(0);
+	    }
+	    #results {
+	        padding: 20px;
+	        height: 800px;
+	        max-height: 800px;
+	        overflow-y: auto;
+	        background-color: rgba(20,20,20,0.8);
+	        border-radius: 15px;
+	        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+	        position: relative;
+	        z-index: 1;
+	        will-change: scroll-position;
+	        -webkit-overflow-scrolling: touch;
+	        overscroll-behavior: contain;
+	        contain: strict;
+	        transform: translateZ(0);
+	    }
+	    #results .content-container {
+	        transform: translateZ(0);
+	        will-change: opacity;
+	        transition: opacity 0.2s ease;
+	        contain: layout paint style;
+	        backface-visibility: hidden;
+	    }
+	    #results.filtering .content-container {
+	        opacity: 0;
+	    }
+	    #results.scrolling .result-item {
+	        transition: none !important;
+	    }
+	    .result-item {
+	        margin-bottom: 20px;
+	        padding: 15px;
+	        background: linear-gradient(135deg, #2a2a2a, #202020);
+	        cursor: pointer;
+	        transition: background 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.2s;
+	        border-radius: 12px;
+	        border: 1px solid rgba(255, 255, 255, 0.1);
+	        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+	        display: flex;
+	        flex-direction: column;
+	        position: relative;
+	        transform: translateZ(0);
+	        contain: layout paint;
+	        z-index: 1;
+	    }
+	    .small-character-img {
+	        width: auto;
+	        height: 60px;
+	        object-fit: contain;
+	        border-radius: 8px;
+	        transform: translateZ(0);
+	        backface-visibility: hidden;
+	        contain: paint;
+	        border: 1px solid rgba(255, 255, 255, 0.1);
+	    }
+	    .small-character-img.rare {
+	        border: 2px solid #ff9800;
+	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
+	    }
+	    .character-box.super-rare {
+	        border: 2px solid #D32F2F;
+	        box-shadow: 0 0 15px rgba(211, 47, 47, 0.5), 0 4px 12px rgba(211, 47, 47, 0.7);
+	    }
+	    .small-character-img.super-rare {
+	        border: 2px solid #D32F2F;
+	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
+	    }
+	    .character-box.gold-border {
+	        border: 2px solid #FFD700;
+	        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 4px 12px rgba(255, 215, 0, 0.7);
+	    }
+	    body::before {
+	        content: "";
+	        position: absolute;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background: url('https://www.transparenttextures.com/patterns/dark-matter.png') repeat;
+	        opacity: 0.1;
+	        z-index: -1;
+	    }
+	    .character-box::after {
+	        content: "";
+	        position: absolute;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+	        opacity: 0.1;
+	        border-radius: 15px;
+	        pointer-events: none;
+	        z-index: 0;
+	    }
+	    .character-box > * {
+	        position: relative;
+	        z-index: 1;
+	    }
+	    .item-images {
+	        display: flex;
+	        align-items: center;
+	        flex-wrap: wrap;
+	        transform: translateZ(0);
+	        contain: layout paint;
+	        gap: 8px;
+	        overflow: auto;
+	    }
+	    .item-box {
+	        display: inline-flex;
+	        flex-direction: column;
+	        justify-content: center;
+	        align-items: center;
+	        width: 70px;
+	        height: 60px;
+	        background: linear-gradient(145deg, #4a3800, #332600);
+	        border: 2px solid #ffb300;
+	        box-shadow: 0 0 10px rgba(255, 179, 0, 0.65), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,215,0,0.2);
+	        border-radius: 10px;
+	        transform: translateZ(0);
+	        contain: layout paint;
+	    }
+	    .item-box .item-title {
+	        color: #ffc107;
+	        font-size: 14px;
+	        font-weight: bold;
+	        text-shadow: 1px 1px 2px #000;
+	        margin-bottom: 4px;
+	    }
+	    .item-box .item-count {
+	        color: #fff;
+	        font-size: 12px;
+	        font-weight: 600;
+	    }
+	    .price-box {
+	        display: inline-flex;
+	        justify-content: center;
+	        align-items: center;
+	        width: 70px;
+	        height: 60px;
+	        background: linear-gradient(145deg, #104020, #052912); 
+	        border: 2px solid #27ae60;
+	        box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(46, 204, 113, 0.2);
+	        border-radius: 10px;
+	        transform: translateZ(0);
+	        contain: layout paint;
+	        color: #90ee90;
+	        font-size: 14px;
+	        font-weight: 700;
+	        font-family: 'Poppins', sans-serif;
+	        text-shadow: 1px 1px 2px #000;
+	    }
+	    #tsparticles {
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        z-index: 0;
+	        pointer-events: none;
+	    }
+	    #loader {
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background-color: rgba(18,18,18,0.95);
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        flex-direction: column;
+	        z-index: 2000;
+	        transition: opacity 0.5s ease, visibility 0.5s ease;
+	    }
+	    #loader.hidden {
+	        opacity: 0;
+	        visibility: hidden;
+	    }
+	    .spinner {
+	        border: 8px solid #f3f3f3;
+	        border-top: 8px solid #ff4081;
+	        border-radius: 50%;
+	        width: 60px;
+	        height: 60px;
+	        animation: spin 1s linear infinite;
+	        margin-bottom: 20px;
+	        transform: translateZ(0);
+	    }
+	    @keyframes spin {
+	        0% { transform: rotate(0deg); }
+	        100% { transform: rotate(360deg); }
+	    }
+	    #skinInfoTrigger {
+	        position: relative;
+	    }
+	    .skin-tooltip-icon {
+	        display: inline-block;
+	        background-color: #ff4081;
+	        color: white;
+	        border-radius: 50%;
+	        width: 16px;
+	        height: 16px;
+	        text-align: center;
+	        line-height: 16px;
+	        font-size: 12px;
+	        font-weight: bold;
+	        margin-left: 4px;
+	        user-select: none;
+	        vertical-align: middle;
+	    }
+	    #skinInfoPopup {
+	        display: none;
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%);
+	        background-color: rgba(30, 30, 30, 0.95);
+	        border: 2px solid #ff4081;
+	        border-radius: 10px;
+	        padding: 15px;
+	        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+	        z-index: 3000;
+	        width: calc(100vw - 40px);
+	        max-width: 800px;
+	        max-height: 90vh;
+	        box-sizing: border-box;
+	        overflow: auto;
+	    }
+	    #skinInfoPopupImage {
+	        display: block;
+	        width: 100%;
+	        height: auto;
+	        max-height: calc(90vh - 34px - 30px);
+	        border-radius: 5px;
+	        object-fit: contain;
+	    }
+	    @media (max-width: 768px) {
+	        .character-grid {
+	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
+	            gap: 10px;
+	        }
+	        .character-box {
+	            height: 125px; 
+	            padding: 8px;
+	        }
+	        .character-box .character-img {
+	            width: 60px;
+	            height: 70px;
+	            margin-bottom: 5px;
+	        }
+	        .character-box .character-name {
+	            font-size: 14px;
+	        }
+	        .spinbox-container input[type="number"] {
+	            width: 45px;
+	        }
+	        #filterButton {
+	            font-size: 16px;
+	            padding: 12px;
+	        }
+	        .result-item {
+	            padding: 12px;
+	        }
+	        .small-character-img {
+	            height: 45px;
+	        }
+	        .item-images {
+	            gap: 5px;
+	        }
+	        #copyInstruction {
+	            font-size: 1em;
+	        }
+	        #copyMessage {
+	            font-size: 1em;
+	            padding: 15px 20px;
+	        }
+	        .item-box, .price-box {
+	            width: 55px;
+	            height: 45px;
+	        }
+	        .item-box .item-title {
+	            font-size: 10px;
+	            margin-bottom: 2px;
+	        }
+	        .item-box .item-count, .price-box {
+	            font-size: 10px;
+	        }
+	        #skinInfoPopup {
+	            padding: 10px;
+	            width: calc(100vw - 30px);
+	        }
+	        #skinInfoPopupImage {
+	            max-height: calc(90vh - 24px - 20px);
+	        }
+	    }
+	</style>
 </head>
 <body>
     <div id="loader">
