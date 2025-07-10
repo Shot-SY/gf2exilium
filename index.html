@@ -647,14 +647,63 @@
 
         tsParticles.load("tsparticles", {
             particles: {
-                number: { value: 50, density: { enable: true, value_area: 800 }},
-                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
-                size: { value: 3, random: { enable: true, minimumValue: 1 }},
-                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
-                color: { value: ["#FF0000","#FF7F00","#FFFF00","#00FF00","#0000FF","#4B0082","#8F00FF"] },
-                opacity: { value: 0.8, random: false }
+                // 입자 수를 약간 줄여 은은함을 강조하고 성능을 확보합니다.
+                number: { value: 40, density: { enable: true, value_area: 1200 } },
+                
+                // 모양을 'star'에서 'circle'로 변경하여 부드러운 빛무리 효과를 줍니다.
+                shape: { type: "circle" },
+
+                // 크기를 다양하게 하여 원근감을 부여합니다.
+                size: {
+                    value: { min: 0.5, max: 2.5 }
+                },
+                
+                // 움직임을 더 느리고 우아하게 변경합니다.
+                move: {
+                    enable: true,
+                    speed: 1, // 속도를 줄여 차분한 느낌을 줍니다.
+                    direction: "top-right", // 한 방향으로 부유하여 안정감을 줍니다.
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    // 미세한 떨림(wobble)을 추가해 자연스러운 움직임을 만듭니다.
+                    wobble: { 
+                        enable: true,
+                        distance: 5,
+                        speed: 10
+                    }
+                },
+
+                // 색상 팔레트를 사이트 테마에 맞춰 세련되게 변경합니다.
+                color: {
+                    value: ["#FFFFFF", "#FFD700", "#FF8AB4"] // 흰색, 금색, 부드러운 핑크
+                },
+
+                // 투명도에 애니메이션을 주어 '깜빡이는' 효과를 만듭니다. (가장 중요한 부분)
+                opacity: {
+                    value: { min: 0.1, max: 0.6 }, // 투명도를 랜덤하게 설정
+                    animation: {
+                        enable: true,
+                        speed: 0.8,
+                        minimumValue: 0.1,
+                        sync: false // 각 입자가 개별적으로 깜빡이도록 설정
+                    }
+                },
+
+                // 그림자를 이용해 '빛 번짐(Glow)' 효과를 만듭니다.
+                shadow: {
+                    enable: true,
+                    color: "#FFD700", // 금색 빛 번짐 효과
+                    blur: 5
+                }
             },
-            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
+            interactivity: {
+                // 상호작용은 성능을 위해 비활성화 상태를 유지합니다.
+                events: { 
+                    onhover: { enable: false }, 
+                    onclick: { enable: false } 
+                }
+            },
             retina_detect: true
         });
 
