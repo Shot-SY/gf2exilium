@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIRLS FRONTLINE 2: EXILIUM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y21MLG0SJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -15,392 +14,501 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
     <style>
-        :root {
-            --dark-navy: #0A192F;
-            --light-navy: #112240;
-            --lightest-navy: #233554;
-            --slate: #8892b0;
-            --light-slate: #a8b2d1;
-            --lightest-slate: #ccd6f6;
-            --white: #e6f1ff;
-            --green: #64ffda;
-            --gold: #FFD700;
-            --red: #D32F2F;
-            --font-sans: 'Roboto', sans-serif;
-            --font-mono: 'Roboto Mono', monospace;
-        }
-
-        /* 기본 & 레이아웃 */
-        html {
-            scroll-behavior: smooth;
-        }
         body {
-            font-family: var(--font-sans);
-            background-color: var(--dark-navy);
-            margin: 0;
-            color: var(--light-slate);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            color: #e0e0e0;
+            position: relative;
+            overflow-y: scroll;
         }
-        
-        .main-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* 필터 사이드바 */
-        .filter-sidebar {
-            width: 380px;
-            flex-shrink: 0;
-            padding: 40px;
-            box-sizing: border-box;
-            background-color: rgba(17, 34, 64, 0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-right: 1px solid var(--lightest-navy);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            overflow-y: auto;
-        }
-
-        .sidebar-header h1 {
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
             font-family: 'Poppins', sans-serif;
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--lightest-slate);
-            margin: 0 0 5px 0;
-            text-align: left;
+            font-size: 2.5em;
+            color: #ff4081;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
         }
-
-        .sidebar-header h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1em;
-            font-weight: 400;
-            color: var(--green);
-            margin: 0 0 30px 0;
-            letter-spacing: 1.5px;
-        }
-
-        /* 캐릭터 그리드 */
         .character-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .character-box {
-            background-color: var(--light-navy);
-            border: 1px solid var(--lightest-navy);
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            border-radius: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+            gap: 20px;
+            margin-bottom: 30px;
             position: relative;
-            overflow: hidden;
-            height: 145px;
+            z-index: 1;
+            transform: translateZ(0);
+            contain: layout paint;
+        }
+        .character-box {
+            background: url('https://www.transparenttextures.com/patterns/gplay.png'), rgba(26,26,26,0.2);
+            background-repeat: repeat;
+            background-size: cover;
+            border: none;
+            padding: 15px;
+            text-align: center;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            position: relative;
+            height: 160px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+            transform: translateZ(0);
+            contain: layout paint;
         }
-
-        .character-box:hover {
-            transform: translateY(-5px);
-            border-color: var(--green);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .character-box.rare {
+            border: 2px solid #ff9800;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.7);
         }
-        
         .character-box.selected {
-            border-color: var(--green);
-            box-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
-            background-color: var(--lightest-navy);
+            background-color: rgba(255,64,129,0.9);
+            box-shadow: 0 8px 20px rgba(255,64,129,0.8);
+            transform: translateY(-5px);
         }
-
-        .character-box.rare { border: 1px solid #ff9800; }
-        .character-box.super-rare { border: 1px solid var(--red); }
-        .character-box.gold-border { border: 1px solid var(--gold); }
-        
-        .character-box.selected.rare { border-color: #ff9800; box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
-        .character-box.selected.super-rare { border-color: var(--red); box-shadow: 0 0 10px rgba(211, 47, 47, 0.5); }
-        .character-box.selected.gold-border { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-
-
+        @media (hover: hover) and (pointer: fine) {
+            .character-box:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+            }
+            .character-box:hover .character-img {
+                transform: rotate(5deg);
+            }
+            #filterButton:hover {
+                background: linear-gradient(45deg, #ff4081, #f50057);
+                box-shadow: 0 6px 20px rgba(255,64,129,0.8);
+                transform: translateY(-3px);
+            }
+            .result-item:hover {
+                background-color: #1e1e1e;
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(255,64,129,0.3);
+            }
+        }
         .character-img {
-            width: 100%;
-            height: 80px;
+            width: 80px;
+            height: 90px;
             object-fit: cover;
-            margin-bottom: 8px;
-            border-radius: 4px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
-
         .character-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--light-slate);
-            margin-bottom: auto; /* 이름을 위로, spinbox를 아래로 */
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #fff;
         }
-
         .spinbox-container {
+            width: 80%;
             visibility: hidden;
             opacity: 0;
-            height: 0;
-            transition: opacity 0.2s ease, height 0.2s ease;
-            display: flex;
+            transition: visibility 0.3s, opacity 0.3s, transform 0.3s;
             justify-content: center;
-            margin-top: 5px;
+            margin-top: -5px;
+            transform: translateY(-10px);
         }
-        .character-box.selected .spinbox-container { 
+        .character-box.selected .spinbox-container {
             visibility: visible;
             opacity: 1;
-            height: 25px; /* 높이를 지정해줘야 transition이 작동 */
+            transform: translateY(0);
         }
-        
         .spinbox-container input[type="number"] {
-            width: 45px;
-            padding: 3px;
-            border: 1px solid var(--lightest-navy);
-            border-radius: 4px;
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #555;
+            border-radius: 8px;
             text-align: center;
             font-size: 14px;
-            background-color: var(--dark-navy);
-            color: var(--lightest-slate);
-            -moz-appearance: textfield; /* Firefox */
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .spinbox-container input[type="number"]::-webkit-outer-spin-button,
-        .spinbox-container input[type="number"]::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+        .spinbox-container input[type="number"]:focus {
+            border-color: #ff4081;
+            box-shadow: 0 0 5px rgba(255,64,129,0.5);
+            outline: none;
+            background-color: #2a2a2a;
         }
-
-        /* 사이드바 푸터 & 버튼 */
-        .sidebar-footer {
-            margin-top: auto; /* 푸터를 아래로 밀어냄 */
-            padding-top: 20px;
-            border-top: 1px solid var(--lightest-navy);
-        }
-
-        #copyInstruction {
-            text-align: center;
-            color: var(--slate);
-            font-size: 0.9em;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-        
-        .skin-tooltip-icon {
-            display: inline-block;
-            background-color: var(--green);
-            color: var(--dark-navy);
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            text-align: center;
-            line-height: 16px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 4px;
-            user-select: none;
-            vertical-align: middle;
-        }
-
-
         #filterButton {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             width: 100%;
             padding: 15px;
-            font-size: 16px;
+            margin: 25px 0;
+            font-size: 18px;
             cursor: pointer;
-            background-color: transparent;
-            color: var(--green);
-            border: 1px solid var(--green);
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            background: linear-gradient(45deg, #ff4081, #f50057);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+            transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transform: translateZ(0);
+        }
+        #filterButton:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 16px rgba(255,64,129,0.6);
+        }
+        #copyInstruction {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #ff4081;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        #copyMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: none;
+            opacity: 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1em;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            z-index: 1000;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            border-left: 4px solid #ff4081;
+            will-change: transform, opacity;
         }
 
-        #filterButton:hover {
-            background-color: rgba(100, 255, 218, 0.1);
-            box-shadow: 0 0 5px rgba(100, 255, 218, 0.3);
+        #copyMessage.show {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: messagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        .copy-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ff4081;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1s infinite;
+            transform: translateZ(0);
         }
 
-        /* 결과 영역 */
-        .results-main-area {
-            flex-grow: 1;
-            padding: 40px;
-            box-sizing: border-box;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 64, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0); }
         }
-        
+
+        .copy-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+            transform: translateZ(0);
+        }
+
         #results {
+            padding: 20px;
+            height: 800px;
+            max-height: 800px;
+            overflow-y: auto;
+            background-color: rgba(26,26,26,0.8);
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+            will-change: scroll-position;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            contain: strict;
+            transform: translateZ(0);
+        }
+        #results .content-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
+            transform: translateZ(0);
+            will-change: opacity;
+            transition: opacity 0.2s ease;
+            contain: layout paint style;
+            backface-visibility: hidden;
         }
-        
-        #results.filtering {
-             opacity: 0.5;
-             transition: opacity 0.3s;
+
+        #results.filtering .content-container {
+            opacity: 0;
+        }
+
+        #results.scrolling .result-item {
+            transition: none !important;
         }
 
         .result-item {
-            background-color: rgba(17, 34, 64, 0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--lightest-navy);
-            border-radius: 8px;
-            padding: 20px;
+            padding: 15px;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            position: relative;
+            transform: translateZ(0);
+            contain: layout paint;
+            gap: 15px; /* 내부 요소간 간격 */
+        }
+        .small-character-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: paint;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .small-character-img.rare {
+            border: 2px solid #ff9800;
+            box-shadow: 0 0 8px rgba(255,152,0,0.7);
+        }
+        .character-box.super-rare {
+            border: 2px solid #D32F2F; 
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.7);
+        }
+        .small-character-img.super-rare {
+            border: 2px solid #D32F2F;
+            box-shadow: 0 0 8px rgba(211, 47, 47, 0.7);
+        }
+        .character-box.gold-border {
+            border: 2px solid #FFD700;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.7);
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/geometry-dark.png') repeat;
+            opacity: 0.04;
+            z-index: -1;
+        }
+        .character-box::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+            opacity: 0.2;
+            border-radius: 15px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .character-box > * {
+            position: relative;
+            z-index: 1;
         }
 
-        .result-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--green);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
-        
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18,18,18,0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 2000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #ff4081;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+            transform: translateZ(0);
+        }
         .item-images {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            transform: translateZ(0);
+            contain: layout paint;
+            gap: 8px; /* 아이템 사이의 가로/세로 간격 추가 */
+        }
+		
+		.item-box {
+		    display: inline-flex;
+		    flex-direction: column;
+		    justify-content: center;
+		    align-items: center;
+		    width: 62px;
+		    height: 50px;
+		    background: linear-gradient(145deg, #4a3800, #332600);
+		    border: 1px solid #ffb300;
+		    box-shadow: 0 0 10px rgba(255, 179, 0, 0.5), inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.4);
+		    border-radius: 8px;
+		    transform: translateZ(0);
+		    contain: layout paint;
+            text-align: center;
+		}
+		.item-box .item-title {
+		    color: #ffd54f;
+		    font-size: 13px;
+		    font-weight: bold;
+		    margin-bottom: 3px;
+		}
+		.item-box .item-count {
+		    color: #fff;
+		    font-size: 12px;
+		    font-weight: 600;
+		}
+        .price-box {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            padding: 0 12px;
+            background: linear-gradient(145deg, #104020, #052912); 
+            border: 1px solid #27ae60;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.4);
+            border-radius: 8px;
+            transform: translateZ(0);
+            contain: layout paint;
+            color: #90ee90;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            margin-left: auto; /* 이 박스를 오른쪽 끝으로 밀어냄 */
+        }
+
+        .item-info-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             align-items: center;
         }
 
-        .small-character-img {
-            width: 48px;
-            height: 48px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid var(--lightest-navy);
-        }
-        .small-character-img.rare { border: 2px solid #ff9800; }
-        .small-character-img.super-rare { border: 2px solid var(--red); }
-
-        .item-box, .price-box {
-            height: 48px;
-            min-width: 48px;
-            padding: 0 10px;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .item-box {
-            background-color: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--gold);
-        }
-
-        .item-box .item-title {
-            color: var(--gold);
-            font-size: 12px;
-            font-weight: 700;
-            font-family: var(--font-mono);
-        }
-        .item-box .item-count {
-            color: var(--white);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .price-box {
-            margin-left: auto; /* 가격을 오른쪽으로 밀어냄 */
-            background-color: rgba(100, 255, 218, 0.1);
-            border: 1px solid var(--green);
-            color: var(--green);
-            font-size: 18px;
-            font-weight: 700;
-            font-family: var(--font-mono);
-        }
-
-        /* 오버레이 및 기타 요소 */
-        #tsparticles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-        }
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--dark-navy);
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            z-index: 2000; transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .spinner {
-            border: 4px solid var(--lightest-navy);
-            border-top: 4px solid var(--green);
-            border-radius: 50%; width: 50px; height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        #copyMessage {
-            position: fixed; top: 20px; right: 20px; transform: translateX(120%);
-            background: var(--light-navy); color: var(--green);
-            padding: 15px 20px; border-radius: 4px;
-            display: none; align-items: center; gap: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-            border-left: 3px solid var(--green);
-        }
-        #copyMessage.show { display: flex; transform: translateX(0); }
-        .copy-icon { width: 20px; height: 20px; }
-        .copy-icon svg { fill: var(--green); }
-
-        #skinInfoPopup {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(10, 25, 47, 0.95);
-            border: 1px solid var(--lightest-navy);
-            border-radius: 8px; padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 3000; width: 90vw; max-width: 800px;
-            max-height: 90vh; box-sizing: border-box; overflow: auto;
-        }
-        #skinInfoPopupImage {
-            display: block; width: 100%; height: auto; border-radius: 5px;
-        }
-
-        /* 반응형 디자인 */
-        @media (max-width: 1024px) {
-            .main-container {
-                flex-direction: column;
+        #skinInfoTrigger {
+		    position: relative;
+		}
+		.skin-tooltip-icon {
+		    display: inline-block;
+		    background-color: #ff4081;
+		    color: white;
+		    border-radius: 50%;
+		    width: 16px;
+		    height: 16px;
+		    text-align: center;
+		    line-height: 16px;
+		    font-size: 12px;
+		    font-weight: bold;
+		    margin-left: 4px;
+		    user-select: none;
+		    vertical-align: middle;
+		}
+		#skinInfoPopup {
+		    display: none;
+		    position: fixed;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%);
+		    background-color: rgba(30, 30, 30, 0.95);
+		    border: 2px solid #ff4081;
+		    border-radius: 10px;
+		    padding: 15px;
+		    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+		    z-index: 3000;
+		    width: calc(100vw - 40px);
+		    max-width: 800px;
+		    max-height: 90vh;
+		    box-sizing: border-box;
+		    overflow: auto;
+		}
+		#skinInfoPopupImage {
+		    display: block;
+		    width: 100%;
+		    height: auto;
+		    max-height: calc(90vh - 34px - 30px);
+		    border-radius: 5px;
+		    object-fit: contain;
+		}
+		
+		@media (max-width: 768px) {
+            #results .content-container {
+                grid-template-columns: 1fr; /* 모바일에서는 1열로 표시 */
             }
-            .filter-sidebar {
-                width: 100%;
-                height: auto;
-                position: static;
-                border-right: none;
-                border-bottom: 1px solid var(--lightest-navy);
-                padding: 20px;
-            }
-            .results-main-area {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            #results {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            .character-grid {
-                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-                gap: 10px;
-            }
-            .character-box { height: 120px; }
-            .character-img { height: 60px; }
-            .character-name { font-size: 12px; }
-        }
+		    .character-grid {
+		        grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
+		        gap: 10px;
+		    }
+		    .character-box { height: 125px; padding: 8px; }
+		    .character-box .character-img { width: 60px; height: 70px; margin-bottom: 5px; }
+		    .character-box .character-name { font-size: 14px; }
+		    .spinbox-container input[type="number"] { width: 45px; }
+		    #filterButton { font-size: 16px; padding: 12px; }
+		    .result-item { padding: 12px; }
+		    .small-character-img { width: 40px; height: 40px; }
+            .item-images, .item-info-container { gap: 5px; }
+		    #copyInstruction { font-size: 1em; }
+		    #copyMessage { font-size: 1em; padding: 15px 20px; }
+		    .item-box { width: 50px; height: 40px; }
+            .price-box { height: 40px; font-size: 14px; padding: 0 10px;}
+		    .item-box .item-title { font-size: 10px; margin-bottom: 2px; }
+		    .item-box .item-count { font-size: 10px; }
+		    #skinInfoPopup { padding: 10px; width: calc(100vw - 30px); }
+		    #skinInfoPopupImage { max-height: calc(90vh - 24px - 20px); }
+		}
     </style>
 </head>
 <body>
@@ -408,10 +516,23 @@
         <div class="spinner"></div>
     </div>
     <div id="tsparticles"></div>
+    <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
+    <div class="character-grid" id="characterGrid"></div>
+    <button id="filterButton">Apply Filter</button>
+	<div id="copyInstruction">
+	  All accounts have the
+	  <strong style="color: skyblue;">
+	    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
+	      Klukai skin & colphne skin <span class="skin-tooltip-icon">?</span>
+	    </span>
+	  </strong><br>
+	  ※ Click on an item to copy its key<br>$1 = KRW1400
+	</div>
+    <div id="results"></div>
     <div id="copyMessage">
         <div class="copy-icon">
             <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
             </svg>
         </div>
         <span>Copied</span>
@@ -420,43 +541,11 @@
       <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
     </div>
 
-    <div class="main-container">
-        <aside class="filter-sidebar">
-            <header class="sidebar-header">
-                <h1>GIRLS FRONTLINE 2</h1>
-                <h2>ACCOUNT FINDER</h2>
-            </header>
-            
-            <div class="character-grid" id="characterGrid">
-                <!-- JS로 생성 -->
-            </div>
-            
-            <div class="sidebar-footer">
-                <div id="copyInstruction">
-                  All accounts have the
-                  <strong style="color: var(--green);">
-                    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
-                      Klukai & colphne skin <span class="skin-tooltip-icon">?</span>
-                    </span>
-                  </strong><br>
-                  ※ Click on an item to copy its key<br>$1 = KRW1400
-                </div>
-                <button id="filterButton">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.46L22 3z"></path></svg>
-                    <span>Apply Filter</span>
-                </button>
-            </div>
-        </aside>
-
-        <main class="results-main-area">
-            <div id="results">
-                <!-- JS로 생성 -->
-            </div>
-        </main>
-    </div>
-
     <script>
-        // 기존 JS 코드는 변경 없이 그대로 사용합니다.
+        // --- 기존 스크립트 코드 시작 ---
+        // (기존의 모든 JS 코드는 변경 없이 여기에 위치합니다. displayResults 함수만 아래의 새 버전으로 교체됩니다.)
+        // ... (생략된 기존 JS 코드) ...
+
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -485,7 +574,6 @@
                 window.location.reload(true);
                 return;
             }
-
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
@@ -493,33 +581,112 @@
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
-                    optimizeImages();
-                    optimizeParticles();
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        const results = document.getElementById('results');
+                        if (results) {
+                            results.style.willChange = 'scroll-position';
+                            results.style.webkitOverflowScrolling = 'touch';
+                            results.style.overscrollBehavior = 'contain';
+                            results.style.contain = 'strict';
+                            let lastScrollTime = 0;
+                            const scrollThreshold = 16;
+                            results.addEventListener('scroll', function(e) {
+                                const now = performance.now();
+                                if (now - lastScrollTime >= scrollThreshold) {
+                                    lastScrollTime = now;
+                                    if (!results.isScrolling) {
+                                        results.isScrolling = true;
+                                        results.classList.add('scrolling');
+                                        document.body.classList.add('is-scrolling');
+                                    }
+                                    clearTimeout(results.scrollEndTimer);
+                                    results.scrollEndTimer = setTimeout(function() {
+                                        results.isScrolling = false;
+                                        results.classList.remove('scrolling');
+                                        document.body.classList.remove('is-scrolling');
+                                    }, 100);
+                                }
+                            }, { passive: true });
+                            results.addEventListener('touchstart', function() {
+                                results.classList.add('scrolling');
+                                document.body.classList.add('is-scrolling');
+                            }, { passive: true });
+                            results.addEventListener('touchend', function() {
+                                setTimeout(function() {
+                                    results.classList.remove('scrolling');
+                                    document.body.classList.remove('is-scrolling');
+                                }, 100);
+                            }, { passive: true });
+                        }
+                        optimizeImages();
+                        optimizeParticles();
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('초기 필터 적용 에러:', error);
                     loader.classList.add('hidden');
+                    setTimeout(() => loader.style.display = 'none', 500);
                 });
         });
 
         tsParticles.load("tsparticles", {
             particles: {
-                number: { value: 50, density: { enable: true, value_area: 1200 }},
-                shape: { type: "circle" },
-                size: { value: 1, random: { enable: true, minimumValue: 0.5 }},
-                move: { enable: true, speed: 0.5, direction: "none", random: true, straight: false, out_mode: "out" },
-                color: { value: "#8892b0" },
-                opacity: { value: 0.4, random: true }
+                number: { value: 50, density: { enable: true, value_area: 800 }},
+                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
+                size: { value: 3, random: { enable: true, minimumValue: 1 }},
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
+                color: { value: ["#FF0000","#FF7F00","#FFFF00","#00FF00","#0000FF","#4B0082","#8F00FF"] },
+                opacity: { value: 0.8, random: false }
             },
             interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
             retina_detect: true
         });
 
         function optimizeParticles() {
-            const pauseParticles = () => { if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).pause(); };
-            const resumeParticles = () => { if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).play(); };
+            const pauseParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).pause();
+                }
+            };
+            const resumeParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            };
+            const results = document.getElementById('results');
+            if (results) {
+                results.addEventListener('scroll', () => {
+                    if (!results.particlesPaused) {
+                        pauseParticles();
+                        results.particlesPaused = true;
+                        clearTimeout(results.particlesTimer);
+                        results.particlesTimer = setTimeout(() => {
+                            resumeParticles();
+                            results.particlesPaused = false;
+                        }, 200); 
+                    }
+                }, { passive: true });
+                results.addEventListener('touchstart', () => {
+                    if (!results.particlesPaused) {
+                        pauseParticles();
+                        results.particlesPaused = true;
+                    }
+                }, { passive: true });
+                results.addEventListener('touchend', () => {
+                    clearTimeout(results.particlesTimer);
+                    results.particlesTimer = setTimeout(() => {
+                        resumeParticles();
+                        results.particlesPaused = false;
+                    }, 200);
+                }, { passive: true });
+            }
             document.addEventListener('visibilitychange', () => {
-                document.visibilityState === 'hidden' ? pauseParticles() : resumeParticles();
+                if (document.visibilityState === 'hidden') {
+                    pauseParticles();
+                } else {
+                    resumeParticles();
+                }
             });
         }
 
@@ -539,10 +706,14 @@
                         if (parts.length >= 2) {
                             const eng = parts[0];
                             const kor = parts.slice(1).join(' ');
-                            if (eng === 'sabrina' && kor === '사브리나') foundSabrina = true;
+                            if (eng === 'sabrina' && kor === '사브리나') {
+                                foundSabrina = true;
+                            }
                             if (eng && kor) {
                                 characters.push([eng, kor]);
-                                if (!foundSabrina) rareCharacters.push([eng, kor]);
+                                if (!foundSabrina) {
+                                    rareCharacters.push([eng, kor]);
+                                }
                             }
                         }
                     });
@@ -557,58 +728,61 @@
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
-
             const fragment = document.createDocumentFragment();
-
             characters.forEach(([eng, kor]) => {
                 const charBox = document.createElement('div');
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
-
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
                 if (isGenerallyRare) {
-                    charBox.classList.add( (eng.startsWith('gy') || eng.startsWith('to')) ? 'rare' : 'super-rare' );
+                    if (eng.startsWith('gy') || eng.startsWith('to')) {
+                        charBox.classList.add('rare');
+                    } else {
+                        charBox.classList.add('super-rare');
+                    }
                 }
-
                 const img = document.createElement('img');
                 img.src = `Portrait/${kor}.png`;
                 img.alt = kor;
                 img.className = 'character-img';
                 img.loading = 'lazy';
                 img.decoding = 'async';
-
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'character-name';
                 nameSpan.textContent = eng;
-
                 const spinboxContainer = document.createElement('div');
                 spinboxContainer.className = 'spinbox-container';
-
                 const spinbox = document.createElement('input');
                 spinbox.type = 'number';
                 spinbox.id = `${eng}-spin`;
                 spinbox.min = 0;
                 spinbox.max = 8;
                 spinbox.value = 0;
-
+                spinbox.disabled = true;
                 spinboxContainer.appendChild(spinbox);
                 charBox.append(img, nameSpan, spinboxContainer);
                 fragment.appendChild(charBox);
-
                 charBox.addEventListener('click', (e) => {
                     if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox);
                 });
-                spinbox.addEventListener('click', (e) => e.stopPropagation());
+                spinbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if(!charBox.classList.contains('selected')) {
+                        charBox.classList.add('selected');
+                        spinbox.disabled = false;
+                        if(spinbox.value === '0') spinbox.value = '1';
+                    }
+                });
             });
-
             const ticketBox = document.createElement('div');
             ticketBox.className = 'character-box gold-border';
             ticketBox.dataset.engName = 'PickupTicket';
-
             const ticketImg = document.createElement('img');
             ticketImg.src = `Portrait/픽업티켓.png`;
             ticketImg.alt = 'PickupTicket';
             ticketImg.className = 'character-img';
+            ticketImg.loading = 'lazy';
+            ticketImg.decoding = 'async';
             const ticketNameSpan = document.createElement('span');
             ticketNameSpan.className = 'character-name';
             ticketNameSpan.textContent = 'PickupTicket';
@@ -619,26 +793,43 @@
             ticketSpinbox.id = 'PickupTicket-spin';
             ticketSpinbox.min = 0;
             ticketSpinbox.value = 0;
-            
+            ticketSpinbox.disabled = true;
             ticketSpinboxContainer.appendChild(ticketSpinbox);
             ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
             fragment.appendChild(ticketBox);
-
             ticketBox.addEventListener('click', (e) => {
                 if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
             });
-            ticketSpinbox.addEventListener('click', (e) => e.stopPropagation());
-
+            ticketSpinbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!ticketBox.classList.contains('selected')) {
+                    ticketBox.classList.add('selected');
+                    ticketSpinbox.disabled = false;
+                    if(ticketSpinbox.value === '0') ticketSpinbox.value = '1';
+                }
+            });
             characterGrid.appendChild(fragment);
         }
 
         function toggleSelection(charBox) {
             const spinbox = charBox.querySelector('input[type="number"]');
             if(charBox.classList.toggle('selected')) {
-                if(spinbox.value === '0') spinbox.value = '1';
+                spinbox.disabled = false;
+                spinbox.value = spinbox.value === '0' ? '1' : spinbox.value;
             } else {
+                spinbox.disabled = true;
                 spinbox.value = 0;
             }
+        }
+
+        function filterValidCharacters(charString) {
+            const validCharCodes = new Set(characters.map(([eng]) => eng.slice(0, 2)));
+            const charGroups = charString.match(/.{1,3}/g) || [];
+            const validGroups = charGroups.filter(group => {
+                const code = group.slice(0, 2);
+                return validCharCodes.has(code);
+            });
+            return validGroups.join('');
         }
 
         let itemDetailsMap = {};
@@ -651,164 +842,296 @@
                     luaData = {};
                     itemDetailsMap = {};
                     const lines = text.split('\n');
-                    lines.forEach(line => {
-                        const parts = line.trim().split(' ');
-                        if (parts.length < 2) return;
-
-                        const key = parts[0];
-                        let charString = '';
-                        let j = 1;
-                        let itemDetails = { originalText: line, price: 0, guaranteed: line.includes('GUARANTEED'), gemsCount: 0 };
-                        
-                        const priceMatch = line.match(/\$(\d+\.\d+)/);
-                        if (priceMatch) itemDetails.price = parseFloat(priceMatch[1]);
-
-                        while (j < parts.length && !/^\d/.test(parts[j])) {
-                            const match = parts[j].match(/^([a-z]+)(\d+)$/i);
-                            if (match) charString += match[1].slice(0, 2) + match[2];
-                            j++;
+                    let currentSection = null;
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line.startsWith('===') && line.endsWith('===')) {
+                            currentSection = line.slice(4, -4).trim();
+                            continue;
                         }
-                        
-                        const gemsMatch = line.match(/(\d+)PickupTicket/i);
-                        if (gemsMatch) itemDetails.gemsCount = parseInt(gemsMatch[1]);
-                        
-                        luaData[key] = charString;
-                        itemDetailsMap[key] = itemDetails;
-                    });
+                        if (line && !line.startsWith('===') && currentSection !== null) {
+                            const parts = line.split(' ');
+                            if (parts.length < 2) continue;
+                            const key = parts[0];
+                            let charString = '';
+                            let j = 1;
+                            let itemDetails = {
+                                originalText: line,
+                                price: 0,
+                                guaranteed: line.includes('GUARANTEED'),
+                                displayText: '',
+                                gemsCount: 0
+                            };
+                            const priceMatch = line.match(/\$(\d+\.\d+)/);
+                            if (priceMatch) {
+                                itemDetails.price = parseFloat(priceMatch[1]);
+                            }
+                            while (j < parts.length && !/^\d/.test(parts[j])) {
+                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                                if (match) {
+                                    const charName = match[1].toLowerCase();
+                                    const count = match[2];
+                                    charString += charName.slice(0, 2) + count;
+                                }
+                                j++;
+                            }
+                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
+                            if (gemsMatch) {
+                                itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                                itemDetails.gemsText = gemsMatch[0];
+                            }
+                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
+                            luaData[key] = charString;
+                            itemDetailsMap[key] = itemDetails;
+                        }
+                    }
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
+
+		function generateRareSignature(charString) {
+			const chars = charString.match(/.{1,3}/g) || [];
+			let signature = {};
+			const excludedRareCodes = ['gy', 'to'];
+			chars.forEach(char => {
+				const code = char.slice(0, 2);
+				const count = parseInt(char[2]);
+				const isGenerallyRare = rareCharacters.some(([eng]) => eng.slice(0, 2) === code);
+				const isExcluded = excludedRareCodes.includes(code);
+				if (isGenerallyRare && !isExcluded) {
+					signature[code] = (signature[code] || 0) + count;
+				}
+			});
+			return Object.entries(signature)
+				.sort((a, b) => a[0].localeCompare(b[0]))
+				.map(([code, count]) => `${code}${count}`)
+				.join('');
+		}
 
         function filterData() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('filtering');
-            if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).pause();
-
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const filtered = Object.entries(luaData).filter(([k, v]) => {
-                        const chars = v.match(/.{1,3}/g) || [];
-                        return checkConditions(chars, k);
-                    });
-
-                    const sortedFiltered = filtered.sort(([, valA], [, valB]) => {
-                        const keyA = Object.keys(luaData).find(k => luaData[k] === valA);
-                        const keyB = Object.keys(luaData).find(k => luaData[k] === valB);
-                        return itemDetailsMap[keyB].price - itemDetailsMap[keyA].price;
-                    });
-                    
-                    displayResults(Object.fromEntries(sortedFiltered));
-                    
-                    resultsDiv.classList.remove('filtering');
-                    if (window.tsParticles?.domItem(0)) window.tsParticles.domItem(0).play();
-                    resolve();
-                }, 100);
-            });
+            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                window.tsParticles.domItem(0).pause();
+            }
+            setTimeout(() => {
+                let filtered = {};
+                for(const [k, v] of Object.entries(luaData)) {
+                    const chars = v.match(/.{1,3}/g)||[];
+                    if(checkConditions(chars, k)) filtered[k] = v;
+                }
+                const sortedKeys = Object.keys(filtered).sort((a, b) => {
+                    return itemDetailsMap[b].price - itemDetailsMap[a].price;
+                });
+                const final = {};
+                sortedKeys.forEach(key => {
+                    final[key] = filtered[key];
+                });
+                for (const key in final) {
+                    itemDetailsMap[key].rareSignature = generateRareSignature(final[key]);
+                }
+                displayResults(final);
+                resultsDiv.classList.remove('filtering');
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            }, 200);
         }
-        
+
+        function getSelectedCharacterSum(luaString) {
+            const chars = luaString.match(/.{1,3}/g) || [];
+            let sum = 0;
+            chars.forEach(char => {
+                const name = char.slice(0, 2);
+                const num = parseInt(char[2]);
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName.startsWith(name));
+                if (box && box.classList.contains('selected')) {
+                    sum += num;
+                }
+            });
+            return sum;
+        }
+
         function checkConditions(chars, itemKey) {
             const count = {};
             chars.forEach(c => {
-                const name = c.slice(0, 2);
+                const name = c.slice(0,2);
                 const num = parseInt(c[2]);
-                count[name] = (count[name] || 0) + num;
+                count[name] = (count[name]||0)+num;
             });
-
-            const selectedChars = document.querySelectorAll('.character-box.selected');
-            if (selectedChars.length === 0) return true;
-
-            for(const box of selectedChars) {
-                const eng = box.dataset.engName;
-                const required = parseInt(box.querySelector('input').value);
-                
-                if (eng === 'PickupTicket') {
-                    if ((itemDetailsMap[itemKey]?.gemsCount || 0) < required) return false;
-                } else {
-                    if ((count[eng.slice(0, 2)] || 0) < required) return false;
+            const characterCondition = characters.every(([eng, kor]) => {
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName === eng);
+                if(box && box.classList.contains('selected')){
+                    return (count[eng.slice(0,2)] || 0) >=
+                        parseInt(box.querySelector('input').value);
+                }
+                return true;
+            });
+            if (!characterCondition) {
+                return false;
+            }
+            const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
+            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
+                const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
+                const itemDetails = itemDetailsMap[itemKey];
+                const hasTickets = itemDetails?.gemsCount || 0;
+                if (hasTickets < requiredTickets) {
+                    return false;
                 }
             }
             return true;
         }
 
+        function optimizeImages() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) {
+                    img.loading = 'lazy';
+                }
+                if (!img.hasAttribute('decoding')) {
+                    img.decoding = 'async';
+                }
+            });
+            const imagesToPreload = new Set();
+            characters.slice(0, 10).forEach(([_, name]) => {
+                imagesToPreload.add(`Portrait/${name}.png`);
+            });
+            imagesToPreload.add('Portrait/픽업티켓.png');
+            function preloadImages() {
+                const imagePromises = Array.from(imagesToPreload).map(src => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.decoding = 'async';
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                        img.src = src;
+                    });
+                });
+                return Promise.all(imagePromises);
+            }
+            preloadImages();
+        }
+
+        // --- 교체된 displayResults 함수 ---
         function displayResults(data) {
-		    const res = document.getElementById('results');
-		    res.innerHTML = '';
-		    const fragment = document.createDocumentFragment();
-		
-		    Object.entries(data).forEach(([k, charValue]) => {
-		        const item = document.createElement('div');
-		        item.className = 'result-item';
-		        item.dataset.itemKey = k;
-		
-		        const itemDetails = itemDetailsMap[k];
-		        const imgs = document.createElement('div');
-		        imgs.className = 'item-images';
-		
-		        const charImages = [];
-		        const charPattern = /([a-z]{2})(\d)/g;
-		        let match;
-		        while ((match = charPattern.exec(charValue)) !== null) {
-		            const [ , code, count] = match;
-		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
-		            if (charInfo) {
+            const res = document.getElementById('results');
+            res.scrollTop = 0;
+        
+            const fragment = document.createDocumentFragment();
+            const container = document.createElement('div');
+            container.className = 'content-container';
+            fragment.appendChild(container);
+        
+            const sortedKeys = Object.keys(data).sort((a, b) => {
+                return itemDetailsMap[b].price - itemDetailsMap[a].price;
+            });
+        
+            sortedKeys.forEach(k => {
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.dataset.itemKey = k;
+        
+                const charValue = data[k];
+                const itemDetails = itemDetailsMap[k];
+        
+                // 캐릭터 이미지들을 담을 컨테이너
+                const charImgsContainer = document.createElement('div');
+                charImgsContainer.className = 'item-images';
+        
+                const charImages = [];
+                const charPattern = /([a-z]{2})(\d)/g;
+                let match;
+        
+                while ((match = charPattern.exec(charValue)) !== null) {
+                    const code = match[1];
+                    const count = parseInt(match[2]);
+                    const charInfo = characters.find(([eng]) => eng.startsWith(code));
+                    
+                    if (charInfo) {
                         const [engName, korName] = charInfo;
-		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-		                for (let i = 0; i < parseInt(count); i++) {
-		                    charImages.push({ src: `Portrait/${korName}.png`, alt: korName, isRare: isGenerallyRare, engName: engName });
-		                }
-		            }
-		        }
-		
-		        charImages.forEach(imgData => {
-		            const img = document.createElement('img');
-		            img.src = imgData.src;
-		            img.alt = imgData.alt;
-		            img.className = 'small-character-img';
-		            img.loading = 'lazy';
-		            img.decoding = 'async';
-                    if (imgData.isRare) {
-                        img.classList.add( (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) ? 'rare' : 'super-rare' );
+                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        
+                        for (let i = 0; i < count; i++) {
+                            charImages.push({
+                                src: `Portrait/${korName}.png`,
+                                alt: korName,
+                                isRare: isGenerallyRare,
+                                engName: engName
+                            });
+                        }
                     }
-		            imgs.appendChild(img);
-		        });
-		
-		        const papashaImg = document.createElement('img');
-		        papashaImg.src = 'Portrait/파파샤.png';
-		        papashaImg.alt = '파파샤';
-		        papashaImg.className = 'small-character-img';
-		        imgs.appendChild(papashaImg);
-		
-		        if (itemDetails.gemsCount > 0) {
-		            const gemsBox = document.createElement('div');
-		            gemsBox.className = 'item-box';
-		            gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-		            imgs.appendChild(gemsBox);
-		        }
-		
-		        if (itemDetails.guaranteed) {
-		            const guaranteedBox = document.createElement('div');
-		            guaranteedBox.className = 'item-box';
-		            guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
-		            imgs.appendChild(guaranteedBox);
-		        }
+                }
+        
+                charImages.forEach(imgData => {
+                    const img = document.createElement('img');
+                    img.src = imgData.src;
+                    img.alt = imgData.alt;
+                    img.className = 'small-character-img';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+        
+                    if (imgData.isRare) {
+                        if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
+                    }
+                    charImgsContainer.appendChild(img);
+                });
+        
+                const papashaImg = document.createElement('img');
+                papashaImg.src = 'Portrait/파파샤.png';
+                papashaImg.alt = '파파샤';
+                papashaImg.className = 'small-character-img';
+                papashaImg.loading = 'lazy';
+                papashaImg.decoding = 'async';
+                charImgsContainer.appendChild(papashaImg);
+                
+                // 정보(티켓, 가격 등)를 담을 컨테이너
+                const infoContainer = document.createElement('div');
+                infoContainer.className = 'item-info-container';
+
+                if (itemDetails.gemsCount > 0) {
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box';
+                    gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    infoContainer.appendChild(gemsBox);
+                }
+        
+                if (itemDetails.guaranteed) {
+                    const guaranteedBox = document.createElement('div');
+                    guaranteedBox.className = 'item-box';
+                    guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
+                    infoContainer.appendChild(guaranteedBox);
+                }
 
                 const priceBox = document.createElement('div');
                 priceBox.className = 'price-box';
                 priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
-                imgs.appendChild(priceBox);
-		
-		        item.appendChild(imgs);
-		        item.addEventListener('click', () => copyToClipboard(item));
-		        fragment.appendChild(item);
-		    });
-		
-		    res.appendChild(fragment);
-		}
+                infoContainer.appendChild(priceBox);
+
+                // 카드에 캐릭터 이미지들과 정보 컨테이너를 추가
+                item.appendChild(charImgsContainer);
+                item.appendChild(infoContainer);
+                
+                item.addEventListener('click', () => copyToClipboard(item));
+                container.appendChild(item);
+            });
+        
+            res.innerHTML = '';
+            res.appendChild(fragment);
+        
+            document.getElementById('copyInstruction').style.display = 'block';
+        }
 
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
             const itemDetails = itemDetailsMap[itemKey];
             if (!itemDetails) return;
-            navigator.clipboard.writeText(itemDetails.originalText).then(
+            const originalText = itemDetails.originalText;
+            navigator.clipboard.writeText(originalText).then(
                 () => showCopyMessage(),
                 err => console.error('Copy failed: ', err)
             );
@@ -816,13 +1139,15 @@
 
         function showCopyMessage(){
             const msg = document.getElementById('copyMessage');
-            if(msg.classList.contains('show')) return;
             msg.classList.add('show');
-            setTimeout(() => msg.classList.remove('show'), 2000);
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 2000);
         }
-        
-        function getSelectedCharacters(){
-		    return [...document.querySelectorAll('.character-box.selected')]
+
+		function getSelectedCharacters(){
+		    return [...document.getElementsByClassName('character-box')]
+		        .filter(b => b.classList.contains('selected'))
 		        .map(b => {
 		            const engName = b.dataset.engName;
 		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
@@ -832,57 +1157,66 @@
 		}
 
         function throttle(func, delay) {
-            let inThrottle;
+            let lastCall = 0;
             return function(...args) {
-                if (!inThrottle) {
-                    func.apply(this, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, delay);
+                const now = Date.now();
+                if (now - lastCall >= delay) {
+                    lastCall = now;
+                    return func.apply(this, args);
                 }
             };
         }
 
-        const throttledFilterHandler = throttle(() => {
-            const resultsArea = document.querySelector('.results-main-area');
-            if (resultsArea) resultsArea.scrollTop = 0;
-            
-            filterData().then(() => {
+        const throttledFilterHandler = throttle(function() {
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            loadData().then(() => {
+                filterData();
                 gtag('event', 'apply_filter', {
                     'selected_characters': getSelectedCharacters()
                 });
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error('필터 적용 에러:', error);
             });
         }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
 
-        function optimizeImages() {
-            document.querySelectorAll('img:not([loading])').forEach(img => {
-                img.loading = 'lazy';
-                img.decoding = 'async';
-            });
-        }
-        
-		document.addEventListener('DOMContentLoaded', () => {
-		    const skinTrigger = document.getElementById('skinInfoTrigger');
-		    const skinPopup = document.getElementById('skinInfoPopup');
-		    if (!skinTrigger || !skinPopup) return;
-		
-		    const showPopup = () => skinPopup.style.display = 'block';
-		    const hidePopup = () => skinPopup.style.display = 'none';
-		
-		    skinTrigger.addEventListener('click', (e) => {
-		        e.stopPropagation();
-		        skinPopup.style.display === 'block' ? hidePopup() : showPopup();
-		    });
-		
-		    document.addEventListener('click', (e) => {
-		        if (skinPopup.style.display === 'block' && !skinPopup.contains(e.target)) {
-		            hidePopup();
-		        }
-		    });
-		});
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).pause();
+                }
+            } else {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const skinTriggerElement = document.getElementById('skinInfoTrigger');
+            const skinPopupElement = document.getElementById('skinInfoPopup');
+            const closePopup = (e) => {
+                if (skinPopupElement.style.display === 'block' && !skinPopupElement.contains(e.target)) {
+                    skinPopupElement.style.display = 'none';
+                    document.removeEventListener('click', closePopup);
+                }
+            };
+            if (skinTriggerElement && skinPopupElement) {
+                skinTriggerElement.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (skinPopupElement.style.display === 'block') {
+                        skinPopupElement.style.display = 'none';
+                    } else {
+                        skinPopupElement.style.display = 'block';
+                        // 팝업이 열릴 때만 바깥 클릭 이벤트를 등록
+                        setTimeout(() => document.addEventListener('click', closePopup), 0);
+                    }
+                });
+            }
+        });
+
     </script>
 </body>
 </html>
