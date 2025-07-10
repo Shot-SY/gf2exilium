@@ -654,20 +654,24 @@
                 color: {
                     value: ["#ff4081", "#f50057", "#D32F2F", "#ff9800", "#FFD700", "#4a148c"]
                 },
-                // --- 수정된 부분 시작 ---
                 opacity: {
                     value: { min: 0, max: 1 },
                     animation: {
                         enable: true,
-                        // 속도 범위를 더 높고 좁게 설정하여 '느린' 파티클을 제거
-                        speed: { min: 8, max: 15 },
+                        speed: 4,
                         sync: false,
-                        startValue: "random",
-                        // 애니메이션 모드를 명시하여 의도치 않은 동작 방지 (기본값이지만 명확히 함)
-                        mode: "auto"
+                        startValue: "random"
+                    }
+                },
+                // --- 회전 효과 추가 ---
+                rotate: {
+                    animation: {
+                        enable: true, // 회전 애니메이션 활성화
+                        speed: 10,    // 요청하신 회전 속도
+                        sync: false   // 각 파티클이 독립적으로 회전
                     }
                 }
-                // --- 수정된 부분 끝 ---
+                // --- 추가 끝 ---
             },
             interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
             retina_detect: true
