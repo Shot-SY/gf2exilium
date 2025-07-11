@@ -42,8 +42,6 @@
 	        position: relative;
 	        z-index: 1;
 	        transform: translateZ(0);
-	        /* [제거] 이 속성이 자식 요소의 오버플로우 렌더링을 방해했습니다. */
-	        /* contain: layout paint; */
 	    }
 	    .character-box {
 	        background: rgba(26,26,26,0.2);
@@ -54,7 +52,7 @@
 	        flex-direction: column;
 	        align-items: center;
 	        cursor: pointer;
-	        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, z-index 0s 0.3s; /* z-index 트랜지션 딜레이 조정 */
+	        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, z-index 0s 0.3s;
 	        position: relative;
 	        height: 160px;
 	        border-radius: 15px;
@@ -62,9 +60,6 @@
 	        backdrop-filter: blur(5px);
 	        z-index: 1;
 	        transform: translateZ(0);
-	        /* [제거] 이 속성들이 transform:scale 효과를 잘리게 만드는 주된 원인이었습니다. */
-	        /* contain: layout paint; */
-	        /* overflow: hidden; */
 	    }
 	    .character-box.rare {
 	        border: 2px solid #ff9800;
@@ -74,14 +69,14 @@
 	        background-color: rgba(255,64,129,0.9);
 	        box-shadow: 0 0 20px rgba(255,64,129,0.7), 0 8px 20px rgba(255,64,129,0.8);
 	        transform: translateY(-5px);
-	        z-index: 2; /* 선택된 카드가 일반 카드보다 위에 오도록 설정 */
+	        z-index: 2;
 	    }
 	    @media (hover: hover) and (pointer: fine) {
 	        .character-box:hover {
 	            transform: scale(1.05);
 	            box-shadow: 0 6px 20px rgba(255,255,255,0.2);
-	            z-index: 10; /* [수정 및 유지] 호버 시 z-index를 높여 다른 요소 위에 렌더링되도록 함 */
-	            transition: transform 0.3s, box-shadow 0.3s; /* z-index는 즉시 변경되도록 hover시에만 transition 재정의 */
+	            z-index: 10;
+	            transition: transform 0.3s, box-shadow 0.3s;
 	        }
 	        .result-item:hover {
 	            background: linear-gradient(135deg, #3a3a3a, #2c2c2c);
@@ -337,11 +332,9 @@
 	        contain: layout paint;
 	        gap: 8px;
 	        overflow: auto;
-            /* [추가] ::after 가상 요소 위에 컨텐츠가 표시되도록 position과 z-index를 설정합니다. */
 	        position: relative;
 	        z-index: 1;
 	    }
-
 	    .result-item::after {
 	        content: "";
 	        position: absolute;
@@ -350,10 +343,10 @@
 	        width: 100%;
 	        height: 100%;
 	        background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-	        opacity: 0.15; /* 기존 배경과 자연스럽게 어우러지도록 투명도를 낮게 설정 */
-	        border-radius: 12px; /* .result-item의 border-radius 값과 일치 */
-	        pointer-events: none; /* 클릭 이벤트가 통과되도록 설정 */
-	        z-index: 0; /* 컨텐츠(item-images)보다 아래에 위치하도록 설정 */
+	        opacity: 0.15;
+	        border-radius: 12px;
+	        pointer-events: none;
+	        z-index: 0;
 	    }
 	    .item-box {
 	        display: inline-flex;
@@ -387,7 +380,7 @@
 	        align-items: center;
 	        width: 70px;
 	        height: 60px;
-	        background: linear-gradient(145deg, #104020, #052912); 
+	        background: linear-gradient(145deg, #104020, #052912);
 	        border: 2px solid #27ae60;
 	        box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(46, 204, 113, 0.2);
 	        border-radius: 10px;
@@ -398,6 +391,71 @@
 	        font-weight: 700;
 	        font-family: 'Poppins', sans-serif;
 	        text-shadow: 1px 1px 2px #000;
+	    }
+	    .extras-box {
+	        display: inline-flex;
+	        flex-direction: column;
+	        justify-content: center;
+	        align-items: center;
+	        width: 70px;
+	        height: 60px;
+	        background-color: #ffffff;
+	        color: #121212;
+	        border: 1px solid #ddd;
+	        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	        border-radius: 10px;
+	        cursor: pointer;
+	        font-family: 'Poppins', sans-serif;
+	        transition: transform 0.2s, box-shadow 0.2s;
+	    }
+	    .extras-box:hover {
+	        transform: translateY(-2px);
+	        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+	    }
+	    .extras-title {
+	        font-size: 14px;
+	        font-weight: bold;
+	        text-decoration: underline;
+	    }
+	    .extras-count {
+	        font-size: 12px;
+	        font-weight: 600;
+	        margin-top: 2px;
+	    }
+	    #extrasPopup {
+	        display: none;
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%);
+	        background-color: rgba(30, 30, 30, 0.95);
+	        border: 2px solid #fff;
+	        border-radius: 10px;
+	        padding: 20px;
+	        padding-top: 40px;
+	        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+	        z-index: 4000;
+	        width: calc(100vw - 40px);
+	        max-width: 600px;
+	        max-height: 80vh;
+	        box-sizing: border-box;
+	        overflow-y: auto;
+	    }
+	    #extrasPopupContent {
+	        display: flex;
+	        flex-wrap: wrap;
+	        gap: 10px;
+	        justify-content: center;
+	    }
+	    #extrasPopupClose {
+	        position: absolute;
+	        top: 10px;
+	        right: 15px;
+	        color: #fff;
+	        font-size: 28px;
+	        font-weight: bold;
+	        cursor: pointer;
+	        line-height: 1;
 	    }
 	    #tsparticles {
 	        position: fixed;
@@ -490,7 +548,7 @@
 	            gap: 10px;
 	        }
 	        .character-box {
-	            height: 125px; 
+	            height: 125px;
 	            padding: 8px;
 	        }
 	        .character-box .character-img {
@@ -524,15 +582,15 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-	        .item-box, .price-box {
+	        .item-box, .price-box, .extras-box {
 	            width: 55px;
 	            height: 45px;
 	        }
-	        .item-box .item-title {
+	        .item-box .item-title, .extras-title {
 	            font-size: 10px;
 	            margin-bottom: 2px;
 	        }
-	        .item-box .item-count, .price-box {
+	        .item-box .item-count, .price-box, .extras-count {
 	            font-size: 10px;
 	        }
 	        #skinInfoPopup {
@@ -575,6 +633,11 @@
 	<div id="skinInfoPopup">
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
+
+    <div id="extrasPopup">
+      <span id="extrasPopupClose">×</span>
+      <div id="extrasPopupContent"></div>
+    </div>
 
     <script>
         // --- JAVASCRIPT IS IDENTICAL TO THE PROVIDED ONE ---
@@ -622,7 +685,7 @@
                             results.style.overscrollBehavior = 'contain';
                             results.style.contain = 'strict';
                             let lastScrollTime = 0;
-                            const scrollThreshold = 16; 
+                            const scrollThreshold = 16;
                             results.addEventListener('scroll', function(e) {
                                 const now = performance.now();
                                 if (now - lastScrollTime >= scrollThreshold) {
@@ -715,7 +778,7 @@
                         results.particlesTimer = setTimeout(() => {
                             resumeParticles();
                             results.particlesPaused = false;
-                        }, 200); 
+                        }, 200);
                     }
                 }, { passive: true });
                 results.addEventListener('touchstart', () => {
@@ -995,126 +1058,117 @@
             });
         }
 
+		// [수정됨] 파파샤 로직 변경
 		function displayResults(data) {
 		    const res = document.getElementById('results');
 		    res.scrollTop = 0;
-		    if (res.scrollHandler) {
-		        res.removeEventListener('scroll', res.scrollHandler);
-		    }
 		    const fragment = document.createDocumentFragment();
 		    const container = document.createElement('div');
 		    container.className = 'content-container';
 		    fragment.appendChild(container);
-		    const sortedKeys = Object.keys(data).sort((a, b) => {
-		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
-		    });
-		    const displayItems = sortedKeys;
 
-            // [수정된 부분] 화면 너비에 따라 겹치는 간격을 다르게 설정
-            const isMobile = window.innerWidth <= 768;
+		    const sortedKeys = Object.keys(data).sort((a, b) => itemDetailsMap[b].price - itemDetailsMap[a].price);
+		    const isMobile = window.innerWidth <= 768;
             const overlapMargin = isMobile ? -23 : -30;
 
-		    displayItems.forEach(k => {
+		    sortedKeys.forEach(k => {
 		        const item = document.createElement('div');
 		        item.className = 'result-item';
 		        item.dataset.itemKey = k;
-		        const charValue = data[k];
-		        const itemDetails = itemDetailsMap[k];
+		        item.addEventListener('click', () => copyToClipboard(item));
+
 		        const imgs = document.createElement('div');
 		        imgs.className = 'item-images';
-		        const charImages = [];
+
+		        const charValue = data[k];
+		        const itemDetails = itemDetailsMap[k];
+		        const allCharImages = [];
 		        const charPattern = /([a-z]{2})(\d)/g;
 		        let match;
+
 		        while ((match = charPattern.exec(charValue)) !== null) {
 		            const code = match[1];
 		            const count = parseInt(match[2]);
 		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
 		            if (charInfo) {
-                        const [engName, korName] = charInfo;
+		                const [engName, korName] = charInfo;
 		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
 		                for (let i = 0; i < count; i++) {
-		                    charImages.push({
-		                        src: `Portrait/${korName}.png`,
-		                        alt: korName,
-                                isRare: isGenerallyRare,
-                                engName: engName
-		                    });
+		                    allCharImages.push({ src: `Portrait/${korName}.png`, alt: korName, isRare: isGenerallyRare, engName: engName });
 		                }
 		            }
 		        }
 
-                // 중복 이미지를 겹치게 표시하는 로직
-                let i = 0;
-                while (i < charImages.length) {
-                    const currentImgData = charImages[i];
-                    let count = 1;
-                    // 연속된 중복 이미지 수 계산
-                    while (i + 1 < charImages.length && charImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
+		        const rareCharImages = allCharImages.filter(img => img.isRare);
+		        const nonRareCharImages = allCharImages.filter(img => !img.isRare);
 
-                    if (count > 1) {
-                        // 중복 이미지가 있을 경우, 겹쳐서 표시할 컨테이너 생성
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
+		        // [수정] 파파샤를 비-레어 캐릭터 목록에 추가
+		        nonRareCharImages.push({
+		            src: 'Portrait/파파샤.png',
+		            alt: '파파샤',
+		            isRare: false,
+		            engName: 'papasha'
+		        });
 
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            img.loading = 'lazy';
-                            img.decoding = 'async';
+		        // 1. 레어 캐릭터 표시
+		        let i = 0;
+		        while (i < rareCharImages.length) {
+		            const currentImgData = rareCharImages[i];
+		            let count = 1;
+		            while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
+		                count++;
+		                i++;
+		            }
 
-                            if (currentImgData.isRare) {
-                                if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                    img.classList.add('rare');
-                                } else {
-                                    img.classList.add('super-rare');
-                                }
-                            }
-                            
-                            // 겹침 및 순서, 시각 효과 로직 적용
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
-                            if (j > 0) {
-                                // [수정된 부분] 화면 너비에 따라 계산된 겹침 간격 적용
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        imgs.appendChild(stackContainer);
-                    } else {
-                        // 중복이 없는 단일 이미지 생성
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                        img.loading = 'lazy';
-                        img.decoding = 'async';
-                        if (currentImgData.isRare) {
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                        }
-                        imgs.appendChild(img);
-                    }
-                    i++;
-                }
+		            const processImage = (imgData, isStacked, z) => {
+		                const img = document.createElement('img');
+		                img.src = imgData.src;
+		                img.alt = imgData.alt;
+		                img.className = 'small-character-img';
+		                img.loading = 'lazy';
+		                img.decoding = 'async';
+		                if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) img.classList.add('rare');
+		                else img.classList.add('super-rare');
+		                if (isStacked) {
+		                    img.style.position = 'relative';
+		                    img.style.zIndex = z;
+		                    img.style.marginLeft = `${overlapMargin}px`;
+		                    img.style.filter = 'brightness(70%)';
+		                    img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+		                }
+		                return img;
+		            };
 
-		        const papashaImg = document.createElement('img');
-		        papashaImg.src = 'Portrait/파파샤.png';
-		        papashaImg.alt = '파파샤';
-		        papashaImg.className = 'small-character-img';
-		        papashaImg.loading = 'lazy';
-		        papashaImg.decoding = 'async';
-		        imgs.appendChild(papashaImg);
+		            if (count > 1) {
+		                const stackContainer = document.createElement('div');
+		                stackContainer.style.display = 'flex';
+		                stackContainer.style.alignItems = 'center';
+		                for (let j = 0; j < count; j++) {
+		                    stackContainer.appendChild(processImage(currentImgData, j > 0, count - j));
+		                }
+		                imgs.appendChild(stackContainer);
+		            } else {
+		                imgs.appendChild(processImage(currentImgData, false));
+		            }
+		            i++;
+		        }
+
+		        // 2. 'Extras' 박스 표시 (파파샤 포함)
+		        if (nonRareCharImages.length > 0) {
+		            const extrasBox = document.createElement('div');
+		            extrasBox.className = 'extras-box';
+		            extrasBox.innerHTML = `
+		                <div class="extras-title">Extras</div>
+		                <div class="extras-count">${nonRareCharImages.length}</div>
+		            `;
+		            extrasBox.addEventListener('click', (e) => {
+		                e.stopPropagation();
+		                showExtrasPopup(nonRareCharImages);
+		            });
+		            imgs.appendChild(extrasBox);
+		        }
+
+		        // 3. 고정 아이템 (티켓, 확정권, 가격) 추가
 		        if (itemDetails.gemsCount > 0) {
 		            const gemsBox = document.createElement('div');
 		            gemsBox.className = 'item-box';
@@ -1131,14 +1185,34 @@
                 priceBox.className = 'price-box';
                 priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
                 imgs.appendChild(priceBox);
+
 		        item.appendChild(imgs);
-		        item.addEventListener('click', () => copyToClipboard(item));
 		        container.appendChild(item);
 		    });
+
 		    res.innerHTML = '';
 		    res.appendChild(fragment);
 		    document.getElementById('copyInstruction').style.display = 'block';
 		}
+
+        function showExtrasPopup(images) {
+            const popup = document.getElementById('extrasPopup');
+            const content = document.getElementById('extrasPopupContent');
+            content.innerHTML = '';
+
+            images.forEach(imgData => {
+                const img = document.createElement('img');
+                img.src = imgData.src;
+                img.alt = imgData.alt;
+                img.className = 'small-character-img';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                content.appendChild(img);
+            });
+
+            popup.style.display = 'block';
+        }
+
 
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
@@ -1214,6 +1288,19 @@
 		            }
 		        });
 		    }
+
+            const extrasPopup = document.getElementById('extrasPopup');
+            const extrasCloseBtn = document.getElementById('extrasPopupClose');
+
+            extrasCloseBtn.addEventListener('click', () => {
+                extrasPopup.style.display = 'none';
+            });
+
+            extrasPopup.addEventListener('click', (e) => {
+                if (e.target.id === 'extrasPopup') {
+                    extrasPopup.style.display = 'none';
+                }
+            });
 		});
     </script>
 </body>
