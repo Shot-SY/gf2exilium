@@ -1009,6 +1009,11 @@
 		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
 		    });
 		    const displayItems = sortedKeys;
+
+            // [수정된 부분] 화면 너비에 따라 겹치는 간격을 다르게 설정
+            const isMobile = window.innerWidth <= 768;
+            const overlapMargin = isMobile ? -22 : -35;
+
 		    displayItems.forEach(k => {
 		        const item = document.createElement('div');
 		        item.className = 'result-item';
@@ -1038,7 +1043,7 @@
 		            }
 		        }
 
-                // [수정된 부분] 중복 이미지를 겹치게 표시하는 로직
+                // 중복 이미지를 겹치게 표시하는 로직
                 let i = 0;
                 while (i < charImages.length) {
                     const currentImgData = charImages[i];
@@ -1075,8 +1080,8 @@
                             img.style.position = 'relative';
                             img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
                             if (j > 0) {
-                                img.style.marginLeft = '-35px'; // 이미지를 왼쪽으로 35px 겹치게 함
-                                // [추가된 부분] 뒤에 있는 이미지에 시각적 효과 적용
+                                // [수정된 부분] 화면 너비에 따라 계산된 겹침 간격 적용
+                                img.style.marginLeft = `${overlapMargin}px`;
                                 img.style.filter = 'brightness(75%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
@@ -1212,4 +1217,4 @@
 		});
     </script>
 </body>
-</html>```
+</html>
