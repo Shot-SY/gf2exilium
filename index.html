@@ -284,17 +284,10 @@
 	        backface-visibility: hidden;
 	        contain: paint;
 	        border: 1px solid rgba(255, 255, 255, 0.1);
-            /* [추가] 겹치는 이미지에 입체감을 주기 위한 그림자 효과 */
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-            transition: box-shadow 0.3s;
 	    }
-        /* [추가] 겹치는 이미지를 위한 클래스 */
-        .stacked-character-img {
-            margin-left: -35px;
-        }
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
-	        box-shadow: 0 0 8px rgba(255,152,0,0.6), 2px 2px 5px rgba(0, 0, 0, 0.5);
+	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
 	    }
 	    .character-box.super-rare {
 	        border: 2px solid #D32F2F;
@@ -302,7 +295,7 @@
 	    }
 	    .small-character-img.super-rare {
 	        border: 2px solid #D32F2F;
-	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6), 2px 2px 5px rgba(0, 0, 0, 0.5);
+	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
 	    }
 	    .character-box.gold-border {
 	        border: 2px solid #FFD700;
@@ -521,10 +514,6 @@
 	        .small-character-img {
 	            height: 45px;
 	        }
-            /* [추가] 모바일에서 겹치는 정도를 줄임 */
-            .stacked-character-img {
-                margin-left: -28px;
-            }
 	        .item-images {
 	            gap: 5px;
 	        }
@@ -1048,73 +1037,22 @@
 		                }
 		            }
 		        }
-
-                // [수정된 부분] 중복 이미지를 겹치게 표시하는 로직
-                let i = 0;
-                while (i < charImages.length) {
-                    const currentImgData = charImages[i];
-                    let count = 1;
-                    // 연속된 중복 이미지 수 계산
-                    while (i + 1 < charImages.length && charImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
-
-                    if (count > 1) {
-                        // 중복 이미지가 있을 경우, 겹쳐서 표시할 컨테이너 생성
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        // 겹치는 컨테이너에 오른쪽 마진을 주어 다음 요소와의 간격을 확보
-                        stackContainer.style.marginRight = `${(count - 1) * -15}px`;
-
-
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            img.loading = 'lazy';
-                            img.decoding = 'async';
-
-                            if (currentImgData.isRare) {
-                                if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                    img.classList.add('rare');
-                                } else {
-                                    img.classList.add('super-rare');
-                                }
-                            }
-                            
-                            // 겹침 및 순서 로직 적용
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
-                            if (j > 0) {
-                                // JS 대신 CSS 클래스를 사용하여 겹침 효과 제어
-                                img.classList.add('stacked-character-img');
-                            }
-                            stackContainer.appendChild(img);
+		        charImages.forEach(imgData => {
+		            const img = document.createElement('img');
+		            img.src = imgData.src;
+		            img.alt = imgData.alt;
+		            img.className = 'small-character-img';
+		            img.loading = 'lazy';
+		            img.decoding = 'async';
+                    if (imgData.isRare) {
+                        if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
                         }
-                        imgs.appendChild(stackContainer);
-                    } else {
-                        // 중복이 없는 단일 이미지 생성
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                        img.loading = 'lazy';
-                        img.decoding = 'async';
-                        if (currentImgData.isRare) {
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                        }
-                        imgs.appendChild(img);
                     }
-                    i++;
-                }
-
+		            imgs.appendChild(img);
+		        });
 		        const papashaImg = document.createElement('img');
 		        papashaImg.src = 'Portrait/파파샤.png';
 		        papashaImg.alt = '파파샤';
