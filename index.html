@@ -1012,7 +1012,7 @@
 
             // [수정된 부분] 화면 너비에 따라 겹치는 간격을 다르게 설정
             const isMobile = window.innerWidth <= 768;
-            const overlapMargin = isMobile ? -22 : -29;
+            const overlapMargin = isMobile ? -23 : -30;
 
 		    displayItems.forEach(k => {
 		        const item = document.createElement('div');
@@ -1082,7 +1082,7 @@
                             if (j > 0) {
                                 // [수정된 부분] 화면 너비에 따라 계산된 겹침 간격 적용
                                 img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(75%)';
+                                img.style.filter = 'brightness(70%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
                             stackContainer.appendChild(img);
