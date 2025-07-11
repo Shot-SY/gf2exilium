@@ -337,6 +337,24 @@
 	        contain: layout paint;
 	        gap: 8px;
 	        overflow: auto;
+            /* [추가] ::after 가상 요소 위에 컨텐츠가 표시되도록 position과 z-index를 설정합니다. */
+	        position: relative;
+	        z-index: 1;
+	    }
+
+        /* [추가] result-item에 gplay 배경 텍스처를 추가하는 가상 요소입니다. */
+	    .result-item::after {
+	        content: "";
+	        position: absolute;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
+	        opacity: 0.1; /* 기존 배경과 자연스럽게 어우러지도록 투명도를 낮게 설정 */
+	        border-radius: 12px; /* .result-item의 border-radius 값과 일치 */
+	        pointer-events: none; /* 클릭 이벤트가 통과되도록 설정 */
+	        z-index: 0; /* 컨텐츠(item-images)보다 아래에 위치하도록 설정 */
 	    }
 	    .item-box {
 	        display: inline-flex;
