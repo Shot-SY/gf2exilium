@@ -399,6 +399,69 @@
 	        font-family: 'Poppins', sans-serif;
 	        text-shadow: 1px 1px 2px #000;
 	    }
+        /* [NEW] Extras Box and Popup Styles */
+	    .extras-box {
+	        display: inline-flex;
+	        flex-direction: column;
+	        justify-content: center;
+	        align-items: center;
+	        width: 70px;
+	        height: 60px;
+	        background: linear-gradient(145deg, #333, #1a1a1a);
+	        border: 2px solid #fff; /* 흰색 외곽선 */
+	        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0,0,0,0.3);
+	        border-radius: 10px;
+	        cursor: pointer; /* 클릭 가능하도록 커서 변경 */
+	        transition: background 0.3s, box-shadow 0.3s;
+	    }
+	    .extras-box:hover {
+	        background: linear-gradient(145deg, #444, #2b2b2b);
+	        box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 4px 8px rgba(0,0,0,0.4);
+	    }
+	    .extras-box .extras-text {
+	        color: #fff;
+	        font-size: 14px;
+	        font-weight: bold;
+	        text-decoration: underline; /* 클릭 가능함을 나타내는 밑줄 */
+	    }
+	    .popup-overlay {
+	        display: none;
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100vw;
+	        height: 100vh;
+	        background: rgba(0, 0, 0, 0.7);
+	        z-index: 3999;
+	    }
+	    .extras-popup {
+	        display: none;
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%);
+	        background-color: rgba(30, 30, 30, 0.98);
+	        border: 2px solid #ff4081;
+	        border-radius: 15px;
+	        padding: 20px;
+	        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+	        z-index: 4000;
+	        width: auto;
+	        max-width: 90vw;
+	        max-height: 80vh;
+	        box-sizing: border-box;
+            /* Popup content styling */
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+	    }
+	    .popup-overlay.show, .extras-popup.show {
+	        display: flex;
+	    }
+        /* [END NEW] */
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -524,11 +587,11 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-	        .item-box, .price-box {
+	        .item-box, .price-box, .extras-box {
 	            width: 55px;
 	            height: 45px;
 	        }
-	        .item-box .item-title {
+	        .item-box .item-title, .extras-box .extras-text {
 	            font-size: 10px;
 	            margin-bottom: 2px;
 	        }
@@ -542,6 +605,10 @@
 	        #skinInfoPopupImage {
 	            max-height: calc(90vh - 24px - 20px);
 	        }
+            .extras-popup {
+                padding: 15px;
+                gap: 8px;
+            }
 	    }
 	</style>
 </head>
@@ -575,6 +642,10 @@
 	<div id="skinInfoPopup">
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
+
+    <!-- [NEW] Popup containers will be appended here by JS -->
+    <div id="popup-container"></div>
+
 
     <script>
         // --- JAVASCRIPT IS IDENTICAL TO THE PROVIDED ONE ---
@@ -997,7 +1068,12 @@
 
 		function displayResults(data) {
 		    const res = document.getElementById('results');
+            const popupContainer = document.getElementById('popup-container');
 		    res.scrollTop = 0;
+            // Clear previous results and popups
+            res.innerHTML = '';
+            popupContainer.innerHTML = ''; 
+
 		    if (res.scrollHandler) {
 		        res.removeEventListener('scroll', res.scrollHandler);
 		    }
@@ -1008,21 +1084,24 @@
 		    const sortedKeys = Object.keys(data).sort((a, b) => {
 		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
 		    });
-		    const displayItems = sortedKeys;
 
-            // [수정된 부분] 화면 너비에 따라 겹치는 간격을 다르게 설정
-            const isMobile = window.innerWidth <= 768;
-            const overlapMargin = isMobile ? -23 : -30;
+		    const isMobile = window.innerWidth <= 768;
+		    const overlapMargin = isMobile ? -23 : -30;
 
-		    displayItems.forEach(k => {
+		    sortedKeys.forEach(k => {
 		        const item = document.createElement('div');
 		        item.className = 'result-item';
 		        item.dataset.itemKey = k;
-		        const charValue = data[k];
+
 		        const itemDetails = itemDetailsMap[k];
 		        const imgs = document.createElement('div');
 		        imgs.className = 'item-images';
-		        const charImages = [];
+
+                // Two lists: one for rare characters to display, one for non-rare to put in popup
+                const rareCharImages = [];
+                const nonRareCharImages = []; 
+
+		        const charValue = data[k];
 		        const charPattern = /([a-z]{2})(\d)/g;
 		        let match;
 		        while ((match = charPattern.exec(charValue)) !== null) {
@@ -1030,91 +1109,108 @@
 		            const count = parseInt(match[2]);
 		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
 		            if (charInfo) {
-                        const [engName, korName] = charInfo;
+		                const [engName, korName] = charInfo;
 		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        const targetList = isGenerallyRare ? rareCharImages : nonRareCharImages;
 		                for (let i = 0; i < count; i++) {
-		                    charImages.push({
+		                    targetList.push({
 		                        src: `Portrait/${korName}.png`,
 		                        alt: korName,
-                                isRare: isGenerallyRare,
-                                engName: engName
+		                        isRare: isGenerallyRare,
+		                        engName: engName
 		                    });
 		                }
 		            }
 		        }
 
-                // 중복 이미지를 겹치게 표시하는 로직
-                let i = 0;
-                while (i < charImages.length) {
-                    const currentImgData = charImages[i];
-                    let count = 1;
-                    // 연속된 중복 이미지 수 계산
-                    while (i + 1 < charImages.length && charImages[i + 1].src === currentImgData.src) {
-                        count++;
+                // Function to create and stack images
+                const createAndAppendImages = (imageList, targetContainer) => {
+                    let i = 0;
+                    while (i < imageList.length) {
+                        const currentImgData = imageList[i];
+                        let count = 1;
+                        while (i + 1 < imageList.length && imageList[i + 1].src === currentImgData.src) {
+                            count++; i++;
+                        }
+                        if (count > 1) {
+                            const stackContainer = document.createElement('div');
+                            stackContainer.style.display = 'flex';
+                            stackContainer.style.alignItems = 'center';
+                            for (let j = 0; j < count; j++) {
+                                const img = document.createElement('img');
+                                img.src = currentImgData.src; img.alt = currentImgData.alt; img.className = 'small-character-img';
+                                img.loading = 'lazy'; img.decoding = 'async';
+                                if (currentImgData.isRare) {
+                                    img.classList.add(currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') ? 'rare' : 'super-rare');
+                                }
+                                img.style.position = 'relative'; img.style.zIndex = count - j;
+                                if (j > 0) {
+                                    img.style.marginLeft = `${overlapMargin}px`; img.style.filter = 'brightness(70%)'; img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                                }
+                                stackContainer.appendChild(img);
+                            }
+                            targetContainer.appendChild(stackContainer);
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src; img.alt = currentImgData.alt; img.className = 'small-character-img';
+                            img.loading = 'lazy'; img.decoding = 'async';
+                            if (currentImgData.isRare) {
+                                img.classList.add(currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') ? 'rare' : 'super-rare');
+                            }
+                            targetContainer.appendChild(img);
+                        }
                         i++;
                     }
+                };
 
-                    if (count > 1) {
-                        // 중복 이미지가 있을 경우, 겹쳐서 표시할 컨테이너 생성
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
+                // Create and append rare character images directly
+                createAndAppendImages(rareCharImages, imgs);
 
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            img.loading = 'lazy';
-                            img.decoding = 'async';
+                // Handle non-rare characters
+                const papashaImg = document.createElement('img');
+                papashaImg.src = 'Portrait/파파샤.png'; papashaImg.alt = '파파샤'; papashaImg.className = 'small-character-img';
+                papashaImg.loading = 'lazy'; papashaImg.decoding = 'async';
+                nonRareCharImages.push(papashaImg); // Add Papasha to the non-rare list
 
-                            if (currentImgData.isRare) {
-                                if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                    img.classList.add('rare');
-                                } else {
-                                    img.classList.add('super-rare');
-                                }
-                            }
-                            
-                            // 겹침 및 순서, 시각 효과 로직 적용
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
-                            if (j > 0) {
-                                // [수정된 부분] 화면 너비에 따라 계산된 겹침 간격 적용
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        imgs.appendChild(stackContainer);
-                    } else {
-                        // 중복이 없는 단일 이미지 생성
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                        img.loading = 'lazy';
-                        img.decoding = 'async';
-                        if (currentImgData.isRare) {
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                        }
-                        imgs.appendChild(img);
-                    }
-                    i++;
+                if(nonRareCharImages.length > 0) {
+                    // 1. Create the Extras Box
+                    const extrasBox = document.createElement('div');
+                    extrasBox.className = 'extras-box';
+                    extrasBox.innerHTML = `<span class="extras-text">Extras</span>`;
+                    imgs.appendChild(extrasBox);
+
+                    // 2. Create the Popup and Overlay
+                    const popupId = `popup-${k}`;
+                    const overlayId = `overlay-${k}`;
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'popup-overlay';
+                    overlay.id = overlayId;
+
+                    const popup = document.createElement('div');
+                    popup.className = 'extras-popup';
+                    popup.id = popupId;
+                    
+                    // 3. Populate popup with non-rare images
+                    nonRareCharImages.forEach(imgEl => popup.appendChild(imgEl));
+
+                    // 4. Add click listeners
+                    const closePopup = () => {
+                        overlay.classList.remove('show');
+                        popup.classList.remove('show');
+                    };
+                    extrasBox.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent result-item click
+                        overlay.classList.add('show');
+                        popup.classList.add('show');
+                    });
+                    overlay.addEventListener('click', closePopup);
+
+                    // 5. Append popup and overlay to the dedicated container
+                    popupContainer.append(overlay, popup);
                 }
 
-		        const papashaImg = document.createElement('img');
-		        papashaImg.src = 'Portrait/파파샤.png';
-		        papashaImg.alt = '파파샤';
-		        papashaImg.className = 'small-character-img';
-		        papashaImg.loading = 'lazy';
-		        papashaImg.decoding = 'async';
-		        imgs.appendChild(papashaImg);
+
 		        if (itemDetails.gemsCount > 0) {
 		            const gemsBox = document.createElement('div');
 		            gemsBox.className = 'item-box';
@@ -1131,11 +1227,12 @@
                 priceBox.className = 'price-box';
                 priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
                 imgs.appendChild(priceBox);
+
 		        item.appendChild(imgs);
 		        item.addEventListener('click', () => copyToClipboard(item));
 		        container.appendChild(item);
 		    });
-		    res.innerHTML = '';
+
 		    res.appendChild(fragment);
 		    document.getElementById('copyInstruction').style.display = 'block';
 		}
