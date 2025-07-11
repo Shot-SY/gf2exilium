@@ -1037,22 +1037,72 @@
 		                }
 		            }
 		        }
-		        charImages.forEach(imgData => {
-		            const img = document.createElement('img');
-		            img.src = imgData.src;
-		            img.alt = imgData.alt;
-		            img.className = 'small-character-img';
-		            img.loading = 'lazy';
-		            img.decoding = 'async';
-                    if (imgData.isRare) {
-                        if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
+
+                // [수정된 부분] 중복 이미지를 겹치게 표시하는 로직
+                let i = 0;
+                while (i < charImages.length) {
+                    const currentImgData = charImages[i];
+                    let count = 1;
+                    // 연속된 중복 이미지 수 계산
+                    while (i + 1 < charImages.length && charImages[i + 1].src === currentImgData.src) {
+                        count++;
+                        i++;
                     }
-		            imgs.appendChild(img);
-		        });
+
+                    if (count > 1) {
+                        // 중복 이미지가 있을 경우, 겹쳐서 표시할 컨테이너 생성
+                        const stackContainer = document.createElement('div');
+                        stackContainer.style.display = 'flex';
+                        stackContainer.style.alignItems = 'center';
+
+                        for (let j = 0; j < count; j++) {
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src;
+                            img.alt = currentImgData.alt;
+                            img.className = 'small-character-img';
+                            img.loading = 'lazy';
+                            img.decoding = 'async';
+
+                            if (currentImgData.isRare) {
+                                if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
+                                    img.classList.add('rare');
+                                } else {
+                                    img.classList.add('super-rare');
+                                }
+                            }
+                            
+                            // 겹침 및 순서, 시각 효과 로직 적용
+                            img.style.position = 'relative';
+                            img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
+                            if (j > 0) {
+                                img.style.marginLeft = '-35px'; // 이미지를 왼쪽으로 35px 겹치게 함
+                                // [추가된 부분] 뒤에 있는 이미지에 시각적 효과 적용
+                                img.style.filter = 'brightness(75%)';
+                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                            }
+                            stackContainer.appendChild(img);
+                        }
+                        imgs.appendChild(stackContainer);
+                    } else {
+                        // 중복이 없는 단일 이미지 생성
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                        img.loading = 'lazy';
+                        img.decoding = 'async';
+                        if (currentImgData.isRare) {
+                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
+                                img.classList.add('rare');
+                            } else {
+                                img.classList.add('super-rare');
+                            }
+                        }
+                        imgs.appendChild(img);
+                    }
+                    i++;
+                }
+
 		        const papashaImg = document.createElement('img');
 		        papashaImg.src = 'Portrait/파파샤.png';
 		        papashaImg.alt = '파파샤';
@@ -1162,4 +1212,4 @@
 		});
     </script>
 </body>
-</html>
+</html>```
