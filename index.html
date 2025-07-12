@@ -484,6 +484,65 @@
 	        border-radius: 5px;
 	        object-fit: contain;
 	    }
+
+		/* --- [추가] Extras Box 및 팝업 스타일 --- */
+		.extras-box {
+			background: linear-gradient(145deg, #333, #222);
+			border: 2px solid #ffffff; /* 흰색 외곽선 */
+			box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1);
+			cursor: pointer; /* 클릭 가능 커서 */
+		}
+		.extras-box .item-title {
+			color: #fff;
+			text-decoration: underline; /* 밑줄 추가 */
+		}
+		#extrasPopup {
+			display: none; /* 기본 숨김 */
+			position: fixed;
+			z-index: 4000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.7);
+			-webkit-backdrop-filter: blur(5px);
+    		backdrop-filter: blur(5px);
+		}
+		.extras-popup-content {
+			background-color: #1e1e1e;
+			margin: 10% auto;
+			padding: 25px;
+			border: 2px solid #fff;
+			border-radius: 15px;
+			width: 80%;
+			max-width: 700px;
+			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+			position: relative;
+			animation: messagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		}
+		.close-button {
+			color: #aaa;
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		.close-button:hover,
+		.close-button:focus {
+			color: #fff;
+		}
+		#extras-popup-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: center;
+			padding-top: 10px;
+		}
+		/* --- Extras 스타일 끝 --- */
+
 	    @media (max-width: 768px) {
 	        .character-grid {
 	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
@@ -524,15 +583,15 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-	        .item-box, .price-box {
+	        .item-box, .price-box, .extras-box {
 	            width: 55px;
 	            height: 45px;
 	        }
-	        .item-box .item-title {
+	        .item-box .item-title, .extras-box .item-title {
 	            font-size: 10px;
 	            margin-bottom: 2px;
 	        }
-	        .item-box .item-count, .price-box {
+	        .item-box .item-count, .price-box, .extras-box .item-count {
 	            font-size: 10px;
 	        }
 	        #skinInfoPopup {
@@ -542,6 +601,10 @@
 	        #skinInfoPopupImage {
 	            max-height: calc(90vh - 24px - 20px);
 	        }
+			.extras-popup-content {
+				width: 90%;
+				padding: 20px;
+			}
 	    }
 	</style>
 </head>
@@ -576,8 +639,16 @@
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
 
+	<!-- [추가] Extras 팝업 HTML -->
+	<div id="extrasPopup">
+		<div class="extras-popup-content">
+			<span class="close-button" id="closeExtrasPopup">×</span>
+			<div id="extras-popup-grid"></div>
+		</div>
+	</div>
+
     <script>
-        // --- JAVASCRIPT IS IDENTICAL TO THE PROVIDED ONE ---
+        // --- JAVASCRIPT IS IDENTICAL TO THE PROVIDED ONE UP TO displayResults ---
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -994,150 +1065,180 @@
                 if (!img.hasAttribute('decoding')) img.decoding = 'async';
             });
         }
-
+		
+		// [수정된 함수]
 		function displayResults(data) {
-		    const res = document.getElementById('results');
-		    res.scrollTop = 0;
-		    if (res.scrollHandler) {
-		        res.removeEventListener('scroll', res.scrollHandler);
-		    }
-		    const fragment = document.createDocumentFragment();
-		    const container = document.createElement('div');
-		    container.className = 'content-container';
-		    fragment.appendChild(container);
-		    const sortedKeys = Object.keys(data).sort((a, b) => {
-		        return itemDetailsMap[b].price - itemDetailsMap[a].price;
-		    });
-		    const displayItems = sortedKeys;
+			const res = document.getElementById('results');
+			res.scrollTop = 0;
+			const fragment = document.createDocumentFragment();
+			const container = document.createElement('div');
+			container.className = 'content-container';
+			fragment.appendChild(container);
+			
+			const sortedKeys = Object.keys(data).sort((a, b) => {
+				return itemDetailsMap[b].price - itemDetailsMap[a].price;
+			});
 
-            // [수정된 부분] 화면 너비에 따라 겹치는 간격을 다르게 설정
-            const isMobile = window.innerWidth <= 768;
-            const overlapMargin = isMobile ? -23 : -30;
+			const isMobile = window.innerWidth <= 768;
+			const overlapMargin = isMobile ? -23 : -30;
 
-		    displayItems.forEach(k => {
-		        const item = document.createElement('div');
-		        item.className = 'result-item';
-		        item.dataset.itemKey = k;
-		        const charValue = data[k];
-		        const itemDetails = itemDetailsMap[k];
-		        const imgs = document.createElement('div');
-		        imgs.className = 'item-images';
-		        const charImages = [];
-		        const charPattern = /([a-z]{2})(\d)/g;
-		        let match;
-		        while ((match = charPattern.exec(charValue)) !== null) {
-		            const code = match[1];
-		            const count = parseInt(match[2]);
-		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
-		            if (charInfo) {
-                        const [engName, korName] = charInfo;
-		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-		                for (let i = 0; i < count; i++) {
-		                    charImages.push({
-		                        src: `Portrait/${korName}.png`,
-		                        alt: korName,
-                                isRare: isGenerallyRare,
-                                engName: engName
-		                    });
-		                }
-		            }
-		        }
+			sortedKeys.forEach(k => {
+				const item = document.createElement('div');
+				item.className = 'result-item';
+				item.dataset.itemKey = k;
+				item.addEventListener('click', (e) => {
+					// Extras 박스 내부 클릭은 복사 이벤트 방지
+					if (e.target.closest('.extras-box')) return;
+					copyToClipboard(item)
+				});
 
-                // 중복 이미지를 겹치게 표시하는 로직
-                let i = 0;
-                while (i < charImages.length) {
-                    const currentImgData = charImages[i];
+				const charValue = data[k];
+				const itemDetails = itemDetailsMap[k];
+				const imgsContainer = document.createElement('div');
+				imgsContainer.className = 'item-images';
+				
+				const rareCharImages = [];
+				const extraCharImages = [];
+				const charPattern = /([a-z]{2})(\d)/g;
+				let match;
+
+				while ((match = charPattern.exec(charValue)) !== null) {
+					const code = match[1];
+					const count = parseInt(match[2]);
+					const charInfo = characters.find(([eng]) => eng.startsWith(code));
+					if (charInfo) {
+						const [engName, korName] = charInfo;
+						const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+						const imageData = {
+							src: `Portrait/${korName}.png`,
+							alt: korName,
+							isRare: isGenerallyRare,
+							engName: engName
+						};
+						for (let i = 0; i < count; i++) {
+							if (isGenerallyRare) {
+								rareCharImages.push(imageData);
+							} else {
+								extraCharImages.push(imageData);
+							}
+						}
+					}
+				}
+
+				// 레어 캐릭터 이미지 처리 (기존 로직 유지)
+				let i = 0;
+                while (i < rareCharImages.length) {
+                    const currentImgData = rareCharImages[i];
                     let count = 1;
-                    // 연속된 중복 이미지 수 계산
-                    while (i + 1 < charImages.length && charImages[i + 1].src === currentImgData.src) {
+                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
                         count++;
                         i++;
                     }
-
                     if (count > 1) {
-                        // 중복 이미지가 있을 경우, 겹쳐서 표시할 컨테이너 생성
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
-
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
                             img.alt = currentImgData.alt;
                             img.className = 'small-character-img';
-                            img.loading = 'lazy';
-                            img.decoding = 'async';
-
-                            if (currentImgData.isRare) {
-                                if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                    img.classList.add('rare');
-                                } else {
-                                    img.classList.add('super-rare');
-                                }
+                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
+                                img.classList.add('rare');
+                            } else {
+                                img.classList.add('super-rare');
                             }
-                            
-                            // 겹침 및 순서, 시각 효과 로직 적용
                             img.style.position = 'relative';
-                            img.style.zIndex = count - j; // 첫 번째 이미지가 가장 위에 오도록 z-index 설정
+                            img.style.zIndex = count - j;
                             if (j > 0) {
-                                // [수정된 부분] 화면 너비에 따라 계산된 겹침 간격 적용
                                 img.style.marginLeft = `${overlapMargin}px`;
                                 img.style.filter = 'brightness(70%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
                             stackContainer.appendChild(img);
                         }
-                        imgs.appendChild(stackContainer);
+                        imgsContainer.appendChild(stackContainer);
                     } else {
-                        // 중복이 없는 단일 이미지 생성
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
                         img.className = 'small-character-img';
-                        img.loading = 'lazy';
-                        img.decoding = 'async';
-                        if (currentImgData.isRare) {
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
+                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
                         }
-                        imgs.appendChild(img);
+                        imgsContainer.appendChild(img);
                     }
                     i++;
                 }
 
-		        const papashaImg = document.createElement('img');
-		        papashaImg.src = 'Portrait/파파샤.png';
-		        papashaImg.alt = '파파샤';
-		        papashaImg.className = 'small-character-img';
-		        papashaImg.loading = 'lazy';
-		        papashaImg.decoding = 'async';
-		        imgs.appendChild(papashaImg);
-		        if (itemDetails.gemsCount > 0) {
-		            const gemsBox = document.createElement('div');
-		            gemsBox.className = 'item-box';
-		            gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-		            imgs.appendChild(gemsBox);
-		        }
-		        if (itemDetails.guaranteed) {
-		            const guaranteedBox = document.createElement('div');
-		            guaranteedBox.className = 'item-box';
-		            guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
-		            imgs.appendChild(guaranteedBox);
-		        }
-                const priceBox = document.createElement('div');
-                priceBox.className = 'price-box';
-                priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
-                imgs.appendChild(priceBox);
-		        item.appendChild(imgs);
-		        item.addEventListener('click', () => copyToClipboard(item));
-		        container.appendChild(item);
-		    });
-		    res.innerHTML = '';
-		    res.appendChild(fragment);
-		    document.getElementById('copyInstruction').style.display = 'block';
+				// 파파샤를 Extras에 추가
+				extraCharImages.push({
+					src: 'Portrait/파파샤.png',
+					alt: '파파샤',
+					isRare: false,
+					engName: 'papasha'
+				});
+
+				// Extras 박스 생성
+				if (extraCharImages.length > 0) {
+					const extrasBox = document.createElement('div');
+					// item-box 클래스와 extras-box 클래스를 모두 가짐
+					extrasBox.className = 'item-box extras-box'; 
+					extrasBox.innerHTML = `<div class="item-title">Extras</div><div class="item-count">${extraCharImages.length}</div>`;
+					extrasBox.addEventListener('click', (e) => {
+						e.stopPropagation(); // 부모의 복사 이벤트 방지
+						showExtrasPopup(extraCharImages);
+					});
+					imgsContainer.appendChild(extrasBox);
+				}
+
+				// PTicket, Guaranteed, Price 박스 추가 (기존 로직)
+				if (itemDetails.gemsCount > 0) {
+					const gemsBox = document.createElement('div');
+					gemsBox.className = 'item-box';
+					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+					imgsContainer.appendChild(gemsBox);
+				}
+				if (itemDetails.guaranteed) {
+					const guaranteedBox = document.createElement('div');
+					guaranteedBox.className = 'item-box';
+					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
+					imgsContainer.appendChild(guaranteedBox);
+				}
+				const priceBox = document.createElement('div');
+				priceBox.className = 'price-box';
+				priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
+				imgsContainer.appendChild(priceBox);
+
+				item.appendChild(imgsContainer);
+				container.appendChild(item);
+			});
+
+			res.innerHTML = '';
+			res.appendChild(fragment);
+			document.getElementById('copyInstruction').style.display = 'block';
+		}
+
+		// [새 함수] Extras 팝업 표시
+		function showExtrasPopup(images) {
+			const popup = document.getElementById('extrasPopup');
+			const grid = document.getElementById('extras-popup-grid');
+			grid.innerHTML = ''; // 이전 내용 초기화
+
+			images.forEach(imgData => {
+				const img = document.createElement('img');
+				img.src = imgData.src;
+				img.alt = imgData.alt;
+				img.className = 'small-character-img';
+				img.loading = 'lazy';
+				img.decoding = 'async';
+				// Extras 팝업 내에서는 특별한 테두리 효과 없이 기본 이미지로 표시
+				grid.appendChild(img);
+			});
+
+			popup.style.display = 'block';
 		}
 
         function copyToClipboard(el) {
@@ -1214,6 +1315,21 @@
 		            }
 		        });
 		    }
+
+			// [추가] Extras 팝업 닫기 이벤트 리스너
+			const extrasPopup = document.getElementById('extrasPopup');
+			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
+
+			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
+			
+			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
+
+			// 팝업 외부 클릭 시 닫기
+			window.addEventListener('click', (event) => {
+				if (event.target == extrasPopup) {
+					hideExtrasPopup();
+				}
+			});
 		});
     </script>
 </body>
