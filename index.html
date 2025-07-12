@@ -292,7 +292,6 @@
 	        border: 2px solid #D32F2F;
 	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
 	    }
-		/* --- [수정] 골드 색상 통일 및 조정 --- */
 	    .character-box.gold-border {
 	        border: 2px solid #ffc107;
 	        box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 12px rgba(255, 193, 7, 0.7);
@@ -336,7 +335,6 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-
 	    .result-item::after {
 	        content: "";
 	        position: absolute;
@@ -350,7 +348,6 @@
 	        pointer-events: none;
 	        z-index: 0;
 	    }
-		/* --- [수정] 골드 색상 통일 및 조정 --- */
 	    .item-box {
 	        display: inline-flex;
 	        flex-direction: column;
@@ -483,17 +480,21 @@
 
 		/* --- [수정] Extras Box 및 팝업 스타일 --- */
 		.extras-box {
+			display: inline-flex; /* 텍스트 중앙 정렬을 위해 추가 */
+			justify-content: center; /* 텍스트 중앙 정렬을 위해 추가 */
+			align-items: center; /* 텍스트 중앙 정렬을 위해 추가 */
 			background: linear-gradient(145deg, #333, #222);
-			border: 2px solid #cccccc; /* 흰색 -> 밝은 회색으로 변경 */
-			box-shadow: 0 0 10px rgba(204, 204, 204, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1);
+			border: 2px solid #b0b0b0; /* 색상 톤 다운 */
+			box-shadow: 0 0 10px rgba(176, 176, 176, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1); /* 색상 톤 다운 */
 			cursor: pointer;
 		}
 		.extras-box .item-title {
 			color: #fff;
 			text-decoration: underline;
+			margin-bottom: 0; /* 카운트가 없으므로 margin 제거 */
 		}
 		#extrasPopup {
-			display: none;
+			display: none; /* [오류 수정] 초기에는 반드시 none이어야 함 */
 			position: fixed;
 			z-index: 4000;
 			left: 0;
@@ -502,22 +503,18 @@
 			height: 100%;
 			overflow: auto;
 			background-color: rgba(0,0,0,0.7);
-			/* --- [수정] 애니메이션을 위한 flexbox 중앙 정렬 --- */
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			/* --- [제거] backdrop-filter 제거 --- */
+			align-items: center; /* flex로 변경될 때를 대비해 정렬 속성은 유지 */
+			justify-content: center; /* flex로 변경될 때를 대비해 정렬 속성은 유지 */
 		}
 		.extras-popup-content {
 			background-color: #1e1e1e;
 			padding: 25px;
-			border: 2px solid #cccccc; /* 흰색 -> 밝은 회색으로 변경 */
+			border: 2px solid #b0b0b0; /* 색상 톤 다운 */
 			border-radius: 15px;
 			width: 80%;
 			max-width: 700px;
 			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
 			position: relative;
-			/* --- [제거] margin 및 animation 제거 --- */
 		}
 		.close-button {
 			color: #aaa;
@@ -587,9 +584,9 @@
 	        }
 	        .item-box .item-title, .extras-box .item-title {
 	            font-size: 10px;
-	            margin-bottom: 2px;
+	            margin-bottom: 0;
 	        }
-	        .item-box .item-count, .price-box, .extras-box .item-count {
+	        .item-box .item-count, .price-box {
 	            font-size: 10px;
 	        }
 	        #skinInfoPopup {
@@ -645,9 +642,7 @@
 	</div>
 
     <script>
-        // Javascript 부분은 이전과 동일하며, 변경이 필요하지 않습니다.
-        // 스크롤 및 로딩 최적화, 데이터 로딩 및 필터링, 팝업 표시/숨김 로직 등
-        // 모든 기능이 그대로 정상 작동합니다.
+        // Javascript 부분은 displayResults 함수 내부만 일부 수정되었고 나머지는 동일합니다.
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -1065,6 +1060,7 @@
             });
         }
 		
+		// [수정된 함수]
 		function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
@@ -1179,7 +1175,8 @@
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
 					extrasBox.className = 'item-box extras-box'; 
-					extrasBox.innerHTML = `<div class="item-title">Extras</div><div class="item-count">${extraCharImages.length}</div>`;
+					// [수정] 숫자 카운트 제거
+					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
 					extrasBox.addEventListener('click', (e) => {
 						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
@@ -1227,7 +1224,7 @@
 				img.decoding = 'async';
 				grid.appendChild(img);
 			});
-
+			// [오류 수정] JS에서 flex를 설정하여 팝업을 표시
 			popup.style.display = 'flex';
 		}
 
