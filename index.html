@@ -618,7 +618,7 @@
 	      Klukai skin & colphne skin <span class="skin-tooltip-icon">?</span>
 	    </span>
 	  </strong><br>
-	  ※ Click on an item to copy its key<br>$1 = 1400원
+	  ※ Click item to copy
 	</div>
     <div id="results"></div>
     <div id="copyMessage">
@@ -1209,11 +1209,12 @@
                 const krwPriceRaw = itemDetails.price * 1400;
                 const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
                 
-                // ₩ 기호와 콤마를 포함하여 포맷팅
-                const formattedKrwPrice = '₩' + krwPriceRounded.toLocaleString('ko-KR');
+                // 콤마 없이 '원'을 붙여 포맷팅
+                const formattedKrwPrice = krwPriceRounded.toString() + '원';
 
                 // priceBox의 내용을 달러와 원화 두 줄로 구성합니다.
-                priceBox.innerHTML = `<div>$${usdPrice}</div><div>${formattedKrwPrice}</div>`;
+                // 원화 부분에 인라인 스타일로 흰색을 적용합니다.
+                priceBox.innerHTML = `<div>$${usdPrice}</div><div style="color: white;">${formattedKrwPrice}</div>`;
                 // --- 수정 끝 ---
                 
 				imgsContainer.appendChild(priceBox);
@@ -1332,6 +1333,5 @@
 				}
 			});
 		});
-    </script>
-</body>
+    </script></body>
 </html>
