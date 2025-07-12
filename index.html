@@ -1175,7 +1175,6 @@
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
 					extrasBox.className = 'item-box extras-box'; 
-					// [수정] 숫자 카운트 제거
 					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
 					extrasBox.addEventListener('click', (e) => {
 						e.stopPropagation();
@@ -1196,9 +1195,27 @@
 					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
 					imgsContainer.appendChild(guaranteedBox);
 				}
+                
+                // --- [요청 사항 수정] Price Box 내용 변경 ---
 				const priceBox = document.createElement('div');
 				priceBox.className = 'price-box';
-				priceBox.textContent = `$${itemDetails.price.toFixed(2)}`;
+                // 기존 CSS의 flex 속성을 유지하면서, 컨텐츠를 세로로 쌓기 위해 flex-direction을 변경합니다.
+				priceBox.style.flexDirection = 'column';
+
+                // 달러 가격
+                const usdPrice = itemDetails.price.toFixed(2);
+
+                // 원화 가격 계산 (환율 1400 적용 후 천원 단위 반올림)
+                const krwPriceRaw = itemDetails.price * 1400;
+                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
+                
+                // ₩ 기호와 콤마를 포함하여 포맷팅
+                const formattedKrwPrice = '₩' + krwPriceRounded.toLocaleString('ko-KR');
+
+                // priceBox의 내용을 달러와 원화 두 줄로 구성합니다.
+                priceBox.innerHTML = `<div>$${usdPrice}</div><div>${formattedKrwPrice}</div>`;
+                // --- 수정 끝 ---
+                
 				imgsContainer.appendChild(priceBox);
 
 				item.appendChild(imgsContainer);
@@ -1224,7 +1241,6 @@
 				img.decoding = 'async';
 				grid.appendChild(img);
 			});
-			// [오류 수정] JS에서 flex를 설정하여 팝업을 표시
 			popup.style.display = 'flex';
 		}
 
