@@ -479,23 +479,30 @@
 	        object-fit: contain;
 	    }
 
-		/* --- [수정] Extras Box 및 팝업 스타일 --- */
+		/* --- Extras Box 및 팝업 스타일 --- */
 		.extras-box {
-			display: inline-flex; /* 텍스트 중앙 정렬을 위해 추가 */
-			justify-content: center; /* 텍스트 중앙 정렬을 위해 추가 */
-			align-items: center; /* 텍스트 중앙 정렬을 위해 추가 */
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
 			background: linear-gradient(145deg, #333, #222);
-			border: 2px solid #b0b0b0; /* 색상 톤 다운 */
-			box-shadow: 0 0 10px rgba(176, 176, 176, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1); /* 색상 톤 다운 */
+			border: 2px solid #b0b0b0;
+			box-shadow: 0 0 10px rgba(176, 176, 176, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1);
 			cursor: pointer;
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
 			text-decoration: underline;
-			margin-bottom: 0; /* 카운트가 없으므로 margin 제거 */
+			margin-bottom: 0;
 		}
+        
+        /* --- [신규 추가] Extras 캐릭터 테두리 스타일 --- */
+        .extras-character-border {
+            border: 2px solid #b0b0b0;
+            box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
+        }
+
 		#extrasPopup {
-			display: none; /* [오류 수정] 초기에는 반드시 none이어야 함 */
+			display: none;
 			position: fixed;
 			z-index: 4000;
 			left: 0;
@@ -504,13 +511,13 @@
 			height: 100%;
 			overflow: auto;
 			background-color: rgba(0,0,0,0.7);
-			align-items: center; /* flex로 변경될 때를 대비해 정렬 속성은 유지 */
-			justify-content: center; /* flex로 변경될 때를 대비해 정렬 속성은 유지 */
+			align-items: center;
+			justify-content: center;
 		}
 		.extras-popup-content {
 			background-color: #1e1e1e;
 			padding: 25px;
-			border: 2px solid #b0b0b0; /* 색상 톤 다운 */
+			border: 2px solid #b0b0b0;
 			border-radius: 15px;
 			width: 80%;
 			max-width: 700px;
@@ -643,7 +650,6 @@
 	</div>
 
     <script>
-        // Javascript 부분은 displayResults 함수 내부만 일부 수정되었고 나머지는 동일합니다.
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -842,6 +848,7 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
+		// [수정된 함수]
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -851,14 +858,18 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
+                
                 if (isGenerallyRare) {
-                    // --- [요청 사항 수정] 'st', 'sh' 추가 ---
                     if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) {
                         charBox.classList.add('rare');
                     } else {
                         charBox.classList.add('super-rare');
                     }
+                } else {
+					// Extras 캐릭터에 테두리 클래스 추가
+                    charBox.classList.add('extras-character-border');
                 }
+
                 const img = document.createElement('img');
                 img.src = `Portrait/${kor}.png`;
                 img.alt = kor;
@@ -1136,7 +1147,6 @@
                             img.src = currentImgData.src;
                             img.alt = currentImgData.alt;
                             img.className = 'small-character-img';
-                            // --- [요청 사항 수정] 'st', 'sh' 추가 ---
                             if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
                                 img.classList.add('rare');
                             } else {
@@ -1157,7 +1167,6 @@
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
                         img.className = 'small-character-img';
-                        // --- [요청 사항 수정] 'st', 'sh' 추가 ---
                          if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
                             img.classList.add('rare');
                         } else {
@@ -1223,6 +1232,7 @@
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
+		// [수정된 함수]
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1233,6 +1243,8 @@
 				img.src = imgData.src;
 				img.alt = imgData.alt;
 				img.className = 'small-character-img';
+				// Extras 팝업 이미지에 테두리 클래스 추가
+				img.classList.add('extras-character-border');
 				img.loading = 'lazy';
 				img.decoding = 'async';
 				grid.appendChild(img);
