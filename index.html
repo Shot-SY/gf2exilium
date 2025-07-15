@@ -669,13 +669,13 @@
         });
 
         window.addEventListener('load', () => {
-            const lastLoad = localStorage.getItem('lastLoadTime');
+            /* const lastLoad = localStorage.getItem('lastLoadTime');
             const currentTime = Date.now();
             if (!lastLoad || (currentTime - parseInt(lastLoad)) > 1000) {
                 localStorage.setItem('lastLoadTime', currentTime);
                 window.location.reload(true);
                 return;
-            }
+            } */
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
