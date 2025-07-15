@@ -225,22 +225,20 @@
 	        fill: white;
 	        transform: translateZ(0);
 	    }
-	    #results {
-	        padding: 20px;
-	        height: 800px;
-	        max-height: 800px;
-	        overflow-y: auto;
-	        background-color: rgba(20,20,20,0.8);
-	        border-radius: 15px;
-	        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-	        position: relative;
-	        z-index: 1;
-	        will-change: scroll-position;
-	        -webkit-overflow-scrolling: touch;
-	        overscroll-behavior: contain;
-	        contain: strict;
-	        transform: translateZ(0);
-	    }
+		#results {
+		    padding: 20px;
+		    height: 800px;
+		    max-height: 800px;
+		    overflow-y: auto;
+		    background-color: rgba(20,20,20,0.8);
+		    border-radius: 15px;
+		    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+		    position: relative;
+		    z-index: 1;
+		    will-change: scroll-position;
+		    -webkit-overflow-scrolling: touch;
+		    transform: translateZ(0);
+		}
 	    #results .content-container {
 	        transform: translateZ(0);
 	        will-change: opacity;
@@ -335,7 +333,7 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-	    .result-item::after {
+	    /* .result-item::after {
 	        content: "";
 	        position: absolute;
 	        top: 0;
@@ -347,7 +345,7 @@
 	        border-radius: 12px;
 	        pointer-events: none;
 	        z-index: 0;
-	    }
+	    } */
 	    .item-box {
 	        display: inline-flex;
 	        flex-direction: column;
@@ -691,8 +689,6 @@
                         if (results) {
                             results.style.willChange = 'scroll-position';
                             results.style.webkitOverflowScrolling = 'touch';
-                            results.style.overscrollBehavior = 'contain';
-                            results.style.contain = 'strict';
                             let lastScrollTime = 0;
                             const scrollThreshold = 16; 
                             results.addEventListener('scroll', function(e) {
