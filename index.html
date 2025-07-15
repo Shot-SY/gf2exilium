@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIRLS FRONTLINE 2: EXILIUM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y21MLG0SJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -79,12 +79,22 @@
 	            transition: transform 0.3s, box-shadow 0.3s;
 	        }
 	        .result-item:hover {
-	            background: linear-gradient(135deg, #3a3a3a, #2c2c2c);
-	            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-	            border-color: rgba(255, 64, 129, 0.5);
-	            transform: translateY(-3px);
-	            z-index: 5;
-	        }
+				background: linear-gradient(135deg, #33363d, #2a2c30);
+				box-shadow: 0 6px 25px rgba(0,0,0,0.7), 0 0 10px rgba(255, 64, 129, 0.4);
+				transform: translateY(-3px);
+				border-color: rgba(255, 64, 129, 0.5);
+			}
+			.result-item:hover::before {
+				opacity: 1;
+			}
+			.small-character-img:hover {
+				transform: scale(1.1);
+				z-index: 10 !important;
+			}
+			.extras-box:hover {
+				background: rgba(176, 176, 176, 0.2);
+				border-color: rgba(176, 176, 176, 0.8);
+			}
 	    }
 	    .character-img {
 	        width: 80px;
@@ -252,31 +262,54 @@
 	    #results.scrolling .result-item {
 	        transition: none !important;
 	    }
-	    .result-item {
-	        margin-bottom: 20px;
-	        padding: 15px;
-	        background: linear-gradient(135deg, #2a2a2a, #202020);
-	        cursor: pointer;
-	        transition: background 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.2s;
-	        border-radius: 12px;
-	        border: 1px solid rgba(255, 255, 255, 0.1);
-	        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-	        display: flex;
-	        flex-direction: column;
-	        position: relative;
-	        transform: translateZ(0);
-	        contain: layout paint;
-	        z-index: 1;
-	    }
+
+		/* --- NEW Result Item Styles --- */
+		.result-item {
+			margin-bottom: 15px;
+			padding: 12px 20px;
+			background: linear-gradient(135deg, #202228, #1a1c20);
+			cursor: pointer;
+			transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+			border-radius: 12px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 2px rgba(0,0,0,0.4);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 15px;
+			position: relative;
+			overflow: hidden;
+		}
+		.result-item::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 4px;
+			height: 100%;
+			background: linear-gradient(180deg, #ff4081, #f50057);
+			opacity: 0.6;
+			transition: opacity 0.3s;
+		}
+
+		.item-images, .result-info-right {
+			display: flex;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.result-info-right {
+			justify-content: flex-end;
+		}
+
 	    .small-character-img {
-	        width: auto;
-	        height: 60px;
-	        object-fit: contain;
-	        border-radius: 8px;
-	        transform: translateZ(0);
-	        backface-visibility: hidden;
-	        contain: paint;
-	        border: 1px solid rgba(255, 255, 255, 0.1);
+			height: 50px;
+			width: auto;
+			object-fit: contain;
+			border-radius: 8px;
+			transition: transform 0.2s;
+			border: 1px solid rgba(255, 255, 255, 0.1);
 	    }
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
@@ -322,75 +355,58 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-	    .item-images {
-	        display: flex;
-	        align-items: center;
-	        flex-wrap: wrap;
-	        transform: translateZ(0);
-	        contain: layout paint;
-	        gap: 8px;
-	        overflow: auto;
-	        position: relative;
-	        z-index: 1;
-	    }
-	    .result-item::after {
-	        content: "";
-	        position: absolute;
-	        top: 0;
-	        left: 0;
-	        width: 100%;
-	        height: 100%;
-	        background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-	        opacity: 0.15;
-	        border-radius: 12px;
-	        pointer-events: none;
-	        z-index: 0;
-	    }
-	    .item-box {
-	        display: inline-flex;
-	        flex-direction: column;
-	        justify-content: center;
-	        align-items: center;
-	        width: 70px;
-	        height: 60px;
-	        background: linear-gradient(145deg, #4d3e00, #332a00);
-	        border: 2px solid #ffc107;
-	        box-shadow: 0 0 10px rgba(255, 193, 7, 0.6), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255, 215, 0, 0.2);
-	        border-radius: 10px;
-	        transform: translateZ(0);
-	        contain: layout paint;
-	    }
-	    .item-box .item-title {
-	        color: #ffc107;
-	        font-size: 14px;
-	        font-weight: bold;
-	        text-shadow: 1px 1px 2px #000;
-	        margin-bottom: 4px;
-	    }
-	    .item-box .item-count {
-	        color: #fff;
-	        font-size: 14px;
-	        font-weight: 600;
-		    text-shadow: 1px 1px 2px #000;
-	    }
-	    .price-box {
-	        display: inline-flex;
-	        justify-content: center;
-	        align-items: center;
-	        width: 70px;
-	        height: 60px;
-	        background: linear-gradient(145deg, #104020, #052912); 
-	        border: 2px solid #27ae60;
-	        box-shadow: 0 0 8px rgba(39, 174, 96, 0.5), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(46, 204, 113, 0.2);
-	        border-radius: 10px;
-	        transform: translateZ(0);
-	        contain: layout paint;
-	        color: #90ee90;
-	        font-size: 14px;
-	        font-weight: 700;
-	        font-family: 'Poppins', sans-serif;
-	        text-shadow: 1px 1px 2px #000;
-	    }
+
+		.item-box { /* For PTicket and Guaranteed */
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 50px;
+			min-width: 80px;
+			padding: 0 10px;
+			background: rgba(255, 193, 7, 0.05);
+			border: 1px solid rgba(255, 193, 7, 0.5);
+			border-radius: 8px;
+			text-align: center;
+		}
+		.item-box .item-title {
+			color: rgba(255, 193, 7, 0.8);
+			font-size: 12px;
+			font-weight: normal;
+			text-transform: uppercase;
+			margin-bottom: 2px;
+		}
+		.item-box .item-count {
+			color: #fff;
+			font-size: 16px;
+			font-weight: 700;
+			font-family: 'Poppins', sans-serif;
+			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+		}
+
+		.price-box {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: flex-end;
+			height: 50px;
+			min-width: 95px;
+			padding: 0 10px;
+			background: linear-gradient(270deg, rgba(39, 174, 96, 0.2), transparent);
+			border-radius: 8px;
+			font-family: 'Poppins', sans-serif;
+		}
+		.price-box .price-usd {
+			font-size: 18px;
+			font-weight: 700;
+			color: #2ecc71;
+			text-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+		}
+		.price-box .price-krw {
+			font-size: 12px;
+			color: #bdc3c7;
+		}
+	    
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -476,29 +492,29 @@
 	        border-radius: 5px;
 	        object-fit: contain;
 	    }
-
-		/* --- Extras Box 및 팝업 스타일 --- */
 		.extras-box {
-			display: inline-flex;
+			display: flex;
 			justify-content: center;
 			align-items: center;
-			background: linear-gradient(145deg, #333, #222);
-			border: 2px solid #b0b0b0;
-			box-shadow: 0 0 10px rgba(176, 176, 176, 0.3), 0 2px 4px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.1);
+			height: 50px;
+			min-width: 80px;
+			padding: 0 10px;
+			background: rgba(176, 176, 176, 0.1);
+			border: 1px dashed rgba(176, 176, 176, 0.5);
+			border-radius: 8px;
 			cursor: pointer;
+			transition: background 0.2s, border-color 0.2s;
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
-			text-decoration: underline;
-			margin-bottom: 0;
+			font-size: 14px;
+			text-decoration: none;
+			font-weight: bold;
 		}
-        
-        /* --- [신규 추가] Extras 캐릭터 테두리 스타일 --- */
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
         }
-
 		#extrasPopup {
 			display: none;
 			position: fixed;
@@ -542,7 +558,6 @@
 			justify-content: center;
 			padding-top: 10px;
 		}
-		/* --- Extras 스타일 끝 --- */
 
 	    @media (max-width: 768px) {
 	        .character-grid {
@@ -569,11 +584,25 @@
 	            padding: 12px;
 	        }
 	        .result-item {
-	            padding: 12px;
+	            padding: 10px;
 	        }
-	        .small-character-img {
-	            height: 45px;
-	        }
+			.item-images, .result-info-right {
+				flex-basis: 100%; /* Make each section take full width and stack */
+			}
+			.result-info-right {
+				justify-content: space-between; /* Space out items on mobile */
+			}
+			.price-box {
+				flex-grow: 1; /* Allow price box to take up remaining space */
+				align-items: center;
+				background: rgba(39, 174, 96, 0.1);
+			}
+			.item-box, .extras-box {
+				flex-grow: 1;
+			}
+			.small-character-img, .item-box, .extras-box, .price-box {
+				height: 45px;
+			}
 	        .item-images {
 	            gap: 5px;
 	        }
@@ -584,17 +613,21 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-	        .item-box, .price-box, .extras-box {
-	            width: 55px;
-	            height: 45px;
-	        }
-	        .item-box .item-title, .extras-box .item-title {
-	            font-size: 10px;
-	            margin-bottom: 0;
-	        }
-	        .item-box .item-count, .price-box {
-	            font-size: 10px;
-	        }
+			.item-box .item-title {
+				font-size: 10px;
+			}
+			.extras-box .item-title {
+				font-size: 12px;
+			}
+			.item-box .item-count {
+				font-size: 14px;
+			}
+			.price-box .price-usd {
+				font-size: 16px;
+			}
+			.price-box .price-krw {
+				font-size: 10px;
+			}
 	        #skinInfoPopup {
 	            padding: 10px;
 	            width: calc(100vw - 30px);
@@ -730,40 +763,6 @@
                 });
         });
 
-	    /*
-        tsParticles.load("tsparticles", {
-            particles: {
-                number: { value: 60, density: { enable: true, value_area: 800 }},
-                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
-                size: { value: 3, random: { enable: true, minimumValue: 1 }},
-                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
-                color: {
-                    value: ["#ff4081", "#f50057", "#D32F2F", "#ff9800", "#FFD700", "#4a148c"]
-                },
-
-                opacity: {
-                    value: { min: 0, max: 1 },
-                    animation: {
-                        enable: true,
-                        speed: { min: 2, max: 4 },
-                        sync: false,
-                        startValue: "random"
-                    }
-                },
-
-                rotate: {
-                    animation: {
-                        enable: true,
-                        speed: { min: 15, max: 25 },
-                        sync: false
-                    }
-                }
-            },
-            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
-            retina_detect: true
-        });
-		*/
-
         function optimizeParticles() {
             const pauseParticles = () => {
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
@@ -846,7 +845,6 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
-		// [수정된 함수]
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -864,7 +862,6 @@
                         charBox.classList.add('super-rare');
                     }
                 } else {
-					// Extras 캐릭터에 테두리 클래스 추가
                     charBox.classList.add('extras-character-border');
                 }
 
@@ -1084,7 +1081,7 @@
 			});
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -23 : -30;
+			const overlapMargin = isMobile ? -23 : -28; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1095,10 +1092,14 @@
 					copyToClipboard(item)
 				});
 
+				const leftSection = document.createElement('div');
+				leftSection.className = 'item-images'; 
+
+				const rightSection = document.createElement('div');
+				rightSection.className = 'result-info-right';
+
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
-				const imgsContainer = document.createElement('div');
-				imgsContainer.className = 'item-images';
 				
 				const rareCharImages = [];
 				const extraCharImages = [];
@@ -1159,7 +1160,7 @@
                             }
                             stackContainer.appendChild(img);
                         }
-                        imgsContainer.appendChild(stackContainer);
+                        leftSection.appendChild(stackContainer);
                     } else {
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
@@ -1170,7 +1171,7 @@
                         } else {
                             img.classList.add('super-rare');
                         }
-                        imgsContainer.appendChild(img);
+                        leftSection.appendChild(img);
                     }
                     i++;
                 }
@@ -1184,44 +1185,42 @@
 
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
-					extrasBox.className = 'item-box extras-box'; 
+					extrasBox.className = 'extras-box'; 
 					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
 					extrasBox.addEventListener('click', (e) => {
 						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
 					});
-					imgsContainer.appendChild(extrasBox);
+					leftSection.appendChild(extrasBox);
 				}
 
 				if (itemDetails.gemsCount > 0) {
 					const gemsBox = document.createElement('div');
 					gemsBox.className = 'item-box';
 					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-					imgsContainer.appendChild(gemsBox);
+					rightSection.appendChild(gemsBox);
 				}
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
 					guaranteedBox.className = 'item-box';
-					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
-					imgsContainer.appendChild(guaranteedBox);
+					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
+					rightSection.appendChild(guaranteedBox);
 				}
                 
 				const priceBox = document.createElement('div');
 				priceBox.className = 'price-box';
-				priceBox.style.flexDirection = 'column';
-
+				
                 const usdPrice = itemDetails.price.toFixed(2);
-
                 const krwPriceRaw = itemDetails.price * 1400;
                 const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-                
-                const formattedKrwPrice = krwPriceRounded.toString() + '원';
+                const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
 
-                priceBox.innerHTML = `<div>$${usdPrice}</div><div style="color: #e0e0e0;">${formattedKrwPrice}</div>`;
+                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
                 
-				imgsContainer.appendChild(priceBox);
+				rightSection.appendChild(priceBox);
 
-				item.appendChild(imgsContainer);
+				item.appendChild(leftSection);
+				item.appendChild(rightSection);
 				container.appendChild(item);
 			});
 
@@ -1230,7 +1229,6 @@
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
-		// [수정된 함수]
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1241,7 +1239,6 @@
 				img.src = imgData.src;
 				img.alt = imgData.alt;
 				img.className = 'small-character-img';
-				// Extras 팝업 이미지에 테두리 클래스 추가
 				img.classList.add('extras-character-border');
 				img.loading = 'lazy';
 				img.decoding = 'async';
@@ -1338,5 +1335,6 @@
 				}
 			});
 		});
-    </script></body>
+    </script>
+</body>
 </html>
