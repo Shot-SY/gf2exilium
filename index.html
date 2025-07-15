@@ -404,20 +404,28 @@
 			color: #bdc3c7;
 		}
 	    
+		/* --- NEW STYLISH COUNT BADGE --- */
 		.count-badge {
 			position: absolute;
-			bottom: 3px;
-			right: 3px;
-			background: rgba(0, 0, 0, 0.75);
+			bottom: -4px; /* Adjust position */
+			right: -4px;  /* Adjust position */
+			width: 22px;
+			height: 22px;
+			background: linear-gradient(145deg, rgba(50, 50, 50, 0.8), rgba(20, 20, 20, 0.85));
+			backdrop-filter: blur(3px);
+			-webkit-backdrop-filter: blur(3px);
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			border-radius: 50%;
 			color: #fff;
-			padding: 1px 6px;
-			border-radius: 8px;
-			font-size: 11px;
+			font-size: 12px;
 			font-weight: 700;
 			font-family: 'Poppins', sans-serif;
-			line-height: 1.4;
-			border: 1px solid rgba(255, 255, 255, 0.3);
-			text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+			
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			z-index: 2;
 			pointer-events: none;
 		}
