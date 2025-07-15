@@ -262,11 +262,8 @@
 	    #results.scrolling .result-item {
 	        transition: none !important;
 	    }
-
-		/* --- NEW Result Item Styles --- */
 		.result-item {
 			margin-bottom: 15px;
-			padding: 12px 20px;
 			background: linear-gradient(135deg, #202228, #1a1c20);
 			cursor: pointer;
 			transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
@@ -275,11 +272,10 @@
 			box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 2px rgba(0,0,0,0.4);
 			display: flex;
 			align-items: center;
-			justify-content: space-between;
-			flex-wrap: wrap;
 			gap: 15px;
 			position: relative;
 			overflow: hidden;
+            padding: 12px;
 		}
 		.result-item::before {
 			content: '';
@@ -291,18 +287,45 @@
 			background: linear-gradient(180deg, #ff4081, #f50057);
 			opacity: 0.6;
 			transition: opacity 0.3s;
+            z-index: 3;
 		}
 
-		.item-images, .result-info-right {
+        /* --- HORIZONTAL SCROLL CONTAINER --- */
+        .item-images {
+            flex: 1; /* Take up available space */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto; /* Enable horizontal scroll */
+            flex-wrap: nowrap; /* Prevent wrapping */
+            padding: 4px 0;
+            position: relative;
+            /* Hide scrollbar */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .item-images::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, and Opera */
+        }
+
+        /* Fade-out effect for scroll indication */
+        .item-images::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(to left, #1c1e22, transparent);
+            pointer-events: none; /* Allow clicking through the gradient */
+        }
+
+		.result-info-right {
 			display: flex;
 			align-items: center;
-			flex-wrap: wrap;
+			flex-wrap: nowrap;
 			gap: 8px;
 		}
-		.result-info-right {
-			justify-content: flex-end;
-		}
-
 	    .small-character-img {
 			height: 50px;
 			width: auto;
@@ -310,6 +333,7 @@
 			border-radius: 8px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0; /* Prevent images from shrinking */
 	    }
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
@@ -355,7 +379,6 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-
 		.item-box { /* For PTicket and Guaranteed */
 			display: flex;
 			flex-direction: column;
@@ -368,6 +391,7 @@
 			border: 1px solid rgba(255, 193, 7, 0.5);
 			border-radius: 8px;
 			text-align: center;
+            flex-shrink: 0;
 		}
 		.item-box .item-title {
 			color: rgba(255, 193, 7, 0.8);
@@ -383,7 +407,6 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
-
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -395,6 +418,7 @@
 			background: linear-gradient(270deg, rgba(39, 174, 96, 0.2), transparent);
 			border-radius: 8px;
 			font-family: 'Poppins', sans-serif;
+            flex-shrink: 0;
 		}
 		.price-box .price-usd {
 			font-size: 18px;
@@ -406,7 +430,6 @@
 			font-size: 12px;
 			color: #bdc3c7;
 		}
-	    
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -504,6 +527,7 @@
 			border-radius: 8px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0;
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
@@ -558,7 +582,6 @@
 			justify-content: center;
 			padding-top: 10px;
 		}
-
 	    @media (max-width: 768px) {
 	        .character-grid {
 	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
@@ -583,17 +606,20 @@
 	            font-size: 16px;
 	            padding: 12px;
 	        }
-	        .result-item {
-	            padding: 10px;
-	        }
-			.item-images, .result-info-right {
-				flex-basis: 100%; /* Make each section take full width and stack */
-			}
-			.result-info-right {
-				justify-content: space-between; /* Space out items on mobile */
-			}
+            /* On mobile, stack the sections */
+            .result-item {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+            .item-images {
+                padding-bottom: 8px;
+            }
+            .result-info-right {
+                justify-content: space-between;
+            }
 			.price-box {
-				flex-grow: 1; /* Allow price box to take up remaining space */
+				flex-grow: 1;
 				align-items: center;
 				background: rgba(39, 174, 96, 0.1);
 			}
@@ -1080,9 +1106,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -23 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1129,52 +1152,18 @@
 					}
 				}
 
-				let i = 0;
-                while (i < rareCharImages.length) {
-                    const currentImgData = rareCharImages[i];
-                    let count = 1;
-                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
+                rareCharImages.forEach(imgData => {
+                    const img = document.createElement('img');
+                    img.src = imgData.src;
+                    img.alt = imgData.alt;
+                    img.className = 'small-character-img';
+                    if (imgData.engName.startsWith('gy') || imgData.engName.startsWith('to') || imgData.engName.startsWith('st') || imgData.engName.startsWith('sh')) {
+                        img.classList.add('rare');
                     } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
+                        img.classList.add('super-rare');
                     }
-                    i++;
-                }
+                    leftSection.appendChild(img);
+                });
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
