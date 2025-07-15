@@ -73,7 +73,10 @@
 	    }
 	    @media (hover: hover) and (pointer: fine) {
 	        .character-box:hover {
-	            /* 호버 효과 제거 */
+	            transform: scale(1.05);
+	            box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+	            z-index: 10;
+	            transition: transform 0.3s, box-shadow 0.3s;
 	        }
 	        .result-item:hover {
 				background: linear-gradient(135deg, #33363d, #2a2c30);
@@ -85,7 +88,12 @@
 				opacity: 1;
 			}
 			.small-character-img:hover {
-				/* 호버 효과 제거 */
+				transform: scale(1.1);
+				z-index: 10 !important;
+			}
+			.extras-box:hover {
+				background: rgba(176, 176, 176, 0.2);
+				border-color: rgba(176, 176, 176, 0.8);
 			}
 	    }
 	    .character-img {
@@ -484,12 +492,73 @@
 	        border-radius: 5px;
 	        object-fit: contain;
 	    }
-		/* Extras Box 관련 CSS 제거 */
+		.extras-box {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 50px;
+			min-width: 80px;
+			padding: 0 10px;
+			background: rgba(176, 176, 176, 0.1);
+			border: 1px dashed rgba(176, 176, 176, 0.5);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background 0.2s, border-color 0.2s;
+		}
+		.extras-box .item-title {
+			color: #e0e0e0;
+			font-size: 14px;
+			text-decoration: none;
+			font-weight: bold;
+		}
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
         }
-		
+		#extrasPopup {
+			display: none;
+			position: fixed;
+			z-index: 4000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.7);
+			align-items: center;
+			justify-content: center;
+		}
+		.extras-popup-content {
+			background-color: #1e1e1e;
+			padding: 25px;
+			border: 2px solid #b0b0b0;
+			border-radius: 15px;
+			width: 80%;
+			max-width: 700px;
+			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+			position: relative;
+		}
+		.close-button {
+			color: #aaa;
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		.close-button:hover,
+		.close-button:focus {
+			color: #fff;
+		}
+		#extras-popup-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: center;
+			padding-top: 10px;
+		}
+
 	    @media (max-width: 768px) {
 	        .character-grid {
 	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
@@ -528,10 +597,10 @@
 				align-items: center;
 				background: rgba(39, 174, 96, 0.1);
 			}
-			.item-box {
+			.item-box, .extras-box {
 				flex-grow: 1;
 			}
-			.small-character-img, .item-box, .price-box {
+			.small-character-img, .item-box, .extras-box, .price-box {
 				height: 45px;
 			}
 	        .item-images {
@@ -546,6 +615,9 @@
 	        }
 			.item-box .item-title {
 				font-size: 10px;
+			}
+			.extras-box .item-title {
+				font-size: 12px;
 			}
 			.item-box .item-count {
 				font-size: 14px;
@@ -563,6 +635,10 @@
 	        #skinInfoPopupImage {
 	            max-height: calc(90vh - 24px - 20px);
 	        }
+			.extras-popup-content {
+				width: 90%;
+				padding: 20px;
+			}
 	    }
 	</style>
 </head>
@@ -597,7 +673,12 @@
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
 
-	<!-- Extras Popup HTML 제거 -->
+	<div id="extrasPopup">
+		<div class="extras-popup-content">
+			<span class="close-button" id="closeExtrasPopup">×</span>
+			<div id="extras-popup-grid"></div>
+		</div>
+	</div>
 
     <script>
         let lastActivityTime = Date.now();
@@ -1007,6 +1088,7 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
+					if (e.target.closest('.extras-box')) return;
 					copyToClipboard(item)
 				});
 
@@ -1019,11 +1101,11 @@
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
 				
-				const allCharImages = [];
+				const rareCharImages = [];
+				const extraCharImages = [];
 				const charPattern = /([a-z]{2})(\d)/g;
 				let match;
 
-				// 텍스트 파일 순서 그대로 allCharImages 배열에 추가
 				while ((match = charPattern.exec(charValue)) !== null) {
 					const code = match[1];
 					const count = parseInt(match[2]);
@@ -1038,46 +1120,37 @@
 							engName: engName
 						};
 						for (let i = 0; i < count; i++) {
-							allCharImages.push(imageData);
+							if (isGenerallyRare) {
+								rareCharImages.push(imageData);
+							} else {
+								extraCharImages.push(imageData);
+							}
 						}
 					}
 				}
 
-                // *** 여기서 불필요한 정렬 로직을 완전히 제거했습니다. ***
-
 				let i = 0;
-                while (i < allCharImages.length) {
-                    const currentImgData = allCharImages[i];
+                while (i < rareCharImages.length) {
+                    const currentImgData = rareCharImages[i];
                     let count = 1;
-                    // 연속된 동일 캐릭터를 찾아 스택으로 묶음
-                    while (i + 1 < allCharImages.length && allCharImages[i + 1].src === currentImgData.src) {
+                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
                         count++;
                         i++;
                     }
-
-                    const createImgElement = (data) => {
-                        const img = document.createElement('img');
-                        img.src = data.src;
-                        img.alt = data.alt;
-                        img.className = 'small-character-img';
-                        if (data.isRare) {
-                            if (data.engName.startsWith('gy') || data.engName.startsWith('to') || data.engName.startsWith('st') || data.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                        } else {
-                            img.classList.add('extras-character-border');
-                        }
-                        return img;
-                    };
-
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
                         for (let j = 0; j < count; j++) {
-                            const img = createImgElement(currentImgData);
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src;
+                            img.alt = currentImgData.alt;
+                            img.className = 'small-character-img';
+                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                                img.classList.add('rare');
+                            } else {
+                                img.classList.add('super-rare');
+                            }
                             img.style.position = 'relative';
                             img.style.zIndex = count - j;
                             if (j > 0) {
@@ -1089,11 +1162,37 @@
                         }
                         leftSection.appendChild(stackContainer);
                     } else {
-                        const img = createImgElement(currentImgData);
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
                         leftSection.appendChild(img);
                     }
                     i++;
                 }
+
+				extraCharImages.push({
+					src: 'Portrait/파파샤.png',
+					alt: '파파샤',
+					isRare: false,
+					engName: 'papasha'
+				});
+
+				if (extraCharImages.length > 0) {
+					const extrasBox = document.createElement('div');
+					extrasBox.className = 'extras-box'; 
+					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
+					extrasBox.addEventListener('click', (e) => {
+						e.stopPropagation();
+						showExtrasPopup(extraCharImages);
+					});
+					leftSection.appendChild(extrasBox);
+				}
 
 				if (itemDetails.gemsCount > 0) {
 					const gemsBox = document.createElement('div');
@@ -1128,6 +1227,24 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
+		}
+
+		function showExtrasPopup(images) {
+			const popup = document.getElementById('extrasPopup');
+			const grid = document.getElementById('extras-popup-grid');
+			grid.innerHTML = '';
+
+			images.forEach(imgData => {
+				const img = document.createElement('img');
+				img.src = imgData.src;
+				img.alt = imgData.alt;
+				img.className = 'small-character-img';
+				img.classList.add('extras-character-border');
+				img.loading = 'lazy';
+				img.decoding = 'async';
+				grid.appendChild(img);
+			});
+			popup.style.display = 'flex';
 		}
 
         function copyToClipboard(el) {
@@ -1205,7 +1322,18 @@
 		        });
 		    }
 
-			// Extras Popup 관련 이벤트 리스너 제거
+			const extrasPopup = document.getElementById('extrasPopup');
+			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
+
+			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
+			
+			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
+
+			window.addEventListener('click', (event) => {
+				if (event.target == extrasPopup) {
+					hideExtrasPopup();
+				}
+			});
 		});
     </script>
 </body>
