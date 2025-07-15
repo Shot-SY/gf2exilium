@@ -404,6 +404,24 @@
 			color: #bdc3c7;
 		}
 	    
+		.count-badge {
+			position: absolute;
+			bottom: 3px;
+			right: 3px;
+			background: rgba(0, 0, 0, 0.75);
+			color: #fff;
+			padding: 1px 6px;
+			border-radius: 8px;
+			font-size: 11px;
+			font-weight: 700;
+			font-family: 'Poppins', sans-serif;
+			line-height: 1.4;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+			z-index: 2;
+			pointer-events: none;
+		}
+
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -1077,9 +1095,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1134,42 +1149,30 @@
                         count++;
                         i++;
                     }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
+
+					const imageContainer = document.createElement('div');
+					imageContainer.style.position = 'relative';
+					imageContainer.style.display = 'inline-flex';
+
+                    const img = document.createElement('img');
+                    img.src = currentImgData.src;
+                    img.alt = currentImgData.alt;
+                    img.className = 'small-character-img';
+                    if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                        img.classList.add('rare');
                     } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
+                        img.classList.add('super-rare');
                     }
+					imageContainer.appendChild(img);
+					
+                    if (count > 1) {
+                        const countBadge = document.createElement('div');
+                        countBadge.className = 'count-badge';
+                        countBadge.textContent = `x${count}`;
+                        imageContainer.appendChild(countBadge);
+                    }
+                    
+                    leftSection.appendChild(imageContainer);
                     i++;
                 }
 
