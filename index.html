@@ -1000,7 +1000,8 @@
 			const sortedKeys = Object.keys(data).sort((a, b) => itemDetailsMap[b].price - itemDetailsMap[a].price);
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -23 : -28; 
+			// [수정] 스택을 풀기 때문에 overlapMargin은 이제 사용되지 않습니다.
+			// const overlapMargin = isMobile ? -23 : -28; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1040,43 +1041,24 @@
 							engName: engName,
 							count: count
 						};
-						allCharImagesData.push(imageData); // For details popup
+						allCharImagesData.push(imageData);
 						for (let i = 0; i < count; i++) {
 							(isGenerallyRare ? rareCharImages : extraCharImages).push({ ...imageData, count: 1 });
 						}
 					}
 				}
 
-				// Render stacked rare characters
-				let i = 0;
-                while (i < rareCharImages.length) {
-                    const currentImgData = rareCharImages[i];
-                    let stackCount = 1;
-                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        stackCount++; i++;
-                    }
-					const stackContainer = document.createElement('div');
-					stackContainer.style.display = 'inline-flex';
-					stackContainer.style.alignItems = 'center';
+                // [수정] 스택 로직을 제거하고 모든 희귀 캐릭터를 개별 이미지로 렌더링합니다.
+                rareCharImages.forEach(imgData => {
+                    const img = document.createElement('img');
+                    img.src = imgData.src;
+                    img.alt = imgData.alt;
+                    img.className = 'small-character-img';
+                    img.classList.add(imgData.engName.startsWith('gy') || imgData.engName.startsWith('to') || imgData.engName.startsWith('st') || imgData.engName.startsWith('sh') ? 'rare' : 'super-rare');
+                    leftSection.appendChild(img);
+                });
+                // --- 기존 스택 로직 종료 ---
 
-					for (let j = 0; j < stackCount; j++) {
-						const img = document.createElement('img');
-						img.src = currentImgData.src;
-						img.alt = currentImgData.alt;
-						img.className = 'small-character-img';
-						img.classList.add(currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh') ? 'rare' : 'super-rare');
-						img.style.position = 'relative';
-						img.style.zIndex = stackCount - j;
-						if (j > 0) {
-							img.style.marginLeft = `${overlapMargin}px`;
-							img.style.filter = 'brightness(70%)';
-							img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-						}
-						stackContainer.appendChild(img);
-					}
-					leftSection.appendChild(stackContainer);
-                    i++;
-                }
 
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
@@ -1113,9 +1095,7 @@
 				item.appendChild(leftSection);
 				item.appendChild(rightSection);
 				container.appendChild(item);
-
-				// Check for overflow and add trigger AFTER element is added to DOM (or prepared fragment)
-				// Use a small timeout to ensure layout is calculated
+                
 				setTimeout(() => {
 					if (leftSection.scrollWidth > leftSection.clientWidth) {
 						leftSection.classList.add('has-overflow');
@@ -1124,22 +1104,21 @@
 						let currentWidth = 0;
 						const children = Array.from(leftSection.children);
 						for (const child of children) {
-							if (currentWidth + child.offsetWidth > leftSection.clientWidth - 60) break; // -60 for fade area
-							currentWidth += child.offsetWidth + 8; // 8 for gap
-							if (child.style.display.includes('flex')) { // Stacked container
-								visibleCount += child.children.length;
-							} else {
-								visibleCount++;
-							}
+							if (currentWidth + child.offsetWidth > leftSection.clientWidth - 45) { // 45 for fade + button area
+                                break;
+                            }
+							currentWidth += child.offsetWidth + (child.classList.contains('small-character-img') ? 8 : 15); // gap
+							visibleCount++;
 						}
 						
-						const totalChars = rareCharImages.length + (extraCharImages.length > 0 ? 1 : 0);
-						const hiddenCount = totalChars - visibleCount;
+						const totalItems = children.length;
+						const hiddenCount = totalItems - visibleCount;
 						
 						if (hiddenCount > 0) {
 							const trigger = document.createElement('button');
 							trigger.className = 'view-all-trigger';
 							trigger.textContent = `+${hiddenCount}`;
+                            trigger.title = 'View all items in this list';
 							trigger.addEventListener('click', (e) => {
 								e.stopPropagation();
 								showDetailsPopup(allCharImagesData, extraCharImages);
