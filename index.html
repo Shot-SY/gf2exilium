@@ -1023,6 +1023,7 @@
 				const charPattern = /([a-z]{2})(\d)/g;
 				let match;
 
+				// 텍스트 파일 순서 그대로 allCharImages 배열에 추가
 				while ((match = charPattern.exec(charValue)) !== null) {
 					const code = match[1];
 					const count = parseInt(match[2]);
@@ -1042,21 +1043,13 @@
 					}
 				}
 
-                // --- START: 수정된 정렬 로직 ---
-                allCharImages.sort((a, b) => {
-                    // 1. 희귀도(isRare)를 기준으로 내림차순 정렬 (true가 먼저 오도록)
-                    if (a.isRare !== b.isRare) {
-                        return b.isRare - a.isRare;
-                    }
-                    // 2. 희귀도가 같으면, 이미지 소스(src)를 기준으로 오름차순 정렬 (같은 캐릭터끼리 묶기 위해)
-                    return a.src.localeCompare(b.src);
-                });
-                // --- END: 수정된 정렬 로직 ---
+                // *** 여기서 불필요한 정렬 로직을 완전히 제거했습니다. ***
 
 				let i = 0;
                 while (i < allCharImages.length) {
                     const currentImgData = allCharImages[i];
                     let count = 1;
+                    // 연속된 동일 캐릭터를 찾아 스택으로 묶음
                     while (i + 1 < allCharImages.length && allCharImages[i + 1].src === currentImgData.src) {
                         count++;
                         i++;
@@ -1101,7 +1094,6 @@
                     }
                     i++;
                 }
-
 
 				if (itemDetails.gemsCount > 0) {
 					const gemsBox = document.createElement('div');
