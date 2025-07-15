@@ -375,10 +375,9 @@
 	    }
 	    .price-box {
 	        display: inline-flex;
-            flex-direction: column;
 	        justify-content: center;
 	        align-items: center;
-	        width: 90px;
+	        width: 70px;
 	        height: 60px;
 	        background: linear-gradient(145deg, #104020, #052912); 
 	        border: 2px solid #27ae60;
@@ -478,7 +477,7 @@
 	        object-fit: contain;
 	    }
 
-		/* --- [신규] Extras Box 및 팝업 스타일 --- */
+		/* --- Extras Box 및 팝업 스타일 --- */
 		.extras-box {
 			display: inline-flex;
 			justify-content: center;
@@ -494,7 +493,7 @@
 			margin-bottom: 0;
 		}
         
-        /* --- [신규] Extras 캐릭터 테두리 스타일 --- */
+        /* --- [신규 추가] Extras 캐릭터 테두리 스타일 --- */
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
@@ -585,24 +584,17 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-	        .item-box, .extras-box {
-	            width: 65px;
+	        .item-box, .price-box, .extras-box {
+	            width: 55px;
 	            height: 45px;
 	        }
-            .price-box {
-                width: 80px;
-	            height: 45px;
-            }
 	        .item-box .item-title, .extras-box .item-title {
 	            font-size: 10px;
 	            margin-bottom: 0;
 	        }
-	        .item-box .item-count {
+	        .item-box .item-count, .price-box {
 	            font-size: 10px;
 	        }
-            .price-box {
-                font-size: 12px;
-            }
 	        #skinInfoPopup {
 	            padding: 10px;
 	            width: calc(100vw - 30px);
@@ -647,8 +639,7 @@
 	<div id="skinInfoPopup">
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
-    
-    <!-- [신규] Extras 팝업 HTML 구조 -->
+
 	<div id="extrasPopup">
 		<div class="extras-popup-content">
 			<span class="close-button" id="closeExtrasPopup">×</span>
@@ -739,8 +730,85 @@
                 });
         });
 
+	    /*
+        tsParticles.load("tsparticles", {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 }},
+                shape: { type: "star", stroke: { width: 0, color: "#fff" }},
+                size: { value: 3, random: { enable: true, minimumValue: 1 }},
+                move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out" },
+                color: {
+                    value: ["#ff4081", "#f50057", "#D32F2F", "#ff9800", "#FFD700", "#4a148c"]
+                },
+
+                opacity: {
+                    value: { min: 0, max: 1 },
+                    animation: {
+                        enable: true,
+                        speed: { min: 2, max: 4 },
+                        sync: false,
+                        startValue: "random"
+                    }
+                },
+
+                rotate: {
+                    animation: {
+                        enable: true,
+                        speed: { min: 15, max: 25 },
+                        sync: false
+                    }
+                }
+            },
+            interactivity: { events: { onhover: { enable: false }, onclick: { enable: false } }},
+            retina_detect: true
+        });
+		*/
+
         function optimizeParticles() {
-            // ... (기존 코드와 동일)
+            const pauseParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).pause();
+                }
+            };
+            const resumeParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            };
+            const results = document.getElementById('results');
+            if (results) {
+                results.addEventListener('scroll', () => {
+                    if (!results.particlesPaused) {
+                        pauseParticles();
+                        results.particlesPaused = true;
+                        clearTimeout(results.particlesTimer);
+                        results.particlesTimer = setTimeout(() => {
+                            resumeParticles();
+                            results.particlesPaused = false;
+                        }, 200); 
+                    }
+                }, { passive: true });
+                results.addEventListener('touchstart', () => {
+                    if (!results.particlesPaused) {
+                        pauseParticles();
+                        results.particlesPaused = true;
+                    }
+                }, { passive: true });
+                results.addEventListener('touchend', () => {
+                    clearTimeout(results.particlesTimer);
+                    results.particlesTimer = setTimeout(() => {
+                        resumeParticles();
+                        results.particlesPaused = false;
+                    }, 200);
+                }, { passive: true });
+            }
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    pauseParticles();
+                } else {
+                    resumeParticles();
+                }
+            });
         }
 
         let characters = [];
@@ -778,7 +846,7 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
-		// [수정된 함수] 캐릭터 선택 그리드 생성 시 Extras 캐릭터에 별도 테두리 적용
+		// [수정된 함수]
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -871,28 +939,138 @@
         }
 
         function toggleSelection(charBox) {
-            // ... (기존 코드와 동일)
+            const spinbox = charBox.querySelector('input[type="number"]');
+            if(charBox.classList.toggle('selected')) {
+                spinbox.disabled = false;
+                spinbox.value = spinbox.value === '0' ? '1' : spinbox.value;
+            } else {
+                spinbox.disabled = true;
+                spinbox.value = 0;
+            }
         }
 
         let itemDetailsMap = {};
 
         function loadData() {
-            // ... (기존 코드와 동일, 가격 파싱 부분도 유지)
+            const ts = new Date().getTime();
+            return fetch(`sorted_data_eng.txt?t=${ts}`)
+                .then(r => r.text())
+                .then(text => {
+                    luaData = {};
+                    itemDetailsMap = {};
+                    const lines = text.split('\n');
+                    let currentSection = null;
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line.startsWith('===') && line.endsWith('===')) {
+                            currentSection = line.slice(4, -4).trim();
+                            continue;
+                        }
+                        if (line && !line.startsWith('===') && currentSection !== null) {
+                            const parts = line.split(' ');
+                            if (parts.length < 2) continue;
+                            const key = parts[0];
+                            let charString = '';
+                            let j = 1;
+                            let itemDetails = {
+                                originalText: line,
+                                price: 0,
+                                guaranteed: line.includes('GUARANTEED'),
+                                displayText: '',
+                                gemsCount: 0
+                            };
+                            const priceMatch = line.match(/\$(\d+\.\d+)/);
+                            if (priceMatch) {
+                                itemDetails.price = parseFloat(priceMatch[1]);
+                            }
+                            while (j < parts.length && !/^\d/.test(parts[j])) {
+                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                                if (match) {
+                                    const charName = match[1].toLowerCase();
+                                    const count = match[2];
+                                    charString += charName.slice(0, 2) + count;
+                                }
+                                j++;
+                            }
+                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
+                            if (gemsMatch) {
+                                itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                                itemDetails.gemsText = gemsMatch[0];
+                            }
+                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
+                            luaData[key] = charString;
+                            itemDetailsMap[key] = itemDetails;
+                        }
+                    }
+                }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
         function filterData() {
-            // ... (기존 코드와 동일)
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('filtering');
+            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                window.tsParticles.domItem(0).pause();
+            }
+            setTimeout(() => {
+                let filtered = {};
+                for(const [k, v] of Object.entries(luaData)) {
+                    const chars = v.match(/.{1,3}/g)||[];
+                    if(checkConditions(chars, k)) filtered[k] = v;
+                }
+                const sortedKeys = Object.keys(filtered).sort((a, b) => {
+                    return itemDetailsMap[b].price - itemDetailsMap[a].price;
+                });
+                const final = {};
+                sortedKeys.forEach(key => {
+                    final[key] = filtered[key];
+                });
+                displayResults(final);
+                resultsDiv.classList.remove('filtering');
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            }, 200);
         }
 
         function checkConditions(chars, itemKey) {
-            // ... (기존 코드와 동일)
+            const count = {};
+            chars.forEach(c => {
+                const name = c.slice(0,2);
+                const num = parseInt(c[2]);
+                count[name] = (count[name]||0)+num;
+            });
+            const characterCondition = characters.every(([eng, kor]) => {
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName === eng);
+                if(box && box.classList.contains('selected')){
+                    return (count[eng.slice(0,2)] || 0) >=
+                        parseInt(box.querySelector('input').value);
+                }
+                return true;
+            });
+            if (!characterCondition) {
+                return false;
+            }
+            const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
+            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
+                const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
+                const itemDetails = itemDetailsMap[itemKey];
+                const hasTickets = itemDetails?.gemsCount || 0;
+                if (hasTickets < requiredTickets) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         function optimizeImages() {
-            // ... (기존 코드와 동일)
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) img.loading = 'lazy';
+                if (!img.hasAttribute('decoding')) img.decoding = 'async';
+            });
         }
 		
-        // [수정된 함수] 결과 표시 로직 개선
 		function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
@@ -906,14 +1084,13 @@
 			});
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -30 : -45; // 겹침 정도 조절
+			const overlapMargin = isMobile ? -23 : -30;
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					// extras-box 내부 클릭 시 복사 방지
 					if (e.target.closest('.extras-box')) return;
 					copyToClipboard(item)
 				});
@@ -951,7 +1128,6 @@
 					}
 				}
 
-				// 레어 캐릭터 렌더링 (중복 시 겹치기)
 				let i = 0;
                 while (i < rareCharImages.length) {
                     const currentImgData = rareCharImages[i];
@@ -964,7 +1140,6 @@
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
-						stackContainer.style.position = 'relative';
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
@@ -979,6 +1154,8 @@
                             img.style.zIndex = count - j;
                             if (j > 0) {
                                 img.style.marginLeft = `${overlapMargin}px`;
+                                img.style.filter = 'brightness(70%)';
+                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
                             stackContainer.appendChild(img);
                         }
@@ -998,34 +1175,47 @@
                     i++;
                 }
 
-				// Extras 캐릭터가 있으면 Extras 박스 렌더링
+				extraCharImages.push({
+					src: 'Portrait/파파샤.png',
+					alt: '파파샤',
+					isRare: false,
+					engName: 'papasha'
+				});
+
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
 					extrasBox.className = 'item-box extras-box'; 
 					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
 					extrasBox.addEventListener('click', (e) => {
-						e.stopPropagation(); // 부모의 복사 이벤트 방지
+						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
 					});
 					imgsContainer.appendChild(extrasBox);
 				}
 
-				// PTicket 박스 렌더링
 				if (itemDetails.gemsCount > 0) {
 					const gemsBox = document.createElement('div');
 					gemsBox.className = 'item-box';
 					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
 					imgsContainer.appendChild(gemsBox);
 				}
+				if (itemDetails.guaranteed) {
+					const guaranteedBox = document.createElement('div');
+					guaranteedBox.className = 'item-box';
+					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">GuaranT</div>`;
+					imgsContainer.appendChild(guaranteedBox);
+				}
                 
-                // 가격 박스 렌더링 (USD 및 KRW)
 				const priceBox = document.createElement('div');
 				priceBox.className = 'price-box';
+				priceBox.style.flexDirection = 'column';
 
                 const usdPrice = itemDetails.price.toFixed(2);
-                const krwPriceRaw = itemDetails.price * 1400; // 환율 적용
-                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000; // 1000원 단위로 반올림
-                const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
+
+                const krwPriceRaw = itemDetails.price * 1400;
+                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
+                
+                const formattedKrwPrice = krwPriceRounded.toString() + '원';
 
                 priceBox.innerHTML = `<div>$${usdPrice}</div><div style="color: #e0e0e0;">${formattedKrwPrice}</div>`;
                 
@@ -1040,98 +1230,113 @@
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
-		// [신규] Extras 팝업 표시 함수
+		// [수정된 함수]
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
 			grid.innerHTML = '';
 
-			const imageCounts = {};
 			images.forEach(imgData => {
-				if(imageCounts[imgData.src]) {
-					imageCounts[imgData.src].count++;
-				} else {
-					imageCounts[imgData.src] = { ...imgData, count: 1 };
-				}
-			});
-
-			Object.values(imageCounts).forEach(imgData => {
-				const container = document.createElement('div');
-				container.style.position = 'relative';
-				container.style.display = 'inline-block';
-				
 				const img = document.createElement('img');
 				img.src = imgData.src;
 				img.alt = imgData.alt;
-				img.className = 'small-character-img extras-character-border';
+				img.className = 'small-character-img';
+				// Extras 팝업 이미지에 테두리 클래스 추가
+				img.classList.add('extras-character-border');
 				img.loading = 'lazy';
 				img.decoding = 'async';
-
-				container.appendChild(img);
-
-				if (imgData.count > 1) {
-					const countBadge = document.createElement('span');
-					countBadge.textContent = `x${imgData.count}`;
-					countBadge.style.position = 'absolute';
-					countBadge.style.bottom = '2px';
-					countBadge.style.right = '2px';
-					countBadge.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-					countBadge.style.color = 'white';
-					countBadge.style.borderRadius = '3px';
-					countBadge.style.padding = '1px 4px';
-					countBadge.style.fontSize = '10px';
-					countBadge.style.fontWeight = 'bold';
-					container.appendChild(countBadge);
-				}
-				grid.appendChild(container);
+				grid.appendChild(img);
 			});
 			popup.style.display = 'flex';
 		}
 
         function copyToClipboard(el) {
-            // ... (기존 코드와 동일)
+            const itemKey = el.dataset.itemKey;
+            const itemDetails = itemDetailsMap[itemKey];
+            if (!itemDetails) return;
+            navigator.clipboard.writeText(itemDetails.originalText).then(
+                () => showCopyMessage(),
+                err => console.error('Copy failed: ', err)
+            );
         }
 
         function showCopyMessage(){
-            // ... (기존 코드와 동일)
+            const msg = document.getElementById('copyMessage');
+            msg.classList.add('show');
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 2000);
         }
 
 		function getSelectedCharacters(){
-		    // ... (기존 코드와 동일)
+		    return [...document.getElementsByClassName('character-box')]
+		        .filter(b => b.classList.contains('selected'))
+		        .map(b => {
+		            const engName = b.dataset.engName;
+		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
+		            return `${shortName}:${b.querySelector('input').value}`;
+		        })
+		        .join(',');
 		}
 
+        function throttle(func, delay) {
+            let lastCall = 0;
+            return function(...args) {
+                const now = Date.now();
+                if (now - lastCall >= delay) {
+                    lastCall = now;
+                    return func.apply(this, args);
+                }
+            };
+        }
+
         const throttledFilterHandler = throttle(function() {
-            // ... (기존 코드와 동일)
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            loadData().then(() => {
+                filterData();
+                gtag('event', 'apply_filter', {
+                    'selected_characters': getSelectedCharacters()
+                });
+            })
+            .catch(error => {
+                console.error('필터 적용 에러:', error);
+            });
         }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
 
-        // [수정] DOMContentLoaded 이벤트 리스너에 Extras 팝업 닫기 기능 추가
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
 		    const skinPopupElement = document.getElementById('skinInfoPopup');
 		    if (skinTriggerElement && skinPopupElement) {
-                // ... (기존 스킨 팝업 로직)
+		        const showPopup = () => { skinPopupElement.style.display = 'block'; };
+		        const hidePopup = () => { skinPopupElement.style.display = 'none'; };
+		        skinTriggerElement.addEventListener('click', (event) => {
+		            event.stopPropagation();
+		            if (skinPopupElement.style.display === 'block') { hidePopup(); } else { showPopup(); }
+		        });
+		        document.addEventListener('click', (event) => {
+		            if (skinPopupElement.style.display === 'block' &&
+		                !skinPopupElement.contains(event.target) &&
+		                event.target !== skinTriggerElement &&
+		                !skinTriggerElement.contains(event.target)) {
+		                hidePopup();
+		            }
+		        });
 		    }
 
-			// Extras 팝업 관련 이벤트
 			const extrasPopup = document.getElementById('extrasPopup');
 			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
 
 			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
 			
-			if (closeExtrasBtn) {
-				closeExtrasBtn.addEventListener('click', hideExtrasPopup);
-			}
-			
-			if (extrasPopup) {
-				window.addEventListener('click', (event) => {
-					if (event.target == extrasPopup) {
-						hideExtrasPopup();
-					}
-				});
-			}
+			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
+
+			window.addEventListener('click', (event) => {
+				if (event.target == extrasPopup) {
+					hideExtrasPopup();
+				}
+			});
 		});
-    </script>
-</body>
+    </script></body>
 </html>
