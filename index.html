@@ -95,6 +95,10 @@
 				background: rgba(176, 176, 176, 0.2);
 				border-color: rgba(176, 176, 176, 0.8);
 			}
+			.view-all-trigger:hover {
+				background-color: #ff4081;
+				box-shadow: 0 0 10px #ff4081;
+			}
 	    }
 	    .character-img {
 	        width: 80px;
@@ -263,10 +267,10 @@
 	        transition: none !important;
 	    }
 
-		/* --- NEW Result Item Styles --- */
 		.result-item {
 			margin-bottom: 15px;
-			padding: 12px 20px;
+			padding: 12px;
+			padding-left: 16px;
 			background: linear-gradient(135deg, #202228, #1a1c20);
 			cursor: pointer;
 			transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
@@ -293,16 +297,69 @@
 			transition: opacity 0.3s;
 		}
 
-		.item-images, .result-info-right {
+		.item-images {
 			display: flex;
 			align-items: center;
-			flex-wrap: wrap;
 			gap: 8px;
+			flex-grow: 1; /* Take available space */
+			flex-shrink: 1;
+			min-width: 200px; /* Prevent shrinking too much */
+			position: relative;
+			overflow-x: auto;
+			padding-bottom: 5px; /* space for scrollbar, if visible */
+			white-space: nowrap; /* Prevent wrapping */
+			/* Hide scrollbar */
+			-ms-overflow-style: none;  /* IE and Edge */
+  			scrollbar-width: none;  /* Firefox */
 		}
-		.result-info-right {
-			justify-content: flex-end;
+		.item-images::-webkit-scrollbar {
+			display: none; /* Chrome, Safari, and Opera */
 		}
 
+		/* Gradient overlay for horizontal scroll hint */
+		.item-images.has-overflow::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 5px; /* align with padding */
+			width: 60px;
+			background: linear-gradient(to left, #202228 20%, transparent);
+			pointer-events: none; /* Allows clicking through */
+			z-index: 1;
+		}
+		
+		/* "View All" button */
+		.view-all-trigger {
+			position: absolute;
+			top: 50%;
+			right: 5px;
+			transform: translateY(-50%);
+			z-index: 2;
+			background-color: rgba(0,0,0,0.6);
+			color: #fff;
+			border: 1px solid rgba(255,255,255,0.4);
+			border-radius: 50%;
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background-color 0.2s, box-shadow 0.2s;
+		}
+
+
+		.result-info-right {
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap; /* Prevent this section from wrapping */
+			gap: 8px;
+			flex-shrink: 0; /* Don't shrink */
+		}
+		
 	    .small-character-img {
 			height: 50px;
 			width: auto;
@@ -338,24 +395,10 @@
 	        opacity: 0.1;
 	        z-index: -1;
 	    }
-	    .character-box::after {
-	        content: "";
-	        position: absolute;
-	        top: 0;
-	        left: 0;
-	        width: 100%;
-	        height: 100%;
-	        background: url('https://www.transparenttextures.com/patterns/gplay.png') repeat;
-	        opacity: 0.5;
-	        border-radius: 15px;
-	        pointer-events: none;
-	        z-index: 0;
-	    }
 	    .character-box > * {
 	        position: relative;
 	        z-index: 1;
 	    }
-
 		.item-box { /* For PTicket and Guaranteed */
 			display: flex;
 			flex-direction: column;
@@ -383,7 +426,6 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
-
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -406,7 +448,6 @@
 			font-size: 12px;
 			color: #bdc3c7;
 		}
-	    
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -448,9 +489,7 @@
 	        0% { transform: rotate(0deg); }
 	        100% { transform: rotate(360deg); }
 	    }
-	    #skinInfoTrigger {
-	        position: relative;
-	    }
+	    #skinInfoTrigger { position: relative; }
 	    .skin-tooltip-icon {
 	        display: inline-block;
 	        background-color: #ff4081;
@@ -466,32 +505,50 @@
 	        user-select: none;
 	        vertical-align: middle;
 	    }
-	    #skinInfoPopup {
-	        display: none;
-	        position: fixed;
-	        top: 50%;
-	        left: 50%;
-	        transform: translate(-50%, -50%);
-	        background-color: rgba(30, 30, 30, 0.95);
-	        border: 2px solid #ff4081;
-	        border-radius: 10px;
-	        padding: 15px;
-	        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-	        z-index: 3000;
-	        width: calc(100vw - 40px);
-	        max-width: 800px;
-	        max-height: 90vh;
-	        box-sizing: border-box;
-	        overflow: auto;
-	    }
-	    #skinInfoPopupImage {
-	        display: block;
-	        width: 100%;
-	        height: auto;
-	        max-height: calc(90vh - 34px - 30px);
-	        border-radius: 5px;
-	        object-fit: contain;
-	    }
+		/* --- Popups Common Styles --- */
+		.popup-overlay {
+			display: none;
+			position: fixed;
+			z-index: 4000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.8);
+			align-items: center;
+			justify-content: center;
+		}
+		.popup-content {
+			background-color: #1e1e1e;
+			padding: 25px;
+			border: 1px solid #444;
+			border-radius: 15px;
+			width: 80%;
+			max-width: 700px;
+			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+			position: relative;
+			color: #e0e0e0;
+		}
+		.popup-content h2 {
+			margin-top: 0;
+			margin-bottom: 20px;
+			color: #ff4081;
+			text-align: center;
+			font-family: 'Poppins', sans-serif;
+		}
+		.close-button {
+			color: #aaa;
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		.close-button:hover, .close-button:focus { color: #fff; }
+
+		/* Extras & Details Popup Specifics */
 		.extras-box {
 			display: flex;
 			justify-content: center;
@@ -515,48 +572,47 @@
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
         }
-		#extrasPopup {
-			display: none;
-			position: fixed;
-			z-index: 4000;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgba(0,0,0,0.7);
-			align-items: center;
-			justify-content: center;
-		}
-		.extras-popup-content {
-			background-color: #1e1e1e;
-			padding: 25px;
-			border: 2px solid #b0b0b0;
-			border-radius: 15px;
-			width: 80%;
-			max-width: 700px;
-			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
-			position: relative;
-		}
-		.close-button {
-			color: #aaa;
-			position: absolute;
-			top: 10px;
-			right: 15px;
-			font-size: 28px;
-			font-weight: bold;
-			cursor: pointer;
-		}
-		.close-button:hover,
-		.close-button:focus {
-			color: #fff;
-		}
-		#extras-popup-grid {
+		#details-popup-grid, #extras-popup-grid {
 			display: flex;
 			flex-wrap: wrap;
 			gap: 10px;
 			justify-content: center;
 			padding-top: 10px;
+		}
+		#details-popup-grid .popup-char-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 4px;
+			font-size: 12px;
+			color: #ccc;
+		}
+
+		#skinInfoPopup {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background-color: rgba(30, 30, 30, 0.95);
+			border: 2px solid #ff4081;
+			border-radius: 10px;
+			padding: 15px;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+			z-index: 3000;
+			width: calc(100vw - 40px);
+			max-width: 800px;
+			max-height: 90vh;
+			box-sizing: border-box;
+			overflow: auto;
+		}
+		#skinInfoPopupImage {
+			display: block;
+			width: 100%;
+			height: auto;
+			max-height: calc(90vh - 34px - 30px);
+			border-radius: 5px;
+			object-fit: contain;
 		}
 
 	    @media (max-width: 768px) {
@@ -568,84 +624,42 @@
 	            height: 125px; 
 	            padding: 8px;
 	        }
-	        .character-box .character-img {
-	            width: 60px;
-	            height: 70px;
-	            margin-bottom: 5px;
-	        }
-	        .character-box .character-name {
-	            font-size: 14px;
-	        }
-	        .spinbox-container input[type="number"] {
-	            width: 45px;
-	        }
-	        #filterButton {
-	            font-size: 16px;
-	            padding: 12px;
-	        }
-	        .result-item {
-	            padding: 10px;
-	        }
-			.item-images, .result-info-right {
-				flex-basis: 100%; /* Make each section take full width and stack */
+	        .character-box .character-img { width: 60px; height: 70px; margin-bottom: 5px; }
+	        .character-box .character-name { font-size: 14px; }
+	        .spinbox-container input[type="number"] { width: 45px; }
+	        #filterButton { font-size: 16px; padding: 12px; }
+	        .result-item { padding: 10px; justify-content: center; } /* Center content on mobile */
+			.item-images {
+				flex-basis: 100%;
+				justify-content: flex-start;
 			}
 			.result-info-right {
-				justify-content: space-between; /* Space out items on mobile */
+				flex-basis: 100%;
+				justify-content: space-between;
 			}
 			.price-box {
-				flex-grow: 1; /* Allow price box to take up remaining space */
+				flex-grow: 1;
 				align-items: center;
 				background: rgba(39, 174, 96, 0.1);
 			}
-			.item-box, .extras-box {
-				flex-grow: 1;
-			}
-			.small-character-img, .item-box, .extras-box, .price-box {
-				height: 45px;
-			}
-	        .item-images {
-	            gap: 5px;
-	        }
-	        #copyInstruction {
-	            font-size: 1em;
-	        }
-	        #copyMessage {
-	            font-size: 1em;
-	            padding: 15px 20px;
-	        }
-			.item-box .item-title {
-				font-size: 10px;
-			}
-			.extras-box .item-title {
-				font-size: 12px;
-			}
-			.item-box .item-count {
-				font-size: 14px;
-			}
-			.price-box .price-usd {
-				font-size: 16px;
-			}
-			.price-box .price-krw {
-				font-size: 10px;
-			}
-	        #skinInfoPopup {
-	            padding: 10px;
-	            width: calc(100vw - 30px);
-	        }
-	        #skinInfoPopupImage {
-	            max-height: calc(90vh - 24px - 20px);
-	        }
-			.extras-popup-content {
-				width: 90%;
-				padding: 20px;
-			}
+			.item-box, .extras-box { flex-grow: 1; }
+			.small-character-img, .item-box, .extras-box, .price-box { height: 45px; }
+	        .item-images { gap: 5px; }
+	        #copyInstruction { font-size: 1em; }
+	        #copyMessage { font-size: 1em; padding: 15px 20px; }
+			.item-box .item-title { font-size: 10px; }
+			.extras-box .item-title { font-size: 12px; }
+			.item-box .item-count { font-size: 14px; }
+			.price-box .price-usd { font-size: 16px; }
+			.price-box .price-krw { font-size: 10px; }
+	        #skinInfoPopup { padding: 10px; width: calc(100vw - 30px); }
+	        #skinInfoPopupImage { max-height: calc(90vh - 24px - 20px); }
+			.popup-content { width: 90%; padding: 20px; }
 	    }
 	</style>
 </head>
 <body>
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
+    <div id="loader"><div class="spinner"></div></div>
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
@@ -661,33 +675,36 @@
 	</div>
     <div id="results"></div>
     <div id="copyMessage">
-        <div class="copy-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>
-        </div>
+        <div class="copy-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         <span>Copied</span>
     </div>
 
-	<div id="skinInfoPopup">
-	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
-	</div>
+	<div id="skinInfoPopup"><img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지"></div>
 
-	<div id="extrasPopup">
-		<div class="extras-popup-content">
+	<!-- Popups Container -->
+	<div id="extrasPopup" class="popup-overlay">
+		<div class="popup-content">
 			<span class="close-button" id="closeExtrasPopup">×</span>
+			<h2>Extra Characters</h2>
 			<div id="extras-popup-grid"></div>
 		</div>
 	</div>
+	<div id="detailsPopup" class="popup-overlay">
+		<div class="popup-content">
+			<span class="close-button" id="closeDetailsPopup">×</span>
+			<h2>Item Details</h2>
+			<div id="details-popup-grid"></div>
+		</div>
+	</div>
+	<!-- End Popups -->
 
     <script>
+        // --- All JS code remains the same until the `displayResults` function ---
+		// ... (Previous JS code from your file) ...
+
         let lastActivityTime = Date.now();
-        const updateActivityTime = () => {
-            lastActivityTime = Date.now();
-        };
-        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => {
-            document.addEventListener(event, updateActivityTime);
-        });
+        const updateActivityTime = () => { lastActivityTime = Date.now(); };
+        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => document.addEventListener(event, updateActivityTime));
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 const currentTime = Date.now();
@@ -700,7 +717,6 @@
                 }
             }
         });
-
         window.addEventListener('load', () => {
             const lastLoad = localStorage.getItem('lastLoadTime');
             const currentTime = Date.now();
@@ -762,18 +778,9 @@
                     setTimeout(() => loader.style.display = 'none', 500);
                 });
         });
-
         function optimizeParticles() {
-            const pauseParticles = () => {
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).pause();
-                }
-            };
-            const resumeParticles = () => {
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).play();
-                }
-            };
+            const pauseParticles = () => { if (window.tsParticles && window.tsParticles.domItem(0)) window.tsParticles.domItem(0).pause(); };
+            const resumeParticles = () => { if (window.tsParticles && window.tsParticles.domItem(0)) window.tsParticles.domItem(0).play(); };
             const results = document.getElementById('results');
             if (results) {
                 results.addEventListener('scroll', () => {
@@ -781,70 +788,39 @@
                         pauseParticles();
                         results.particlesPaused = true;
                         clearTimeout(results.particlesTimer);
-                        results.particlesTimer = setTimeout(() => {
-                            resumeParticles();
-                            results.particlesPaused = false;
-                        }, 200); 
+                        results.particlesTimer = setTimeout(() => { resumeParticles(); results.particlesPaused = false; }, 200); 
                     }
                 }, { passive: true });
-                results.addEventListener('touchstart', () => {
-                    if (!results.particlesPaused) {
-                        pauseParticles();
-                        results.particlesPaused = true;
-                    }
-                }, { passive: true });
-                results.addEventListener('touchend', () => {
-                    clearTimeout(results.particlesTimer);
-                    results.particlesTimer = setTimeout(() => {
-                        resumeParticles();
-                        results.particlesPaused = false;
-                    }, 200);
-                }, { passive: true });
+                results.addEventListener('touchstart', () => { if (!results.particlesPaused) { pauseParticles(); results.particlesPaused = true; } }, { passive: true });
+                results.addEventListener('touchend', () => { clearTimeout(results.particlesTimer); results.particlesTimer = setTimeout(() => { resumeParticles(); results.particlesPaused = false; }, 200); }, { passive: true });
             }
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'hidden') {
-                    pauseParticles();
-                } else {
-                    resumeParticles();
-                }
-            });
+            document.addEventListener('visibilitychange', () => { document.visibilityState === 'hidden' ? pauseParticles() : resumeParticles(); });
         }
-
         let characters = [];
         let rareCharacters = [];
-
         function loadCharacters() {
             const ts = new Date().getTime();
-            return fetch(`Characters.txt?t=${ts}`)
-                .then(r => r.text())
-                .then(text => {
-                    characters = [];
-                    rareCharacters = [];
-                    let foundSabrina = false;
-                    text.split('\n').forEach(line => {
-                        const parts = line.trim().split(' ');
-                        if (parts.length >= 2) {
-                            const eng = parts[0];
-                            const kor = parts.slice(1).join(' ');
-                            if (eng === 'sabrina' && kor === '사브리나') {
-                                foundSabrina = true;
-                            }
-                            if (eng && kor) {
-                                characters.push([eng, kor]);
-                                if (!foundSabrina) {
-                                    rareCharacters.push([eng, kor]);
-                                }
-                            }
+            return fetch(`Characters.txt?t=${ts}`).then(r => r.text()).then(text => {
+                characters = [];
+                rareCharacters = [];
+                let foundSabrina = false;
+                text.split('\n').forEach(line => {
+                    const parts = line.trim().split(' ');
+                    if (parts.length >= 2) {
+                        const eng = parts[0];
+                        const kor = parts.slice(1).join(' ');
+                        if (eng === 'sabrina' && kor === '사브리나') foundSabrina = true;
+                        if (eng && kor) {
+                            characters.push([eng, kor]);
+                            if (!foundSabrina) rareCharacters.push([eng, kor]);
                         }
-                    });
-                    createCharacterBoxes();
-                })
-                .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
+                    }
+                });
+                createCharacterBoxes();
+            }).catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
-
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
-
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -854,17 +830,10 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
-                
                 if (isGenerallyRare) {
-                    if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) {
-                        charBox.classList.add('rare');
-                    } else {
-                        charBox.classList.add('super-rare');
-                    }
-                } else {
-                    charBox.classList.add('extras-character-border');
-                }
-
+                    if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) charBox.classList.add('rare');
+                    else charBox.classList.add('super-rare');
+                } else { charBox.classList.add('extras-character-border'); }
                 const img = document.createElement('img');
                 img.src = `Portrait/${kor}.png`;
                 img.alt = kor;
@@ -886,9 +855,7 @@
                 spinboxContainer.appendChild(spinbox);
                 charBox.append(img, nameSpan, spinboxContainer);
                 fragment.appendChild(charBox);
-                charBox.addEventListener('click', (e) => {
-                    if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox);
-                });
+                charBox.addEventListener('click', (e) => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); });
                 spinbox.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if(!charBox.classList.contains('selected')) {
@@ -921,9 +888,7 @@
             ticketSpinboxContainer.appendChild(ticketSpinbox);
             ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
             fragment.appendChild(ticketBox);
-            ticketBox.addEventListener('click', (e) => {
-                if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
-            });
+            ticketBox.addEventListener('click', (e) => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox); });
             ticketSpinbox.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if(!ticketBox.classList.contains('selected')) {
@@ -934,7 +899,6 @@
             });
             characterGrid.appendChild(fragment);
         }
-
         function toggleSelection(charBox) {
             const spinbox = charBox.querySelector('input[type="number"]');
             if(charBox.classList.toggle('selected')) {
@@ -945,127 +909,84 @@
                 spinbox.value = 0;
             }
         }
-
         let itemDetailsMap = {};
-
         function loadData() {
             const ts = new Date().getTime();
-            return fetch(`sorted_data_eng.txt?t=${ts}`)
-                .then(r => r.text())
-                .then(text => {
-                    luaData = {};
-                    itemDetailsMap = {};
-                    const lines = text.split('\n');
-                    let currentSection = null;
-                    for (let i = 0; i < lines.length; i++) {
-                        const line = lines[i].trim();
-                        if (line.startsWith('===') && line.endsWith('===')) {
-                            currentSection = line.slice(4, -4).trim();
-                            continue;
-                        }
-                        if (line && !line.startsWith('===') && currentSection !== null) {
-                            const parts = line.split(' ');
-                            if (parts.length < 2) continue;
-                            const key = parts[0];
-                            let charString = '';
-                            let j = 1;
-                            let itemDetails = {
-                                originalText: line,
-                                price: 0,
-                                guaranteed: line.includes('GUARANTEED'),
-                                displayText: '',
-                                gemsCount: 0
-                            };
-                            const priceMatch = line.match(/\$(\d+\.\d+)/);
-                            if (priceMatch) {
-                                itemDetails.price = parseFloat(priceMatch[1]);
-                            }
-                            while (j < parts.length && !/^\d/.test(parts[j])) {
-                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
-                                if (match) {
-                                    const charName = match[1].toLowerCase();
-                                    const count = match[2];
-                                    charString += charName.slice(0, 2) + count;
-                                }
-                                j++;
-                            }
-                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
-                            if (gemsMatch) {
-                                itemDetails.gemsCount = parseInt(gemsMatch[1]);
-                                itemDetails.gemsText = gemsMatch[0];
-                            }
-                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
-                            luaData[key] = charString;
-                            itemDetailsMap[key] = itemDetails;
-                        }
+            return fetch(`sorted_data_eng.txt?t=${ts}`).then(r => r.text()).then(text => {
+                luaData = {};
+                itemDetailsMap = {};
+                const lines = text.split('\n');
+                let currentSection = null;
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line.startsWith('===') && line.endsWith('===')) {
+                        currentSection = line.slice(4, -4).trim();
+                        continue;
                     }
-                }).catch(error => { console.error('데이터 로딩 오류:', error); });
+                    if (line && !line.startsWith('===') && currentSection !== null) {
+                        const parts = line.split(' ');
+                        if (parts.length < 2) continue;
+                        const key = parts[0];
+                        let charString = '';
+                        let j = 1;
+                        let itemDetails = { originalText: line, price: 0, guaranteed: line.includes('GUARANTEED'), displayText: '', gemsCount: 0 };
+                        const priceMatch = line.match(/\$(\d+\.\d+)/);
+                        if (priceMatch) itemDetails.price = parseFloat(priceMatch[1]);
+                        while (j < parts.length && !/^\d/.test(parts[j])) {
+                            const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                            if (match) charString += match[1].toLowerCase().slice(0, 2) + match[2];
+                            j++;
+                        }
+                        const gemsMatch = line.match(/(\d+)PickupTicket/i);
+                        if (gemsMatch) {
+                            itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                            itemDetails.gemsText = gemsMatch[0];
+                        }
+                        itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
+                        luaData[key] = charString;
+                        itemDetailsMap[key] = itemDetails;
+                    }
+                }
+            }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
-
         function filterData() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('filtering');
-            if (window.tsParticles && window.tsParticles.domItem(0)) {
-                window.tsParticles.domItem(0).pause();
-            }
+            if (window.tsParticles && window.tsParticles.domItem(0)) window.tsParticles.domItem(0).pause();
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g)||[];
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
-                const sortedKeys = Object.keys(filtered).sort((a, b) => {
-                    return itemDetailsMap[b].price - itemDetailsMap[a].price;
-                });
+                const sortedKeys = Object.keys(filtered).sort((a, b) => itemDetailsMap[b].price - itemDetailsMap[a].price);
                 const final = {};
-                sortedKeys.forEach(key => {
-                    final[key] = filtered[key];
-                });
+                sortedKeys.forEach(key => { final[key] = filtered[key]; });
                 displayResults(final);
                 resultsDiv.classList.remove('filtering');
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).play();
-                }
+                if (window.tsParticles && window.tsParticles.domItem(0)) window.tsParticles.domItem(0).play();
             }, 200);
         }
-
         function checkConditions(chars, itemKey) {
             const count = {};
-            chars.forEach(c => {
-                const name = c.slice(0,2);
-                const num = parseInt(c[2]);
-                count[name] = (count[name]||0)+num;
-            });
+            chars.forEach(c => { const name = c.slice(0,2); const num = parseInt(c[2]); count[name] = (count[name]||0)+num; });
             const characterCondition = characters.every(([eng, kor]) => {
-                const box = [...document.getElementsByClassName('character-box')]
-                    .find(b => b.dataset.engName === eng);
-                if(box && box.classList.contains('selected')){
-                    return (count[eng.slice(0,2)] || 0) >=
-                        parseInt(box.querySelector('input').value);
-                }
+                const box = [...document.getElementsByClassName('character-box')].find(b => b.dataset.engName === eng);
+                if(box && box.classList.contains('selected')) return (count[eng.slice(0,2)] || 0) >= parseInt(box.querySelector('input').value);
                 return true;
             });
-            if (!characterCondition) {
-                return false;
-            }
+            if (!characterCondition) return false;
             const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
             if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
                 const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
                 const itemDetails = itemDetailsMap[itemKey];
-                const hasTickets = itemDetails?.gemsCount || 0;
-                if (hasTickets < requiredTickets) {
-                    return false;
-                }
+                if ((itemDetails?.gemsCount || 0) < requiredTickets) return false;
             }
             return true;
         }
-
         function optimizeImages() {
             const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                if (!img.hasAttribute('loading')) img.loading = 'lazy';
-                if (!img.hasAttribute('decoding')) img.decoding = 'async';
-            });
+            images.forEach(img => { if (!img.hasAttribute('loading')) img.loading = 'lazy'; if (!img.hasAttribute('decoding')) img.decoding = 'async'; });
         }
 		
 		function displayResults(data) {
@@ -1076,9 +997,7 @@
 			container.className = 'content-container';
 			fragment.appendChild(container);
 			
-			const sortedKeys = Object.keys(data).sort((a, b) => {
-				return itemDetailsMap[b].price - itemDetailsMap[a].price;
-			});
+			const sortedKeys = Object.keys(data).sort((a, b) => itemDetailsMap[b].price - itemDetailsMap[a].price);
 
 			const isMobile = window.innerWidth <= 768;
 			const overlapMargin = isMobile ? -23 : -28; 
@@ -1088,7 +1007,7 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					if (e.target.closest('.extras-box')) return;
+					if (e.target.closest('.extras-box') || e.target.closest('.view-all-trigger')) return;
 					copyToClipboard(item)
 				});
 
@@ -1101,6 +1020,7 @@
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
 				
+				const allCharImagesData = [];
 				const rareCharImages = [];
 				const extraCharImages = [];
 				const charPattern = /([a-z]{2})(\d)/g;
@@ -1117,71 +1037,46 @@
 							src: `Portrait/${korName}.png`,
 							alt: korName,
 							isRare: isGenerallyRare,
-							engName: engName
+							engName: engName,
+							count: count
 						};
+						allCharImagesData.push(imageData); // For details popup
 						for (let i = 0; i < count; i++) {
-							if (isGenerallyRare) {
-								rareCharImages.push(imageData);
-							} else {
-								extraCharImages.push(imageData);
-							}
+							(isGenerallyRare ? rareCharImages : extraCharImages).push({ ...imageData, count: 1 });
 						}
 					}
 				}
 
+				// Render stacked rare characters
 				let i = 0;
                 while (i < rareCharImages.length) {
                     const currentImgData = rareCharImages[i];
-                    let count = 1;
+                    let stackCount = 1;
                     while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
+                        stackCount++; i++;
                     }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
-                    }
+					const stackContainer = document.createElement('div');
+					stackContainer.style.display = 'inline-flex';
+					stackContainer.style.alignItems = 'center';
+
+					for (let j = 0; j < stackCount; j++) {
+						const img = document.createElement('img');
+						img.src = currentImgData.src;
+						img.alt = currentImgData.alt;
+						img.className = 'small-character-img';
+						img.classList.add(currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh') ? 'rare' : 'super-rare');
+						img.style.position = 'relative';
+						img.style.zIndex = stackCount - j;
+						if (j > 0) {
+							img.style.marginLeft = `${overlapMargin}px`;
+							img.style.filter = 'brightness(70%)';
+							img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+						}
+						stackContainer.appendChild(img);
+					}
+					leftSection.appendChild(stackContainer);
                     i++;
                 }
-
-				extraCharImages.push({
-					src: 'Portrait/파파샤.png',
-					alt: '파파샤',
-					isRare: false,
-					engName: 'papasha'
-				});
 
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
@@ -1211,38 +1106,106 @@
 				priceBox.className = 'price-box';
 				
                 const usdPrice = itemDetails.price.toFixed(2);
-                const krwPriceRaw = itemDetails.price * 1400;
-                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-                const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
-
-                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
-                
+                const krwPriceRounded = Math.round(itemDetails.price * 1400 / 1000) * 1000;
+                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${krwPriceRounded.toLocaleString()}원</div>`;
 				rightSection.appendChild(priceBox);
 
 				item.appendChild(leftSection);
 				item.appendChild(rightSection);
 				container.appendChild(item);
+
+				// Check for overflow and add trigger AFTER element is added to DOM (or prepared fragment)
+				// Use a small timeout to ensure layout is calculated
+				setTimeout(() => {
+					if (leftSection.scrollWidth > leftSection.clientWidth) {
+						leftSection.classList.add('has-overflow');
+						
+						let visibleCount = 0;
+						let currentWidth = 0;
+						const children = Array.from(leftSection.children);
+						for (const child of children) {
+							if (currentWidth + child.offsetWidth > leftSection.clientWidth - 60) break; // -60 for fade area
+							currentWidth += child.offsetWidth + 8; // 8 for gap
+							if (child.style.display.includes('flex')) { // Stacked container
+								visibleCount += child.children.length;
+							} else {
+								visibleCount++;
+							}
+						}
+						
+						const totalChars = rareCharImages.length + (extraCharImages.length > 0 ? 1 : 0);
+						const hiddenCount = totalChars - visibleCount;
+						
+						if (hiddenCount > 0) {
+							const trigger = document.createElement('button');
+							trigger.className = 'view-all-trigger';
+							trigger.textContent = `+${hiddenCount}`;
+							trigger.addEventListener('click', (e) => {
+								e.stopPropagation();
+								showDetailsPopup(allCharImagesData, extraCharImages);
+							});
+							leftSection.appendChild(trigger);
+						}
+					}
+				}, 0);
 			});
 
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
-
+		
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
 			grid.innerHTML = '';
-
 			images.forEach(imgData => {
 				const img = document.createElement('img');
 				img.src = imgData.src;
 				img.alt = imgData.alt;
-				img.className = 'small-character-img';
-				img.classList.add('extras-character-border');
+				img.className = 'small-character-img extras-character-border';
 				img.loading = 'lazy';
 				img.decoding = 'async';
 				grid.appendChild(img);
+			});
+			popup.style.display = 'flex';
+		}
+
+		function showDetailsPopup(rare, extras) {
+			const popup = document.getElementById('detailsPopup');
+			const grid = document.getElementById('details-popup-grid');
+			grid.innerHTML = '';
+
+			const allItems = [...rare];
+			if (extras.length > 0) {
+				allItems.push({ type: 'extras', count: extras.length, images: extras });
+			}
+
+			allItems.forEach(itemData => {
+				const itemContainer = document.createElement('div');
+				itemContainer.className = 'popup-char-item';
+
+				if (itemData.type === 'extras') {
+					const img = document.createElement('img');
+					img.src = 'Portrait/파파샤.png'; // Represent extras group
+					img.alt = 'Extras';
+					img.className = 'small-character-img extras-character-border';
+					itemContainer.appendChild(img);
+					const nameSpan = document.createElement('span');
+					nameSpan.textContent = `Extras (${itemData.count})`;
+					itemContainer.appendChild(nameSpan);
+				} else {
+					const img = document.createElement('img');
+					img.src = itemData.src;
+					img.alt = itemData.alt;
+					img.className = 'small-character-img';
+					img.classList.add(itemData.engName.startsWith('gy') || itemData.engName.startsWith('to') || itemData.engName.startsWith('st') || itemData.engName.startsWith('sh') ? 'rare' : 'super-rare');
+					itemContainer.appendChild(img);
+					const nameSpan = document.createElement('span');
+					nameSpan.textContent = `${itemData.engName} x${itemData.count}`;
+					itemContainer.appendChild(nameSpan);
+				}
+				grid.appendChild(itemContainer);
 			});
 			popup.style.display = 'flex';
 		}
@@ -1251,55 +1214,34 @@
             const itemKey = el.dataset.itemKey;
             const itemDetails = itemDetailsMap[itemKey];
             if (!itemDetails) return;
-            navigator.clipboard.writeText(itemDetails.originalText).then(
-                () => showCopyMessage(),
-                err => console.error('Copy failed: ', err)
-            );
+            navigator.clipboard.writeText(itemDetails.originalText).then(() => showCopyMessage(), err => console.error('Copy failed: ', err));
         }
-
         function showCopyMessage(){
             const msg = document.getElementById('copyMessage');
             msg.classList.add('show');
-            setTimeout(() => {
-                msg.classList.remove('show');
-            }, 2000);
+            setTimeout(() => { msg.classList.remove('show'); }, 2000);
         }
-
 		function getSelectedCharacters(){
-		    return [...document.getElementsByClassName('character-box')]
-		        .filter(b => b.classList.contains('selected'))
-		        .map(b => {
+		    return [...document.getElementsByClassName('character-box')].filter(b => b.classList.contains('selected')).map(b => {
 		            const engName = b.dataset.engName;
 		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
 		            return `${shortName}:${b.querySelector('input').value}`;
-		        })
-		        .join(',');
+		        }).join(',');
 		}
-
         function throttle(func, delay) {
             let lastCall = 0;
             return function(...args) {
                 const now = Date.now();
-                if (now - lastCall >= delay) {
-                    lastCall = now;
-                    return func.apply(this, args);
-                }
+                if (now - lastCall >= delay) { lastCall = now; return func.apply(this, args); }
             };
         }
-
         const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
                 filterData();
-                gtag('event', 'apply_filter', {
-                    'selected_characters': getSelectedCharacters()
-                });
-            })
-            .catch(error => {
-                console.error('필터 적용 에러:', error);
-            });
+                gtag('event', 'apply_filter', { 'selected_characters': getSelectedCharacters() });
+            }).catch(error => { console.error('필터 적용 에러:', error); });
         }, 300);
-
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
 
 		document.addEventListener('DOMContentLoaded', () => {
@@ -1310,29 +1252,23 @@
 		        const hidePopup = () => { skinPopupElement.style.display = 'none'; };
 		        skinTriggerElement.addEventListener('click', (event) => {
 		            event.stopPropagation();
-		            if (skinPopupElement.style.display === 'block') { hidePopup(); } else { showPopup(); }
+		            if (skinPopupElement.style.display === 'block') hidePopup(); else showPopup();
 		        });
 		        document.addEventListener('click', (event) => {
-		            if (skinPopupElement.style.display === 'block' &&
-		                !skinPopupElement.contains(event.target) &&
-		                event.target !== skinTriggerElement &&
-		                !skinTriggerElement.contains(event.target)) {
+		            if (skinPopupElement.style.display === 'block' && !skinPopupElement.contains(event.target) && event.target !== skinTriggerElement && !skinTriggerElement.contains(event.target)) {
 		                hidePopup();
 		            }
 		        });
 		    }
 
-			const extrasPopup = document.getElementById('extrasPopup');
-			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
-
-			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
-			
-			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
-
-			window.addEventListener('click', (event) => {
-				if (event.target == extrasPopup) {
-					hideExtrasPopup();
-				}
+			// Setup for all popups
+			document.querySelectorAll('.popup-overlay').forEach(popup => {
+				const closeBtn = popup.querySelector('.close-button');
+				const hidePopup = () => popup.style.display = 'none';
+				if(closeBtn) closeBtn.addEventListener('click', hidePopup);
+				popup.addEventListener('click', (event) => {
+					if (event.target === popup) hidePopup();
+				});
 			});
 		});
     </script>
