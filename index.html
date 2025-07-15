@@ -252,6 +252,7 @@
 	    #results.scrolling .result-item {
 	        transition: none !important;
 	    }
+        /* --- [UPDATED] Sophisticated Result Item Style --- */
 	    .result-item {
 	        margin-bottom: 20px;
 	        padding: 15px;
@@ -278,6 +279,7 @@
 	        contain: paint;
 	        border: 1px solid rgba(255, 255, 255, 0.1);
 	    }
+        /* --- [UPDATED] Premium Border Styles --- */
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
@@ -333,6 +335,7 @@
 	        position: relative;
 	        z-index: 1;
 	    }
+        /* --- [UPDATED] Subtle Texture for Result Items --- */
 	    .result-item::after {
 	        content: "";
 	        position: absolute;
@@ -346,6 +349,7 @@
 	        pointer-events: none;
 	        z-index: 0;
 	    }
+        /* --- [UPDATED] Luxurious Item Box Style (Gold Theme) --- */
 	    .item-box {
 	        display: inline-flex;
 	        flex-direction: column;
@@ -373,6 +377,7 @@
 	        font-weight: 600;
 		    text-shadow: 1px 1px 2px #000;
 	    }
+        /* --- [UPDATED] Elegant Price Box Style (Green Theme) --- */
 	    .price-box {
 	        display: inline-flex;
 	        justify-content: center;
@@ -477,7 +482,7 @@
 	        object-fit: contain;
 	    }
 
-		/* --- Extras Box 및 팝업 스타일 --- */
+		/* --- [UPDATED] Extras Box Style (Neutral/Silver Theme) --- */
 		.extras-box {
 			display: inline-flex;
 			justify-content: center;
@@ -493,7 +498,7 @@
 			margin-bottom: 0;
 		}
         
-        /* --- [신규 추가] Extras 캐릭터 테두리 스타일 --- */
+        /* --- [NEW] Border for non-rare characters for consistency --- */
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
@@ -584,6 +589,7 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
+            /* --- [UPDATED] Mobile styles for new boxes --- */
 	        .item-box, .price-box, .extras-box {
 	            width: 55px;
 	            height: 45px;
@@ -846,7 +852,7 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
-		// [수정된 함수]
+		// --- [UPDATED] Added 'extras-character-border' for visual consistency
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -864,7 +870,7 @@
                         charBox.classList.add('super-rare');
                     }
                 } else {
-					// Extras 캐릭터에 테두리 클래스 추가
+					// Add border class to Extras characters for consistency
                     charBox.classList.add('extras-character-border');
                 }
 
@@ -1071,6 +1077,7 @@
             });
         }
 		
+		// --- [UPDATED] Renders results with the new sophisticated design
 		function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
@@ -1230,7 +1237,7 @@
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
-		// [수정된 함수]
+		// --- [UPDATED] Adds consistent border to images in the Extras popup
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1241,7 +1248,7 @@
 				img.src = imgData.src;
 				img.alt = imgData.alt;
 				img.className = 'small-character-img';
-				// Extras 팝업 이미지에 테두리 클래스 추가
+				// Add border class to Extras popup images
 				img.classList.add('extras-character-border');
 				img.loading = 'lazy';
 				img.decoding = 'async';
