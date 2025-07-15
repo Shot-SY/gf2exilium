@@ -492,8 +492,6 @@
 			text-decoration: underline;
 			margin-bottom: 0;
 		}
-        
-        /* --- [신규 추가] Extras 캐릭터 테두리 스타일 --- */
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
@@ -542,7 +540,49 @@
 			justify-content: center;
 			padding-top: 10px;
 		}
-		/* --- Extras 스타일 끝 --- */
+		
+        /* --- [신규 추가] 글로우 스태킹 스타일 --- */
+        .character-stack {
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease-out;
+        }
+        .character-stack:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .character-stack .small-character-img:not(:first-child) {
+            filter: blur(1px) saturate(0.8) brightness(0.9);
+            position: relative;
+        }
+        .character-stack .small-character-img.rare:not(:first-child) {
+            box-shadow: 0 0 10px 2px rgba(255, 152, 0, 0.7),
+                        inset 0 0 15px rgba(255, 152, 0, 0.3);
+        }
+        .character-stack .small-character-img.super-rare:not(:first-child) {
+            box-shadow: 0 0 10px 2px rgba(211, 47, 47, 0.7),
+                        inset 0 0 15px rgba(211, 47, 47, 0.3);
+        }
+        .small-character-img .stack-count-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(135deg, #ff4081, #f50057);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1.5px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 5;
+            font-family: 'Poppins', sans-serif;
+        }
 
 	    @media (max-width: 768px) {
 	        .character-grid {
@@ -846,7 +886,6 @@
         let luaData = {};
         const characterGrid = document.getElementById('characterGrid');
 
-		// [수정된 함수]
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -864,7 +903,6 @@
                         charBox.classList.add('super-rare');
                     }
                 } else {
-					// Extras 캐릭터에 테두리 클래스 추가
                     charBox.classList.add('extras-character-border');
                 }
 
@@ -1071,6 +1109,7 @@
             });
         }
 		
+		// [수정된 함수] displayResults
 		function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
@@ -1128,6 +1167,7 @@
 					}
 				}
 
+                // --- [수정] 스택 생성 로직 ---
 				let i = 0;
                 while (i < rareCharImages.length) {
                     const currentImgData = rareCharImages[i];
@@ -1136,10 +1176,12 @@
                         count++;
                         i++;
                     }
+                    
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
+                        stackContainer.className = 'character-stack';
+                        
+                        const imagesToStack = [];
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
@@ -1151,21 +1193,30 @@
                                 img.classList.add('super-rare');
                             }
                             img.style.position = 'relative';
-                            img.style.zIndex = count - j;
+
+                            // 맨 앞 카드를 제외하고 겹치기
                             if (j > 0) {
                                 img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
-                            stackContainer.appendChild(img);
+                            imagesToStack.push(img);
                         }
+                        
+                        // 맨 앞 카드에 뱃지 추가
+                        const badge = document.createElement('span');
+                        badge.className = 'stack-count-badge';
+                        badge.textContent = `x${count}`;
+                        imagesToStack[0].appendChild(badge);
+
+                        // DOM에 이미지 추가
+                        imagesToStack.forEach(img => stackContainer.appendChild(img));
                         imgsContainer.appendChild(stackContainer);
-                    } else {
+
+                    } else { // 스택이 없는 단일 이미지
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
                         img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
                             img.classList.add('rare');
                         } else {
                             img.classList.add('super-rare');
@@ -1174,6 +1225,7 @@
                     }
                     i++;
                 }
+                // --- 스택 로직 수정 끝 ---
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1211,16 +1263,13 @@
 				priceBox.style.flexDirection = 'column';
 
                 const usdPrice = itemDetails.price.toFixed(2);
-
                 const krwPriceRaw = itemDetails.price * 1400;
                 const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-                
                 const formattedKrwPrice = krwPriceRounded.toString() + '원';
 
                 priceBox.innerHTML = `<div>$${usdPrice}</div><div style="color: #e0e0e0;">${formattedKrwPrice}</div>`;
                 
 				imgsContainer.appendChild(priceBox);
-
 				item.appendChild(imgsContainer);
 				container.appendChild(item);
 			});
@@ -1230,7 +1279,6 @@
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
-		// [수정된 함수]
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1241,7 +1289,6 @@
 				img.src = imgData.src;
 				img.alt = imgData.alt;
 				img.className = 'small-character-img';
-				// Extras 팝업 이미지에 테두리 클래스 추가
 				img.classList.add('extras-character-border');
 				img.loading = 'lazy';
 				img.decoding = 'async';
@@ -1338,5 +1385,6 @@
 				}
 			});
 		});
-    </script></body>
+    </script>
+</body>
 </html>
