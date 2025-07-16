@@ -1191,17 +1191,17 @@
 					leftSection.appendChild(extrasBox);
 				}
 
-				if (itemDetails.gemsCount > 0) {
-					const gemsBox = document.createElement('div');
-					gemsBox.className = 'item-box';
-					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-					rightSection.appendChild(gemsBox);
-				}
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
 					guaranteedBox.className = 'item-box';
 					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
 					rightSection.appendChild(guaranteedBox);
+				}
+				if (itemDetails.gemsCount > 0) {
+					const gemsBox = document.createElement('div');
+					gemsBox.className = 'item-box';
+					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+					rightSection.appendChild(gemsBox);
 				}
                 
 				const priceBox = document.createElement('div');
