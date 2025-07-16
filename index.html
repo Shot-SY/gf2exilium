@@ -276,7 +276,7 @@
 			flex-wrap: wrap;
 			gap: 15px;
 			position: relative;
-			/* overflow: hidden; -- REMOVED to allow popup to be visible */
+			overflow: hidden;
 		}
 		.result-item::before {
 			content: '';
@@ -298,65 +298,6 @@
 		}
 		.result-info-right {
 			justify-content: flex-end;
-		}
-
-		/* --- NEW Styles for Image Expansion --- */
-		.item-images {
-			flex-wrap: nowrap; /* Prevent wrapping to new lines */
-			overflow-x: auto;  /* Enable horizontal scroll */
-			position: relative; /* For positioning the expand button */
-			-ms-overflow-style: none;  /* IE and Edge */
-			scrollbar-width: none;  /* Firefox */
-		}
-		.item-images::-webkit-scrollbar {
-			display: none; /* Chrome, Safari, and Opera */
-		}
-		.expand-button {
-			position: absolute;
-			right: 0;
-			top: 0;
-			bottom: 0;
-			width: 40px;
-			background: linear-gradient(to left, #202228 60%, transparent);
-			display: flex;
-			align-items: center;
-			justify-content: flex-end;
-			color: #fff;
-			font-size: 20px;
-			font-weight: bold;
-			padding-right: 10px;
-			cursor: pointer;
-			user-select: none;
-		}
-		.result-item.is-expanded {
-			z-index: 5001; /* Bring the item above the overlay */
-		}
-		.image-expansion-popup {
-			display: none; /* Hidden by default */
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			background-color: #2a2c30;
-			border-radius: 12px;
-			padding: 15px;
-			box-shadow: 0 8px 30px rgba(0,0,0,0.7);
-			border: 1px solid #ff4081;
-			z-index: 1;
-			flex-wrap: wrap;
-			gap: 10px;
-			align-items: center;
-			box-sizing: border-box;
-		}
-		#pageOverlay {
-			display: none; /* Hidden by default */
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.7);
-			z-index: 5000;
 		}
 
 	    .small-character-img {
@@ -735,8 +676,6 @@
 			<div id="extras-popup-grid"></div>
 		</div>
 	</div>
-
-	<div id="pageOverlay"></div>
 
     <script>
         let lastActivityTime = Date.now();
@@ -1146,9 +1085,8 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					// Prevent copy when clicking on interactive elements
-					if (e.target.closest('.extras-box') || e.target.closest('.expand-button')) return;
-					copyToClipboard(item);
+					if (e.target.closest('.extras-box')) return;
+					copyToClipboard(item)
 				});
 
 				const leftSection = document.createElement('div');
@@ -1156,10 +1094,6 @@
 
 				const rightSection = document.createElement('div');
 				rightSection.className = 'result-info-right';
-
-				// The hidden popup for expansion
-				const expansionPopup = document.createElement('div');
-				expansionPopup.className = 'image-expansion-popup';
 
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
@@ -1192,20 +1126,52 @@
 					}
 				}
 
-				rareCharImages.forEach(currentImgData => {
-				    const img = document.createElement('img');
-				    img.src = currentImgData.src;
-				    img.alt = currentImgData.alt;
-				    img.className = 'small-character-img';
-				    
-				    if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-				        img.classList.add('rare');
-				    } else {
-				        img.classList.add('super-rare');
-				    }
-				    
-				    leftSection.appendChild(img);
-				});
+				let i = 0;
+                while (i < rareCharImages.length) {
+                    const currentImgData = rareCharImages[i];
+                    let count = 1;
+                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
+                        count++;
+                        i++;
+                    }
+                    if (count > 1) {
+                        const stackContainer = document.createElement('div');
+                        stackContainer.style.display = 'flex';
+                        stackContainer.style.alignItems = 'center';
+                        for (let j = 0; j < count; j++) {
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src;
+                            img.alt = currentImgData.alt;
+                            img.className = 'small-character-img';
+                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                                img.classList.add('rare');
+                            } else {
+                                img.classList.add('super-rare');
+                            }
+                            img.style.position = 'relative';
+                            img.style.zIndex = count - j;
+                            if (j > 0) {
+                                img.style.marginLeft = `${overlapMargin}px`;
+                                img.style.filter = 'brightness(70%)';
+                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                            }
+                            stackContainer.appendChild(img);
+                        }
+                        leftSection.appendChild(stackContainer);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
+                        leftSection.appendChild(img);
+                    }
+                    i++;
+                }
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1252,79 +1218,12 @@
 
 				item.appendChild(leftSection);
 				item.appendChild(rightSection);
-				item.appendChild(expansionPopup);
 				container.appendChild(item);
 			});
 
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
-
-			// After rendering, set up the expandable image viewers
-			setupExpandableImages();
-		}
-
-		function setupExpandableImages() {
-			const resultItems = document.querySelectorAll('#results .result-item');
-			if (!resultItems.length) return;
-
-			resultItems.forEach(item => {
-				const imagesContainer = item.querySelector('.item-images');
-				if (!imagesContainer) return;
-
-				// Check for overflow. A small buffer (e.g., 1px) can prevent floating point inaccuracies.
-				if (imagesContainer.scrollWidth > imagesContainer.clientWidth + 1) {
-					// 1. Create and add the expand button
-					const expandButton = document.createElement('div');
-					expandButton.className = 'expand-button';
-					expandButton.innerHTML = '...';
-					imagesContainer.appendChild(expandButton);
-
-					// 2. Clone images into the popup container
-					const popup = item.querySelector('.image-expansion-popup');
-					const imagesToClone = imagesContainer.querySelectorAll('.small-character-img, .stack-container > img');
-					
-					// To handle stacked images correctly, we create a simple list of individual images
-					const allImageElements = [];
-					imagesContainer.querySelectorAll('.small-character-img, div.stack-container').forEach(el => {
-						if (el.classList.contains('stack-container')) {
-							allImageElements.push(...el.querySelectorAll('img'));
-						} else {
-							allImageElements.push(el);
-						}
-					});
-
-					allImageElements.forEach(imgNode => {
-						const clone = imgNode.cloneNode(true);
-						clone.style.marginLeft = '0'; // Reset margin for stacked images
-						clone.style.filter = 'none';
-						popup.appendChild(clone);
-					});
-
-					const extrasBox = imagesContainer.querySelector('.extras-box');
-					if(extrasBox) {
-						popup.appendChild(extrasBox.cloneNode(true));
-					}
-
-
-					// 3. Add click listener to the button
-					expandButton.addEventListener('click', (e) => {
-						e.stopPropagation();
-						const overlay = document.getElementById('pageOverlay');
-						
-						// Close any other open item first
-						const currentlyExpanded = document.querySelector('.result-item.is-expanded');
-						if (currentlyExpanded && currentlyExpanded !== item) {
-							currentlyExpanded.classList.remove('is-expanded');
-							currentlyExpanded.querySelector('.image-expansion-popup').style.display = 'none';
-						}
-
-						item.classList.add('is-expanded');
-						popup.style.display = 'flex';
-						overlay.style.display = 'block';
-					});
-				}
-			});
 		}
 
 		function showExtrasPopup(images) {
@@ -1431,17 +1330,6 @@
 				if (event.target == extrasPopup) {
 					hideExtrasPopup();
 				}
-			});
-
-			// Add event listener for the new page overlay
-			const pageOverlay = document.getElementById('pageOverlay');
-			pageOverlay.addEventListener('click', () => {
-				const expandedItem = document.querySelector('.result-item.is-expanded');
-				if (expandedItem) {
-					expandedItem.classList.remove('is-expanded');
-					expandedItem.querySelector('.image-expansion-popup').style.display = 'none';
-				}
-				pageOverlay.style.display = 'none';
 			});
 		});
     </script>
