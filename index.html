@@ -290,13 +290,30 @@
 			transition: opacity 0.3s;
 		}
 
-		.item-images, .result-info-right {
+		.item-images-wrapper {
+			flex: 1;
+			min-width: 0;
+			position: relative;
+		}
+
+		.item-images {
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap; /* Change from wrap */
+			gap: 8px;
+			overflow-x: auto; /* Enable horizontal scroll */
+			-ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+			scrollbar-width: none; /* Hide scrollbar Firefox */
+		}
+		.item-images::-webkit-scrollbar {
+			display: none; /* Hide scrollbar Chrome/Safari */
+		}
+
+		.result-info-right {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
 			gap: 8px;
-		}
-		.result-info-right {
 			justify-content: flex-end;
 		}
 
@@ -403,7 +420,7 @@
 			font-size: 12px;
 			color: #bdc3c7;
 		}
-	    
+
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -556,6 +573,73 @@
 			padding-top: 10px;
 		}
 
+		/* --- NEW: Image Expansion Styles --- */
+		#image-expand-overlay {
+			display: none;
+			position: fixed;
+			z-index: 4500; /* Below expanded item, above everything else */
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0,0,0,0.7);
+			backdrop-filter: blur(2px);
+		}
+		.more-images-btn {
+			display: none; /* Hidden by default, shown via JS */
+			position: absolute;
+			right: 5px;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: rgba(26, 28, 32, 0.8);
+			backdrop-filter: blur(4px);
+			-webkit-backdrop-filter: blur(4px);
+			border: 1px solid rgba(255,255,255,0.2);
+			color: #e0e0e0;
+			cursor: pointer;
+			z-index: 10;
+			text-align: center;
+			line-height: 26px;
+			font-weight: bold;
+			font-size: 16px;
+			transition: background .2s, transform .2s, color .2s;
+			user-select: none;
+		}
+		.more-images-btn:hover {
+			background: rgba(40, 42, 48, 1);
+			transform: translateY(-50%) scale(1.1);
+		}
+		.result-item.is-expanded {
+			z-index: 4501; /* Must be on top of the overlay */
+		}
+		.result-item.is-expanded .item-images {
+			position: absolute;
+			top: -10px;
+			left: -10px;
+			width: calc(100% + 20px);
+			flex-wrap: wrap;
+			overflow-y: auto;
+			overflow-x: hidden;
+			max-height: 350px;
+			background: #202228;
+			padding: 15px;
+			border: 1px solid #ff4081;
+			border-radius: 12px;
+			box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+			z-index: 20;
+			box-sizing: border-box;
+		}
+		.result-item.is-expanded .more-images-btn {
+			color: #fff;
+			background: #f50057;
+			border-color: rgba(255,255,255,0.7);
+			z-index: 21; /* Must be on top of the expanded image panel */
+		}
+		/* --- END: Image Expansion Styles --- */
+
 	    @media (max-width: 768px) {
 	        .character-grid {
 	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
@@ -583,7 +667,7 @@
 	        .result-item {
 	            padding: 10px;
 	        }
-			.item-images, .result-info-right {
+			.item-images-wrapper, .result-info-right {
 				flex-basis: 100%; /* Make each section take full width and stack */
 			}
 			.result-info-right {
@@ -670,6 +754,7 @@
 	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
 	</div>
 
+	<div id="image-expand-overlay"></div>
 	<div id="extrasPopup">
 		<div class="extras-popup-content">
 			<span class="close-button" id="closeExtrasPopup">×</span>
@@ -1085,12 +1170,15 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					if (e.target.closest('.extras-box')) return;
+					if (e.target.closest('.extras-box') || e.target.closest('.more-images-btn')) return;
 					copyToClipboard(item)
 				});
 
-				const leftSection = document.createElement('div');
-				leftSection.className = 'item-images'; 
+				const wrapper = document.createElement('div');
+				wrapper.className = 'item-images-wrapper';
+
+				const imagesContainer = document.createElement('div');
+				imagesContainer.className = 'item-images';
 
 				const rightSection = document.createElement('div');
 				rightSection.className = 'result-info-right';
@@ -1126,52 +1214,20 @@
 					}
 				}
 
-				let i = 0;
-                while (i < rareCharImages.length) {
-                    const currentImgData = rareCharImages[i];
-                    let count = 1;
-                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
-                    }
-                    i++;
-                }
+				rareCharImages.forEach(currentImgData => {
+				    const img = document.createElement('img');
+				    img.src = currentImgData.src;
+				    img.alt = currentImgData.alt;
+				    img.className = 'small-character-img';
+				    
+				    if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+				        img.classList.add('rare');
+				    } else {
+				        img.classList.add('super-rare');
+				    }
+				    
+				    leftSection.appendChild(img);
+				});
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1188,9 +1244,11 @@
 						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
 					});
-					leftSection.appendChild(extrasBox);
+					imagesContainer.appendChild(extrasBox);
 				}
 
+				wrapper.appendChild(imagesContainer);
+				
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
 					guaranteedBox.className = 'item-box';
@@ -1216,9 +1274,50 @@
                 
 				rightSection.appendChild(priceBox);
 
-				item.appendChild(leftSection);
+				item.appendChild(wrapper);
 				item.appendChild(rightSection);
 				container.appendChild(item);
+
+				// Must check for overflow *after* element is in the fragment/DOM to have width
+				if (imagesContainer.scrollWidth > imagesContainer.clientWidth) {
+					const moreBtn = document.createElement('button');
+					moreBtn.className = 'more-images-btn';
+					moreBtn.innerHTML = '...';
+					moreBtn.style.display = 'block';
+
+					moreBtn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						const resultItem = moreBtn.closest('.result-item');
+						const overlay = document.getElementById('image-expand-overlay');
+						const isExpanded = resultItem.classList.contains('is-expanded');
+
+						// Close any other expanded item first
+						const currentlyExpanded = document.querySelector('.result-item.is-expanded');
+						if (currentlyExpanded && currentlyExpanded !== resultItem) {
+							currentlyExpanded.classList.remove('is-expanded');
+							const otherBtn = currentlyExpanded.querySelector('.more-images-btn');
+							if(otherBtn) otherBtn.innerHTML = '...';
+						}
+						
+						if (isExpanded) {
+							resultItem.classList.remove('is-expanded');
+							overlay.style.display = 'none';
+							moreBtn.innerHTML = '...';
+						} else {
+							resultItem.classList.add('is-expanded');
+							overlay.style.display = 'block';
+							moreBtn.innerHTML = '×';
+
+							overlay.onclick = () => {
+								resultItem.classList.remove('is-expanded');
+								overlay.style.display = 'none';
+								moreBtn.innerHTML = '...';
+								overlay.onclick = null; // Clean up
+							};
+						}
+					});
+					wrapper.appendChild(moreBtn);
+				}
 			});
 
 			res.innerHTML = '';
