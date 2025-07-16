@@ -1192,52 +1192,20 @@
 					}
 				}
 
-				let i = 0;
-                while (i < rareCharImages.length) {
-                    const currentImgData = rareCharImages[i];
-                    let count = 1;
-                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
-                    }
-                    i++;
-                }
+				rareCharImages.forEach(currentImgData => {
+				    const img = document.createElement('img');
+				    img.src = currentImgData.src;
+				    img.alt = currentImgData.alt;
+				    img.className = 'small-character-img';
+				    
+				    if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+				        img.classList.add('rare');
+				    } else {
+				        img.classList.add('super-rare');
+				    }
+				    
+				    leftSection.appendChild(img);
+				});
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
