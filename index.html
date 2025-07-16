@@ -1,5 +1,3 @@
---- START OF FILE index.html ---
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -383,54 +381,6 @@
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
 
-		/* 디자인 3: 럭셔리 카드 */
-        .design3 .item-box {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 50px;
-            min-width: 70px;
-            padding: 0 10px;
-            background: 
-                linear-gradient(to bottom, 
-                    rgba(18, 18, 18, 0.8), 
-                    rgba(30, 30, 30, 0.9)
-                ),
-                repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 10px,
-                    rgba(255, 215, 0, 0.03) 10px,
-                    rgba(255, 215, 0, 0.03) 20px
-                );
-            border: 1px solid #ffd700;
-            border-radius: 8px;
-            box-shadow: 
-                0 0 20px rgba(255, 215, 0, 0.2),
-                inset 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-        .design3 .item-title {
-            background: linear-gradient(to right, #ffd700, #ffed4b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
-        .design3 .item-count {
-            color: #ffd700;
-            font-size: 16px;
-            font-weight: 700;
-            text-shadow: 
-                0 0 10px rgba(255, 215, 0, 0.55),
-                0 0 20px rgba(255, 215, 0, 0.4);
-        }
-
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -644,7 +594,7 @@
 				align-items: center;
 				background: rgba(39, 174, 96, 0.1);
 			}
-			.item-box, .extras-box, .design3 {
+			.item-box, .extras-box {
 				flex-grow: 1;
 			}
 			.small-character-img, .item-box, .extras-box, .price-box {
@@ -685,15 +635,6 @@
 			.extras-popup-content {
 				width: 90%;
 				padding: 20px;
-			}
-			.design3 .item-box {
-				height: 45px;
-			}
-			.design3 .item-title {
-				font-size: 10px;
-			}
-			.design3 .item-count {
-				font-size: 14px;
 			}
 	    }
 	</style>
@@ -1250,22 +1191,17 @@
 					leftSection.appendChild(extrasBox);
 				}
 
+				if (itemDetails.gemsCount > 0) {
+					const gemsBox = document.createElement('div');
+					gemsBox.className = 'item-box';
+					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+					rightSection.appendChild(gemsBox);
+				}
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
 					guaranteedBox.className = 'item-box';
 					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
 					rightSection.appendChild(guaranteedBox);
-				}
-				if (itemDetails.gemsCount > 0) {
-					const gemsBoxWrapper = document.createElement('div');
-					gemsBoxWrapper.className = 'design3';
-
-					const gemsBox = document.createElement('div');
-					gemsBox.className = 'item-box';
-					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-					
-					gemsBoxWrapper.appendChild(gemsBox);
-					rightSection.appendChild(gemsBoxWrapper);
 				}
                 
 				const priceBox = document.createElement('div');
