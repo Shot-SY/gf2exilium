@@ -87,7 +87,6 @@
 			.result-item:hover::before {
 				opacity: 1;
 			}
-			/* This is where the hover effect for result images was removed. */
 			.extras-box:hover {
 				background: rgba(176, 176, 176, 0.2);
 				border-color: rgba(176, 176, 176, 0.8);
@@ -245,7 +244,11 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
+            transition: opacity 0.3s ease-in-out; /* 동적 효과를 위한 transition */
 		}
+        #results.sorting { /* 동적 효과를 위한 클래스 */
+            opacity: 0;
+        }
 	    #results .content-container {
 	        transform: translateZ(0);
 	        will-change: opacity;
@@ -259,8 +262,6 @@
 	    #results.scrolling .result-item {
 	        transition: none !important;
 	    }
-
-		/* --- Result Item Styles --- */
 		.result-item {
 			margin-bottom: 15px;
 			padding: 12px 20px;
@@ -352,12 +353,10 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-
-        /* --- NEW: Image Count Badge System --- */
         .image-with-count-container {
             position: relative;
-            display: inline-block; /* Or flex if needed */
-            vertical-align: middle; /* Aligns containers nicely */
+            display: inline-block;
+            vertical-align: middle;
         }
 
 		.image-count-badge {
@@ -389,7 +388,7 @@
 		    text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
 		}
 
-		.item-box { /* For PTicket and Guaranteed */
+		.item-box {
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
@@ -440,7 +439,6 @@
 			color: #bdc3c7;
 		}
 	    
-	    /* --- NEW: Sort Dropdown Styles --- */
 	    .sort-container {
 	        display: flex;
 	        justify-content: flex-end;
@@ -651,13 +649,13 @@
 	            padding: 10px;
 	        }
 			.item-images, .result-info-right {
-				flex-basis: 100%; /* Make each section take full width and stack */
+				flex-basis: 100%;
 			}
 			.result-info-right {
-				justify-content: space-between; /* Space out items on mobile */
+				justify-content: space-between;
 			}
 			.price-box {
-				flex-grow: 1; /* Allow price box to take up remaining space */
+				flex-grow: 1;
 				align-items: center;
 				background: rgba(39, 174, 96, 0.1);
 			}
@@ -1125,34 +1123,40 @@
         }
 
         function renderSortedResults() {
-            const data = currentFilteredData;
-            const sortKey = document.getElementById('sortDropdown')?.value || 'price';
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('sorting');
 
-            const sortedKeys = Object.keys(data).sort((a, b) => {
-                const itemA = itemDetailsMap[a];
-                const itemB = itemDetailsMap[b];
-                let primarySort = 0;
+            setTimeout(() => {
+                const data = currentFilteredData;
+                const sortKey = document.getElementById('sortDropdown')?.value || 'price';
 
-                switch (sortKey) {
-                    case 'character':
-                        primarySort = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
-                        break;
-                    case 'pticket':
-                        primarySort = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
-                        break;
-                    case 'price':
-                    default:
-                        primarySort = itemB.price - itemA.price;
-                        break;
-                }
+                const sortedKeys = Object.keys(data).sort((a, b) => {
+                    const itemA = itemDetailsMap[a];
+                    const itemB = itemDetailsMap[b];
+                    let primarySort = 0;
 
-                if (primarySort === 0 && sortKey !== 'price') {
-                    return itemB.price - itemA.price;
-                }
-                return primarySort;
-            });
-            
-            displayResults(data, sortedKeys);
+                    switch (sortKey) {
+                        case 'character':
+                            primarySort = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
+                            break;
+                        case 'pticket':
+                            primarySort = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
+                            break;
+                        case 'price':
+                        default:
+                            primarySort = itemB.price - itemA.price;
+                            break;
+                    }
+
+                    if (primarySort === 0 && sortKey !== 'price') {
+                        return itemB.price - itemA.price;
+                    }
+                    return primarySort;
+                });
+                
+                displayResults(data, sortedKeys);
+                resultsDiv.classList.remove('sorting');
+            }, 300);
         }
 
         function checkConditions(chars, itemKey) {
@@ -1435,10 +1439,11 @@
         }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
-		document.getElementById('sortDropdown').addEventListener('change', function() {
-		    renderSortedResults();
-		    this.blur(); // 항목 선택 후 포커스를 제거
-		});
+        
+        document.getElementById('sortDropdown').addEventListener('change', function() {
+            renderSortedResults();
+            this.blur(); 
+        });
 
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
