@@ -260,7 +260,7 @@
 	        transition: none !important;
 	    }
 
-		/* --- NEW Result Item Styles --- */
+		/* --- Result Item Styles --- */
 		.result-item {
 			margin-bottom: 15px;
 			padding: 12px 20px;
@@ -352,6 +352,42 @@
 	        position: relative;
 	        z-index: 1;
 	    }
+
+        /* --- NEW: Image Count Badge System --- */
+        .image-with-count-container {
+            position: relative;
+            display: inline-block; /* Or flex if needed */
+            vertical-align: middle; /* Aligns containers nicely */
+        }
+
+        .image-count-badge {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            min-width: 18px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px); /* For Safari */
+            color: #fff;
+            padding: 1px 5px;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            pointer-events: none; /* Badge should not be clickable */
+        }
+        .image-count-badge.rare-badge {
+            color: #ffc107;
+            text-shadow: 0 0 5px rgba(255, 193, 7, 0.7);
+        }
+        .image-count-badge.super-rare-badge {
+            color: #ff5252;
+            text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
+        }
 
 		.item-box { /* For PTicket and Guaranteed */
 			display: flex;
@@ -1077,9 +1113,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1125,53 +1158,49 @@
 						}
 					}
 				}
+                
+                // --- NEW LOGIC: Group images and render with count badges ---
+                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
+                    if (!acc[imgData.src]) {
+                        acc[imgData.src] = { ...imgData, count: 0 };
+                    }
+                    acc[imgData.src].count++;
+                    return acc;
+                }, {});
 
-				let i = 0;
-                while (i < rareCharImages.length) {
-                    const currentImgData = rareCharImages[i];
-                    let count = 1;
-                    while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
-                        count++;
-                        i++;
-                    }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
+                Object.values(groupedRareChars).forEach(charData => {
+                    const container = document.createElement('div');
+                    container.className = 'image-with-count-container';
+
+                    const img = document.createElement('img');
+                    img.src = charData.src;
+                    img.alt = charData.alt;
+                    img.className = 'small-character-img';
+
+                    const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+                    if (isSuperRare) {
+                        img.classList.add('super-rare');
                     } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
+                        img.classList.add('rare');
                     }
-                    i++;
-                }
+                    container.appendChild(img);
+
+                    if (charData.count > 1) {
+                        const badge = document.createElement('div');
+                        badge.className = 'image-count-badge';
+                        badge.textContent = `x${charData.count}`;
+                        
+                        if (isSuperRare) {
+                            badge.classList.add('super-rare-badge');
+                        } else {
+                            badge.classList.add('rare-badge');
+                        }
+                        container.appendChild(badge);
+                    }
+                    
+                    leftSection.appendChild(container);
+                });
+                // --- END OF NEW LOGIC ---
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
