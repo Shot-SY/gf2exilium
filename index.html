@@ -1275,16 +1275,40 @@
 			const grid = document.getElementById('extras-popup-grid');
 			grid.innerHTML = '';
 
-			images.forEach(imgData => {
+			// Extras 캐릭터를 고유 이름(engName)으로 그룹화하여 개수 세기
+			const groupedExtras = images.reduce((acc, imgData) => {
+				const key = imgData.engName;
+				if (!acc[key]) {
+					acc[key] = { ...imgData, count: 0 };
+				}
+				acc[key].count++;
+				return acc;
+			}, {});
+
+			// 그룹화된 캐릭터들을 순회하며 팝업에 요소 생성
+			Object.values(groupedExtras).forEach(charData => {
+				const container = document.createElement('div');
+				container.className = 'image-with-count-container';
+
 				const img = document.createElement('img');
-				img.src = imgData.src;
-				img.alt = imgData.alt;
-				img.className = 'small-character-img';
-				img.classList.add('extras-character-border');
+				img.src = charData.src;
+				img.alt = charData.alt;
+				img.className = 'small-character-img extras-character-border';
 				img.loading = 'lazy';
 				img.decoding = 'async';
-				grid.appendChild(img);
+				container.appendChild(img);
+
+				// 캐릭터 수가 1개를 초과하면 개수 배지 추가
+				if (charData.count > 1) {
+					const badge = document.createElement('div');
+					badge.className = 'image-count-badge';
+					badge.textContent = `x${charData.count}`;
+					container.appendChild(badge);
+				}
+				
+				grid.appendChild(container);
 			});
+
 			popup.style.display = 'flex';
 		}
 
