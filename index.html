@@ -323,8 +323,9 @@
         /* 아이템 래퍼: 모든 스택 요소의 기준점 */
         .image-stack-wrapper {
             position: relative;
-            display: inline-block; /* 다른 아이템과 나란히 정렬 */
+            display: inline-block;
             vertical-align: middle;
+            height: 50px; /* ★★★ 높이를 명시적으로 지정하여 레이아웃 안정성 확보 */
         }
 	    .small-character-img {
 			height: 50px;
@@ -333,7 +334,6 @@
 			border-radius: 8px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
-            /* z-index를 위해 position 추가 */
             position: relative;
             z-index: 2; 
 	    }
@@ -351,11 +351,12 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 50px; /* 이미지 높이에 맞춰 고정 (비율 문제 방지) */
-            height: 50px;
+            /* JS에서 계산된 wrapper 너비에 맞춰 100%로 설정 */
+            width: 100%; 
+            height: 100%;
             border-radius: 8px;
             box-sizing: border-box;
-            z-index: 1; /* 대표 이미지보다 뒤에 위치 */
+            z-index: 1;
         }
         .stack-card.rare {
             border: 2px solid #ff9800;
@@ -382,7 +383,7 @@
             font-size: 13px;
             font-weight: 700;
             font-family: 'Poppins', sans-serif;
-            z-index: 3; /* 가장 위에 위치 */
+            z-index: 3;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
         .stack-badge.rare {
@@ -1212,12 +1213,9 @@
                         i++;
                     }
                     
-                    // *** FINAL CORRECTED BLOCK START ***
-                    // 1. 래퍼 컨테이너 생성
                     const wrapper = document.createElement('div');
                     wrapper.className = 'image-stack-wrapper';
 
-                    // 2. 대표 이미지 생성
                     const img = document.createElement('img');
                     img.src = currentImgData.src;
                     img.alt = currentImgData.alt;
@@ -1226,28 +1224,35 @@
                     const isRare = currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh');
                     const rarityClass = isRare ? 'rare' : 'super-rare';
                     img.classList.add(rarityClass);
-
-                    // 3. 래퍼에 대표 이미지 추가
+                    
                     wrapper.appendChild(img);
 
-                    // 4. 스택이 필요한 경우, 래퍼에 스택 카드와 배지 추가
                     if (count > 1) {
-                        // 빈 스택 카드 생성
+                        // 스택 카드들은 대표 이미지의 너비(auto)가 아닌 고정된 너비를 기준으로 위치해야 함
+                        const baseWidth = 50; 
+                        
                         for (let j = 1; j < count; j++) {
                             const stackCard = document.createElement('div');
                             stackCard.className = `stack-card ${rarityClass}`;
+                            // stackCard는 wrapper 기준이 아닌, 대표 이미지의 위치를 기준으로 transform 되어야 함
                             stackCard.style.transform = `translateX(${j * 5}px)`;
                             wrapper.appendChild(stackCard);
                         }
-                        // 숫자 배지 생성
                         const badge = document.createElement('div');
                         badge.className = `stack-badge ${rarityClass}`;
                         badge.textContent = count;
                         wrapper.appendChild(badge);
+
+                        // ★★★ 래퍼의 전체 너비 계산 및 적용 ★★★
+                        const finalWidth = baseWidth + (count - 1) * 5;
+                        wrapper.style.width = finalWidth + 'px';
+
+                    } else {
+                        // 스택이 없는 경우에도 너비 지정
+                        wrapper.style.width = '50px';
                     }
                     
                     leftSection.appendChild(wrapper);
-                    // *** FINAL CORRECTED BLOCK END ***
 
                     i++;
                 }
