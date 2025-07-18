@@ -320,6 +320,78 @@
 	        border: 2px solid #D32F2F;
 	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
 	    }
+        
+        /* --- REFINED STACK STYLES (Apple UI Concept) --- */
+        .image-stack-container {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+            /* 스택 그림자를 위한 여백 추가 */
+            margin-right: 12px; 
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+        .image-stack-container .small-character-img {
+            position: relative;
+            z-index: 2;
+        }
+        .stack-outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            z-index: 1;
+            box-sizing: border-box;
+            opacity: 0.7; /* 뒷배경은 살짝 연하게 */
+        }
+        .stack-outline.rare {
+            border: 2px solid #ff9800;
+        }
+        .stack-outline.super-rare {
+            border: 2px solid #D32F2F;
+        }
+        .stack-count-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            /* 위치 정밀 조정 */
+            transform: translate(40%, 40%);
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* '프로스트 글래스' 효과 */
+            background: rgba(20, 20, 22, 0.7);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 그림자를 더 깊게 */
+            transition: all 0.2s ease-in-out;
+        }
+        /* 등급별 배지 스타일 */
+        .stack-count-badge.rare {
+            background: linear-gradient(135deg, rgba(109, 68, 0, 0.6), rgba(58, 36, 0, 0.7));
+            border-color: rgba(255, 152, 0, 0.3);
+            /* 등급에 맞는 빛 효과 */
+            text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
+        }
+        .stack-count-badge.super-rare {
+            background: linear-gradient(135deg, rgba(110, 20, 20, 0.6), rgba(50, 9, 9, 0.7));
+            border-color: rgba(211, 47, 47, 0.3);
+            /* 등급에 맞는 빛 효과 */
+            text-shadow: 0 0 5px rgba(255, 64, 129, 0.8);
+        }
+        /* --- END REFINED STYLES --- */
+
 	    .character-box.gold-border {
 	        border: 2px solid #ffc107;
 	        box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 12px rgba(255, 193, 7, 0.7);
@@ -1077,9 +1149,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1134,31 +1203,53 @@
                         count++;
                         i++;
                     }
+
+                    // *** REFINED BLOCK START ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
+                        stackContainer.className = 'image-stack-container';
+
+                        // 최대 2개의 뒷 배경 외곽선 생성 (오른쪽으로만, 5px 간격)
+                        for (let j = 1; j <= Math.min(count - 1, 2); j++) {
+                            const outline = document.createElement('div');
+                            outline.className = 'stack-outline';
+                            
                             if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
+                                outline.classList.add('rare');
                             } else {
-                                img.classList.add('super-rare');
+                                outline.classList.add('super-rare');
                             }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
+                            
+                            // 오른쪽으로만 쌓이도록 수정 (x축, 0)
+                            outline.style.transform = `translate(${j * 5}px, 0)`;
+                            stackContainer.appendChild(outline);
                         }
+                        
+                        // 메인 이미지
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
+                        stackContainer.appendChild(img);
+
+                        // 카운트 뱃지 생성 및 등급 클래스 추가
+                        const countBadge = document.createElement('div');
+                        countBadge.className = 'stack-count-badge';
+                        countBadge.textContent = count;
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            countBadge.classList.add('rare');
+                        } else {
+                            countBadge.classList.add('super-rare');
+                        }
+                        stackContainer.appendChild(countBadge);
+
                         leftSection.appendChild(stackContainer);
-                    } else {
+                    } else { // 단일 아이템
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1170,6 +1261,7 @@
                         }
                         leftSection.appendChild(img);
                     }
+                    // *** REFINED BLOCK END ***
                     i++;
                 }
 
