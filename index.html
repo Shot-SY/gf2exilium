@@ -850,7 +850,7 @@
         let characters = [];
         let rareCharacters = [];
 
-        function loadCharacters() {
+		function loadCharacters() {
             const ts = new Date().getTime();
             return fetch(`Characters.txt?t=${ts}`)
                 .then(r => r.text())
@@ -874,6 +874,17 @@
                             }
                         }
                     });
+
+                    // 희귀 캐릭터가 아닌 'Extras' 이미지들을 미리 로딩합니다.
+                    const rareEngNames = new Set(rareCharacters.map(([eng]) => eng));
+                    characters.forEach(([eng, kor]) => {
+                        if (!rareEngNames.has(eng)) {
+                            new Image().src = `Portrait/${kor}.png`;
+                        }
+                    });
+                    // '파파샤' 이미지도 미리 로드
+                    new Image().src = 'Portrait/파파샤.png';
+
                     createCharacterBoxes();
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
