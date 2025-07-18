@@ -1097,7 +1097,7 @@
             });
         }
 		
-        function displayResults(data) {
+		function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
 			const fragment = document.createDocumentFragment();
@@ -1110,7 +1110,7 @@
 			});
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -38 : -42; 
+			const overlapMargin = isMobile ? -25 : -28; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1167,15 +1167,15 @@
                         i++;
                     }
                     
-                    // *** START OF MODIFIED BLOCK ***
+                    // *** START OF REPLACEMENT BLOCK ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
-                        // 뱃지를 위치시키기 위한 기준점 설정
-                        stackContainer.style.position = 'relative';
+                        
+                        // 뱃지를 담을 컨테이너를 미리 선언
+                        let topImageWrapper;
 
-                        // 기존의 이미지 스택 생성 로직 (변경 없음)
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
@@ -1187,16 +1187,26 @@
                                 img.classList.add('super-rare');
                             }
                             img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
+
+                            // j === 0 일 때가 시각적으로 맨 위 카드
+                            if (j === 0) {
+                                // 맨 위 카드만 별도의 div로 감싸서 새로운 기준점으로 만듦
+                                topImageWrapper = document.createElement('div');
+                                topImageWrapper.style.position = 'relative'; // 이 div가 뱃지의 새로운 기준!
+                                topImageWrapper.style.zIndex = count; // z-index는 wrapper에 적용
+                                topImageWrapper.appendChild(img);
+                                stackContainer.appendChild(topImageWrapper);
+                            } else {
+                                // 나머지 카드들은 기존 방식 그대로 처리
+                                img.style.zIndex = count - j;
                                 img.style.marginLeft = `${overlapMargin}px`;
                                 img.style.filter = 'brightness(70%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                                stackContainer.appendChild(img);
                             }
-                            stackContainer.appendChild(img);
                         }
 
-                        // --- NEW: 뱃지 생성 및 추가 ---
+                        // 뱃지를 생성하여 첫 번째 카드의 wrapper에 추가
                         const countBadge = document.createElement('div');
                         countBadge.className = 'stack-count-badge';
                         countBadge.textContent = count;
@@ -1205,12 +1215,11 @@
                         } else {
                             countBadge.classList.add('super-rare');
                         }
-                        stackContainer.appendChild(countBadge);
-                        // --- END OF NEW CODE ---
+                        topImageWrapper.appendChild(countBadge);
 
                         leftSection.appendChild(stackContainer);
                     } else {
-                        // 기존의 단일 이미지 처리 로직 (변경 없음)
+                        // 단일 이미지는 변경 없이 그대로
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1222,7 +1231,7 @@
                         }
                         leftSection.appendChild(img);
                     }
-                    // *** END OF MODIFIED BLOCK ***
+                    // *** END OF REPLACEMENT BLOCK ***
                     i++;
                 }
 
@@ -1277,24 +1286,6 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
-		}
-
-		function showExtrasPopup(images) {
-			const popup = document.getElementById('extrasPopup');
-			const grid = document.getElementById('extras-popup-grid');
-			grid.innerHTML = '';
-
-			images.forEach(imgData => {
-				const img = document.createElement('img');
-				img.src = imgData.src;
-				img.alt = imgData.alt;
-				img.className = 'small-character-img';
-				img.classList.add('extras-character-border');
-				img.loading = 'lazy';
-				img.decoding = 'async';
-				grid.appendChild(img);
-			});
-			popup.style.display = 'flex';
 		}
 
         function copyToClipboard(el) {
