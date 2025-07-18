@@ -360,34 +360,38 @@
             vertical-align: middle; /* Aligns containers nicely */
         }
 
-        .image-count-badge {
-            position: absolute;
-            bottom: 3px;
-            right: 3px;
-            min-width: 18px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px); /* For Safari */
-            color: #fff;
-            padding: 1px 5px;
-            border-radius: 6px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.4;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-            pointer-events: none; /* Badge should not be clickable */
-        }
-        .image-count-badge.rare-badge {
-            color: #ffc107;
-            text-shadow: 0 0 5px rgba(255, 193, 7, 0.7);
-        }
-        .image-count-badge.super-rare-badge {
-            color: #ff5252;
-            text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
-        }
+		.image-count-badge {
+		    position: absolute;
+		    /* [변경] bottom과 right를 음수 값으로 설정하여 바깥으로 이동 */
+		    bottom: -4px;
+		    right: -4px; 
+		    min-width: 18px;
+		    text-align: center;
+		    background: rgba(0, 0, 0, 0.75); /* 배경을 살짝 더 진하게 */
+		    backdrop-filter: blur(4px);
+		    -webkit-backdrop-filter: blur(4px);
+		    color: #fff;
+		    padding: 1px 6px; /* 좌우 패딩을 살짝 늘려 여유 공간 확보 */
+		    /* [변경] border-radius를 더 둥글게 하여 부드러운 느낌 강화 */
+		    border-radius: 8px; 
+		    font-family: 'Poppins', sans-serif;
+		    /* [변경] 폰트 크기를 미세 조정하여 균형 맞춤 */
+		    font-size: 12px; 
+		    font-weight: 600;
+		    line-height: 1.4;
+		    border: 1px solid rgba(255, 255, 255, 0.1);
+		    /* [변경] 그림자를 살짝 조정하여 입체감 강화 */
+		    box-shadow: 0 2px 5px rgba(0,0,0,0.6); 
+		    pointer-events: none;
+		}
+		.image-count-badge.rare-badge {
+		    color: #ffc107;
+		    text-shadow: 0 0 5px rgba(255, 193, 7, 0.7);
+		}
+		.image-count-badge.super-rare-badge {
+		    color: #ff5252;
+		    text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
+		}
 
 		.item-box { /* For PTicket and Guaranteed */
 			display: flex;
