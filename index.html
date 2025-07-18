@@ -1110,7 +1110,7 @@
 			});
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -43 : -46; 
+			const overlapMargin = isMobile ? -43 : -47; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1167,15 +1167,15 @@
                         i++;
                     }
                     
-                    // *** START OF REPLACEMENT BLOCK ***
+                    // *** START OF MODIFIED BLOCK ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
-                        
-                        // 뱃지를 담을 컨테이너를 미리 선언
-                        let topImageWrapper;
+                        // 뱃지를 위치시키기 위한 기준점 설정
+                        stackContainer.style.position = 'relative';
 
+                        // 기존의 이미지 스택 생성 로직 (변경 없음)
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
@@ -1187,26 +1187,16 @@
                                 img.classList.add('super-rare');
                             }
                             img.style.position = 'relative';
-
-                            // j === 0 일 때가 시각적으로 맨 위 카드
-                            if (j === 0) {
-                                // 맨 위 카드만 별도의 div로 감싸서 새로운 기준점으로 만듦
-                                topImageWrapper = document.createElement('div');
-                                topImageWrapper.style.position = 'relative'; // 이 div가 뱃지의 새로운 기준!
-                                topImageWrapper.style.zIndex = count; // z-index는 wrapper에 적용
-                                topImageWrapper.appendChild(img);
-                                stackContainer.appendChild(topImageWrapper);
-                            } else {
-                                // 나머지 카드들은 기존 방식 그대로 처리
-                                img.style.zIndex = count - j;
+                            img.style.zIndex = count - j;
+                            if (j > 0) {
                                 img.style.marginLeft = `${overlapMargin}px`;
                                 img.style.filter = 'brightness(70%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                                stackContainer.appendChild(img);
                             }
+                            stackContainer.appendChild(img);
                         }
 
-                        // 뱃지를 생성하여 첫 번째 카드의 wrapper에 추가
+                        // --- NEW: 뱃지 생성 및 추가 ---
                         const countBadge = document.createElement('div');
                         countBadge.className = 'stack-count-badge';
                         countBadge.textContent = count;
@@ -1215,11 +1205,12 @@
                         } else {
                             countBadge.classList.add('super-rare');
                         }
-                        topImageWrapper.appendChild(countBadge);
+                        stackContainer.appendChild(countBadge);
+                        // --- END OF NEW CODE ---
 
                         leftSection.appendChild(stackContainer);
                     } else {
-                        // 단일 이미지는 변경 없이 그대로
+                        // 기존의 단일 이미지 처리 로직 (변경 없음)
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1231,7 +1222,7 @@
                         }
                         leftSection.appendChild(img);
                     }
-                    // *** END OF REPLACEMENT BLOCK ***
+                    // *** END OF MODIFIED BLOCK ***
                     i++;
                 }
 
