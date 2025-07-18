@@ -232,38 +232,6 @@
 	        fill: white;
 	        transform: translateZ(0);
 	    }
-        /* --- NEW: Sort Container Styles --- */
-        .sort-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-right: 5px;
-        }
-        .sort-button {
-            background-color: rgba(45, 45, 45, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e0e0e0;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-        }
-        .sort-button:hover {
-            background-color: rgba(65, 65, 65, 0.9);
-            border-color: #ff4081;
-        }
-        .sort-button.active {
-            background: linear-gradient(45deg, #ff4081, #f50057);
-            color: #fff;
-            border-color: transparent;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(255, 64, 129, 0.4);
-        }
-
 		#results {
 		    padding: 20px;
 		    height: 800px;
@@ -394,25 +362,21 @@
 
 		.image-count-badge {
 		    position: absolute;
-		    /* [변경] bottom과 right를 음수 값으로 설정하여 바깥으로 이동 */
 		    bottom: -4px;
 		    right: -4px; 
 		    min-width: 18px;
 		    text-align: center;
-		    background: rgba(0, 0, 0, 0.75); /* 배경을 살짝 더 진하게 */
+		    background: rgba(0, 0, 0, 0.75);
 		    backdrop-filter: blur(4px);
 		    -webkit-backdrop-filter: blur(4px);
 		    color: #fff;
-		    padding: 1px 6px; /* 좌우 패딩을 살짝 늘려 여유 공간 확보 */
-		    /* [변경] border-radius를 더 둥글게 하여 부드러운 느낌 강화 */
+		    padding: 1px 6px;
 		    border-radius: 8px; 
 		    font-family: 'Poppins', sans-serif;
-		    /* [변경] 폰트 크기를 미세 조정하여 균형 맞춤 */
 		    font-size: 13px; 
 		    font-weight: 600;
 		    line-height: 1.4;
 		    border: 1px solid rgba(255, 255, 255, 0.1);
-		    /* [변경] 그림자를 살짝 조정하여 입체감 강화 */
 		    box-shadow: 0 2px 5px rgba(0,0,0,0.6); 
 		    pointer-events: none;
 		}
@@ -475,6 +439,37 @@
 			font-size: 12px;
 			color: #bdc3c7;
 		}
+	    
+	    /* --- NEW: Sort Dropdown Styles --- */
+	    .sort-container {
+	        display: flex;
+	        justify-content: flex-end;
+	        margin-bottom: 15px;
+	        padding-right: 5px;
+	    }
+	    #sortDropdown {
+	        background-color: #2a2c30;
+	        color: #e0e0e0;
+	        border: 1px solid #555;
+	        padding: 8px 12px;
+	        border-radius: 8px;
+	        font-family: 'Poppins', sans-serif;
+	        font-size: 14px;
+	        cursor: pointer;
+	        outline: none;
+	        transition: border-color 0.3s, box-shadow 0.3s;
+	        -webkit-appearance: none;
+	        -moz-appearance: none;
+	        appearance: none;
+	        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+	        background-repeat: no-repeat;
+	        background-position: right 12px center;
+	        background-size: 1em;
+	        padding-right: 35px;
+	    }
+	    #sortDropdown:focus, #sortDropdown:hover {
+	        border-color: #ff4081;
+	    }
 	    
 	    #tsparticles {
 	        position: fixed;
@@ -652,10 +647,6 @@
 	            font-size: 16px;
 	            padding: 12px;
 	        }
-            .sort-button {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
 	        .result-item {
 	            padding: 10px;
 	        }
@@ -733,9 +724,11 @@
 	  ※ Click item to copy
 	</div>
     <div class="sort-container">
-        <button id="sortByPrice" class="sort-button active">Price</button>
-        <button id="sortByCharacter" class="sort-button">Character</button>
-        <button id="sortByTicket" class="sort-button">PTicket</button>
+        <select id="sortDropdown">
+            <option value="price" selected>Price</option>
+            <option value="character">Character</option>
+            <option value="pticket">PTicket</option>
+        </select>
     </div>
     <div id="results"></div>
     <div id="copyMessage">
@@ -890,6 +883,8 @@
 
         let characters = [];
         let rareCharacters = [];
+        let superRarePrefixes = new Set();
+        let currentFilteredData = {};
 
 		function loadCharacters() {
             const ts = new Date().getTime();
@@ -916,14 +911,19 @@
                         }
                     });
 
-                    // 희귀 캐릭터가 아닌 'Extras' 이미지들을 미리 로딩합니다.
+                    const normalRarePrefixes = new Set(['gy', 'to', 'st', 'sh']);
+                    rareCharacters.forEach(([eng]) => {
+                        if (!normalRarePrefixes.has(eng.slice(0, 2))) {
+                            superRarePrefixes.add(eng.slice(0, 2));
+                        }
+                    });
+
                     const rareEngNames = new Set(rareCharacters.map(([eng]) => eng));
                     characters.forEach(([eng, kor]) => {
                         if (!rareEngNames.has(eng)) {
                             new Image().src = `Portrait/${kor}.png`;
                         }
                     });
-                    // '파파샤' 이미지도 미리 로드
                     new Image().src = 'Portrait/파파샤.png';
 
                     createCharacterBoxes();
@@ -1036,9 +1036,6 @@
         }
 
         let itemDetailsMap = {};
-        // --- NEW: Global variables for sorting ---
-        let currentSortCriteria = 'price';
-        let currentFilteredData = {};
 
         function loadData() {
             const ts = new Date().getTime();
@@ -1067,40 +1064,29 @@
                                 guaranteed: line.includes('GUARANTEED'),
                                 displayText: '',
                                 gemsCount: 0,
-                                superRareCount: 0 // For sorting
+                                superRareCount: 0
                             };
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
                                 itemDetails.price = parseFloat(priceMatch[1]);
                             }
+
+                            let superRareCount = 0;
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
                                 if (match) {
                                     const charName = match[1].toLowerCase();
-                                    const count = match[2];
-                                    charString += charName.slice(0, 2) + count;
+                                    const numCount = parseInt(match[2]);
+                                    const prefix = charName.slice(0, 2);
+                                    charString += prefix + numCount;
+                                    
+                                    if (superRarePrefixes.has(prefix)) {
+                                        superRareCount += numCount;
+                                    }
                                 }
                                 j++;
                             }
-                            
-                            // --- NEW: Calculate super rare count for sorting ---
-                            const charsForCount = charString.match(/.{1,3}/g) || [];
-                            let srCount = 0;
-                            charsForCount.forEach(c => {
-                                const code = c.slice(0, 2);
-                                const num = parseInt(c.slice(2));
-                                const charInfo = characters.find(([eng]) => eng.startsWith(code));
-                                if (charInfo) {
-                                    const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-                                    if (isGenerallyRare) {
-                                        const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charInfo[0].startsWith(prefix));
-                                        if (isSuperRare) {
-                                            srCount += num;
-                                        }
-                                    }
-                                }
-                            });
-                            itemDetails.superRareCount = srCount;
+                            itemDetails.superRareCount = superRareCount;
 
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
@@ -1128,14 +1114,45 @@
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
                 
-                currentFilteredData = filtered; // Store filtered data
-                displayResults(currentFilteredData); // Display with current sort
-                
+                currentFilteredData = filtered;
+                renderSortedResults();
+
                 resultsDiv.classList.remove('filtering');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }, 200);
+        }
+
+        function renderSortedResults() {
+            const data = currentFilteredData;
+            const sortKey = document.getElementById('sortDropdown')?.value || 'price';
+
+            const sortedKeys = Object.keys(data).sort((a, b) => {
+                const itemA = itemDetailsMap[a];
+                const itemB = itemDetailsMap[b];
+                let primarySort = 0;
+
+                switch (sortKey) {
+                    case 'character':
+                        primarySort = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
+                        break;
+                    case 'pticket':
+                        primarySort = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
+                        break;
+                    case 'price':
+                    default:
+                        primarySort = itemB.price - itemA.price;
+                        break;
+                }
+
+                if (primarySort === 0 && sortKey !== 'price') {
+                    return itemB.price - itemA.price;
+                }
+                return primarySort;
+            });
+            
+            displayResults(data, sortedKeys);
         }
 
         function checkConditions(chars, itemKey) {
@@ -1177,7 +1194,7 @@
             });
         }
 		
-		function displayResults(data) {
+		function displayResults(data, sortedKeys) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
 			const fragment = document.createDocumentFragment();
@@ -1185,26 +1202,6 @@
 			container.className = 'content-container';
 			fragment.appendChild(container);
 			
-            // --- NEW: Sorting logic based on currentSortCriteria ---
-			const sortedKeys = Object.keys(data).sort((a, b) => {
-                const itemA = itemDetailsMap[a];
-                const itemB = itemDetailsMap[b];
-
-                switch (currentSortCriteria) {
-                    case 'character':
-                        const charDiff = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
-                        if (charDiff !== 0) return charDiff;
-                        return itemB.price - itemA.price; // Secondary sort: price
-                    case 'ticket':
-                        const ticketDiff = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
-                        if (ticketDiff !== 0) return ticketDiff;
-                        return itemB.price - itemA.price; // Secondary sort: price
-                    case 'price':
-                    default:
-                        return itemB.price - itemA.price;
-                }
-			});
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1438,6 +1435,7 @@
         }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
+        document.getElementById('sortDropdown').addEventListener('change', renderSortedResults);
 
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
@@ -1471,29 +1469,6 @@
 					hideExtrasPopup();
 				}
 			});
-
-            // --- NEW: Sort Button Event Listeners ---
-            const sortButtons = document.querySelectorAll('.sort-button');
-            sortButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (button.classList.contains('active')) return;
-
-                    sortButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-
-                    const sortType = button.id.replace('sortBy', '').toLowerCase();
-                    currentSortCriteria = sortType;
-
-                    if (Object.keys(currentFilteredData).length > 0) {
-                        const resultsDiv = document.getElementById('results');
-                        resultsDiv.classList.add('filtering');
-                        setTimeout(() => {
-                            displayResults(currentFilteredData);
-                            resultsDiv.classList.remove('filtering');
-                        }, 50);
-                    }
-                });
-            });
 		});
     </script>
 </body>
