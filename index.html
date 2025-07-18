@@ -637,38 +637,6 @@
 				padding: 20px;
 			}
 	    }
-        .stack-count-badge {
-            position: absolute;
-            bottom: -3px; /* 위치 미세 조정 */
-            right: -5px;  /* 위치 미세 조정 */
-            transform: translate(0, 0); /* 이전 transform 초기화 */
-            min-width: 18px;
-            height: 18px;
-            padding: 0 5px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(20, 20, 22, 0.7);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f0f0f0;
-            font-size: 13px;
-            font-weight: 700;
-            font-family: 'Poppins', sans-serif;
-            z-index: 10; /* 모든 이미지 위에 표시되도록 높은 z-index 부여 */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-        .stack-count-badge.rare {
-            background: linear-gradient(135deg, rgba(109, 68, 0, 0.6), rgba(58, 36, 0, 0.7));
-            border-color: rgba(255, 152, 0, 0.3);
-            text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
-        }
-        .stack-count-badge.super-rare {
-            background: linear-gradient(135deg, rgba(110, 20, 20, 0.6), rgba(50, 9, 9, 0.7));
-            border-color: rgba(211, 47, 47, 0.3);
-            text-shadow: 0 0 5px rgba(255, 64, 129, 0.8);
-        }
 	</style>
 </head>
 <body>
@@ -1110,7 +1078,7 @@
 			});
 
 			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -41 : -47; 
+			const overlapMargin = isMobile ? -25 : -28; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1166,16 +1134,10 @@
                         count++;
                         i++;
                     }
-                    
-                    // *** START OF MODIFIED BLOCK ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
                         stackContainer.style.display = 'flex';
                         stackContainer.style.alignItems = 'center';
-                        // 뱃지를 위치시키기 위한 기준점 설정
-                        stackContainer.style.position = 'relative';
-
-                        // 기존의 이미지 스택 생성 로직 (변경 없음)
                         for (let j = 0; j < count; j++) {
                             const img = document.createElement('img');
                             img.src = currentImgData.src;
@@ -1190,27 +1152,13 @@
                             img.style.zIndex = count - j;
                             if (j > 0) {
                                 img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
+                                img.style.filter = 'brightness(55%)';
                                 img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                             }
                             stackContainer.appendChild(img);
                         }
-
-                        // --- NEW: 뱃지 생성 및 추가 ---
-                        const countBadge = document.createElement('div');
-                        countBadge.className = 'stack-count-badge';
-                        countBadge.textContent = count;
-                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            countBadge.classList.add('rare');
-                        } else {
-                            countBadge.classList.add('super-rare');
-                        }
-                        stackContainer.appendChild(countBadge);
-                        // --- END OF NEW CODE ---
-
                         leftSection.appendChild(stackContainer);
                     } else {
-                        // 기존의 단일 이미지 처리 로직 (변경 없음)
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1222,7 +1170,6 @@
                         }
                         leftSection.appendChild(img);
                     }
-                    // *** END OF MODIFIED BLOCK ***
                     i++;
                 }
 
@@ -1277,6 +1224,24 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
+		}
+
+		function showExtrasPopup(images) {
+			const popup = document.getElementById('extrasPopup');
+			const grid = document.getElementById('extras-popup-grid');
+			grid.innerHTML = '';
+
+			images.forEach(imgData => {
+				const img = document.createElement('img');
+				img.src = imgData.src;
+				img.alt = imgData.alt;
+				img.className = 'small-character-img';
+				img.classList.add('extras-character-border');
+				img.loading = 'lazy';
+				img.decoding = 'async';
+				grid.appendChild(img);
+			});
+			popup.style.display = 'flex';
 		}
 
         function copyToClipboard(el) {
