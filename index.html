@@ -232,6 +232,38 @@
 	        fill: white;
 	        transform: translateZ(0);
 	    }
+        /* --- NEW: Sort Container Styles --- */
+        .sort-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-right: 5px;
+        }
+        .sort-button {
+            background-color: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        .sort-button:hover {
+            background-color: rgba(65, 65, 65, 0.9);
+            border-color: #ff4081;
+        }
+        .sort-button.active {
+            background: linear-gradient(45deg, #ff4081, #f50057);
+            color: #fff;
+            border-color: transparent;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 64, 129, 0.4);
+        }
+
 		#results {
 		    padding: 20px;
 		    height: 800px;
@@ -620,6 +652,10 @@
 	            font-size: 16px;
 	            padding: 12px;
 	        }
+            .sort-button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
 	        .result-item {
 	            padding: 10px;
 	        }
@@ -696,6 +732,11 @@
 	  </strong><br>
 	  ※ Click item to copy
 	</div>
+    <div class="sort-container">
+        <button id="sortByPrice" class="sort-button active">Price</button>
+        <button id="sortByCharacter" class="sort-button">Character</button>
+        <button id="sortByTicket" class="sort-button">PTicket</button>
+    </div>
     <div id="results"></div>
     <div id="copyMessage">
         <div class="copy-icon">
@@ -995,6 +1036,9 @@
         }
 
         let itemDetailsMap = {};
+        // --- NEW: Global variables for sorting ---
+        let currentSortCriteria = 'price';
+        let currentFilteredData = {};
 
         function loadData() {
             const ts = new Date().getTime();
@@ -1022,7 +1066,8 @@
                                 price: 0,
                                 guaranteed: line.includes('GUARANTEED'),
                                 displayText: '',
-                                gemsCount: 0
+                                gemsCount: 0,
+                                superRareCount: 0 // For sorting
                             };
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
@@ -1037,6 +1082,26 @@
                                 }
                                 j++;
                             }
+                            
+                            // --- NEW: Calculate super rare count for sorting ---
+                            const charsForCount = charString.match(/.{1,3}/g) || [];
+                            let srCount = 0;
+                            charsForCount.forEach(c => {
+                                const code = c.slice(0, 2);
+                                const num = parseInt(c.slice(2));
+                                const charInfo = characters.find(([eng]) => eng.startsWith(code));
+                                if (charInfo) {
+                                    const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                                    if (isGenerallyRare) {
+                                        const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charInfo[0].startsWith(prefix));
+                                        if (isSuperRare) {
+                                            srCount += num;
+                                        }
+                                    }
+                                }
+                            });
+                            itemDetails.superRareCount = srCount;
+
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
                                 itemDetails.gemsCount = parseInt(gemsMatch[1]);
@@ -1062,14 +1127,10 @@
                     const chars = v.match(/.{1,3}/g)||[];
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
-                const sortedKeys = Object.keys(filtered).sort((a, b) => {
-                    return itemDetailsMap[b].price - itemDetailsMap[a].price;
-                });
-                const final = {};
-                sortedKeys.forEach(key => {
-                    final[key] = filtered[key];
-                });
-                displayResults(final);
+                
+                currentFilteredData = filtered; // Store filtered data
+                displayResults(currentFilteredData); // Display with current sort
+                
                 resultsDiv.classList.remove('filtering');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
@@ -1124,8 +1185,24 @@
 			container.className = 'content-container';
 			fragment.appendChild(container);
 			
+            // --- NEW: Sorting logic based on currentSortCriteria ---
 			const sortedKeys = Object.keys(data).sort((a, b) => {
-				return itemDetailsMap[b].price - itemDetailsMap[a].price;
+                const itemA = itemDetailsMap[a];
+                const itemB = itemDetailsMap[b];
+
+                switch (currentSortCriteria) {
+                    case 'character':
+                        const charDiff = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
+                        if (charDiff !== 0) return charDiff;
+                        return itemB.price - itemA.price; // Secondary sort: price
+                    case 'ticket':
+                        const ticketDiff = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
+                        if (ticketDiff !== 0) return ticketDiff;
+                        return itemB.price - itemA.price; // Secondary sort: price
+                    case 'price':
+                    default:
+                        return itemB.price - itemA.price;
+                }
 			});
 
 			sortedKeys.forEach(k => {
@@ -1174,7 +1251,6 @@
 					}
 				}
                 
-                // --- NEW LOGIC: Group images and render with count badges ---
                 const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
                     if (!acc[imgData.src]) {
                         acc[imgData.src] = { ...imgData, count: 0 };
@@ -1215,7 +1291,6 @@
                     
                     leftSection.appendChild(container);
                 });
-                // --- END OF NEW LOGIC ---
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1275,7 +1350,6 @@
 			const grid = document.getElementById('extras-popup-grid');
 			grid.innerHTML = '';
 
-			// Extras 캐릭터를 고유 이름(engName)으로 그룹화하여 개수 세기
 			const groupedExtras = images.reduce((acc, imgData) => {
 				const key = imgData.engName;
 				if (!acc[key]) {
@@ -1285,7 +1359,6 @@
 				return acc;
 			}, {});
 
-			// 그룹화된 캐릭터들을 순회하며 팝업에 요소 생성
 			Object.values(groupedExtras).forEach(charData => {
 				const container = document.createElement('div');
 				container.className = 'image-with-count-container';
@@ -1298,7 +1371,6 @@
 				img.decoding = 'async';
 				container.appendChild(img);
 
-				// 캐릭터 수가 1개를 초과하면 개수 배지 추가
 				if (charData.count > 1) {
 					const badge = document.createElement('div');
 					badge.className = 'image-count-badge';
@@ -1399,6 +1471,29 @@
 					hideExtrasPopup();
 				}
 			});
+
+            // --- NEW: Sort Button Event Listeners ---
+            const sortButtons = document.querySelectorAll('.sort-button');
+            sortButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.classList.contains('active')) return;
+
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const sortType = button.id.replace('sortBy', '').toLowerCase();
+                    currentSortCriteria = sortType;
+
+                    if (Object.keys(currentFilteredData).length > 0) {
+                        const resultsDiv = document.getElementById('results');
+                        resultsDiv.classList.add('filtering');
+                        setTimeout(() => {
+                            displayResults(currentFilteredData);
+                            resultsDiv.classList.remove('filtering');
+                        }, 50);
+                    }
+                });
+            });
 		});
     </script>
 </body>
