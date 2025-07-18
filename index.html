@@ -353,6 +353,41 @@
 	        z-index: 1;
 	    }
 
+        /* === Apple UI Designer's Touch: Start === */
+
+        /* 이미지와 수량 표시기를 함께 묶는 컨테이너 */
+        .image-container {
+            position: relative; /* 수량 표시기를 절대 위치로 배치하기 위한 기준점 */
+            display: inline-flex; /* 컨테이너 크기를 이미지에 맞춤 */
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 새로운 'x?' 수량 표시기 스타일 */
+        .stack-counter {
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            background-color: rgba(28, 28, 30, 0.75); /* iOS의 다크모드 UI와 유사한 반투명 배경 */
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Poppins', sans-serif; /* 세련된 폰트 적용 */
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 7px; /* Apple의 Squircle 디자인을 연상시키는 부드러운 반경 */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            z-index: 2; /* 이미지가 위로 올라오도록 보장 */
+            
+            /* 깊이감을 위한 블러 효과 (Glassmorphism) */
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* 미묘한 그림자로 입체감 부여 */
+            user-select: none; /* 텍스트 선택 방지 */
+        }
+
+        /* === Apple UI Designer's Touch: End === */
+
 		.item-box { /* For PTicket and Guaranteed */
 			display: flex;
 			flex-direction: column;
@@ -1077,9 +1112,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1126,52 +1158,49 @@
 					}
 				}
 
-				let i = 0;
+                // === Apple UI Designer's Logic: Renders images with a clean stack counter ===
+                let i = 0;
                 while (i < rareCharImages.length) {
                     const currentImgData = rareCharImages[i];
                     let count = 1;
+                    // 동일한 이미지가 몇 개 있는지 카운트
                     while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
                         count++;
                         i++;
                     }
-                    if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
-                        }
-                        leftSection.appendChild(stackContainer);
+
+                    // 이미지와 카운터를 담을 컨테이너 생성
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+
+                    // 대표 이미지 1개 생성
+                    const img = document.createElement('img');
+                    img.src = currentImgData.src;
+                    img.alt = currentImgData.alt;
+                    img.className = 'small-character-img';
+                    
+                    // 희귀도에 따라 클래스 추가
+                    if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                        img.classList.add('rare');
                     } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
+                        img.classList.add('super-rare');
                     }
+
+                    imageContainer.appendChild(img);
+
+                    // 이미지가 2개 이상일 경우에만 수량 표시기 추가
+                    if (count > 1) {
+                        const counter = document.createElement('span');
+                        counter.className = 'stack-counter';
+                        counter.textContent = `x${count}`;
+                        imageContainer.appendChild(counter);
+                    }
+
+                    leftSection.appendChild(imageContainer);
                     i++;
                 }
+                // === End of Apple UI Designer's Logic ===
+
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
