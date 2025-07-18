@@ -324,6 +324,40 @@
 	        border: 2px solid #ffc107;
 	        box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 12px rgba(255, 193, 7, 0.7);
 	    }
+
+        /* ======================================================= */
+        /* ============ ✨ NEW APPLE-INSPIRED DESIGN ✨ =========== */
+        /* ======================================================= */
+        .image-stack-container {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle; /* Align with other items */
+        }
+        .stack-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background-color: rgba(18, 18, 18, 0.7); /* Semi-transparent dark bg */
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); /* Glassmorphism effect */
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 6px; /* A modern 'squircle' shape */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            line-height: 1.2;
+            text-align: center;
+            min-width: 18px;
+            pointer-events: none; /* Prevent clicks on the badge */
+            z-index: 5;
+        }
+        /* ======================================================= */
+        /* =================== END OF NEW DESIGN ================= */
+        /* ======================================================= */
+
 	    body::before {
 	        content: "";
 	        position: absolute;
@@ -642,7 +676,7 @@
 <body>
     <div id="loader">
         <div class="spinner"></div>
-    </div>
+    }
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
@@ -678,6 +712,7 @@
 	</div>
 
     <script>
+        // ... (이전 스크립트 코드는 변경 없음) ...
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -1077,9 +1112,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1126,39 +1158,42 @@
 					}
 				}
 
+                /* ======================================================== */
+                /* ============ ✨ JAVASCRIPT LOGIC CHANGED HERE ✨ ========= */
+                /* ======================================================== */
 				let i = 0;
                 while (i < rareCharImages.length) {
                     const currentImgData = rareCharImages[i];
                     let count = 1;
+                    // 동일한 캐릭터가 몇 개 있는지 셉니다.
                     while (i + 1 < rareCharImages.length && rareCharImages[i + 1].src === currentImgData.src) {
                         count++;
                         i++;
                     }
+
+                    // 캐릭터가 1개 초과일 경우, 뱃지를 사용합니다.
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(55%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
+                        stackContainer.className = 'image-stack-container';
+
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
                         }
+
+                        const badge = document.createElement('div');
+                        badge.className = 'stack-badge';
+                        badge.textContent = `x${count}`;
+
+                        stackContainer.appendChild(img);
+                        stackContainer.appendChild(badge);
                         leftSection.appendChild(stackContainer);
-                    } else {
+                    } else { // 캐릭터가 1개일 경우, 기존처럼 이미지만 추가합니다.
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1172,6 +1207,9 @@
                     }
                     i++;
                 }
+                /* ======================================================== */
+                /* ================= END OF JAVASCRIPT CHANGE ============== */
+                /* ======================================================== */
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
