@@ -1435,7 +1435,10 @@
         }, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
-        document.getElementById('sortDropdown').addEventListener('change', renderSortedResults);
+		document.getElementById('sortDropdown').addEventListener('change', function() {
+		    renderSortedResults();
+		    this.blur(); // 항목 선택 후 포커스를 제거
+		});
 
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
