@@ -300,7 +300,6 @@
 			justify-content: flex-end;
 		}
 
-        /* --- SIMPLE & ELEGANT STACK STYLES --- */
 	    .small-character-img {
 			height: 50px;
 			width: auto;
@@ -308,98 +307,18 @@
 			border-radius: 8px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
-            /* 스택의 기준점이 되도록 설정 */
-            position: relative;
-            z-index: 2; /* 스택 카드보다 위에 위치 */
 	    }
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
 	    }
-	    .small-character-img.super-rare {
-	        border: 2px solid #D32F2F;
-	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
-	    }
-        /* 아이템 래퍼: 모든 스택 요소의 기준점 */
-        .image-stack-wrapper {
-            position: relative;
-            display: inline-block;
-            vertical-align: middle;
-            height: 50px; /* ★★★ 높이를 명시적으로 지정하여 레이아웃 안정성 확보 */
-        }
-	    .small-character-img {
-			height: 50px;
-			width: auto;
-			object-fit: contain;
-			border-radius: 8px;
-			transition: transform 0.2s;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 2; 
-	    }
-	    .small-character-img.rare {
-	        border: 2px solid #ff9800;
-	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
-	    }
-	    .small-character-img.super-rare {
-	        border: 2px solid #D32F2F;
-	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
-	    }
-        /* 이미지 없는 빈 스택 카드 */
-        .stack-card {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            /* JS에서 계산된 wrapper 너비에 맞춰 100%로 설정 */
-            width: 100%; 
-            height: 100%;
-            border-radius: 8px;
-            box-sizing: border-box;
-            z-index: 1;
-        }
-        .stack-card.rare {
-            border: 2px solid #ff9800;
-        }
-        .stack-card.super-rare {
-            border: 2px solid #D32F2F;
-        }
-        /* 숫자 배지 */
-        .stack-badge {
-            position: absolute;
-            bottom: -4px;
-            right: -4px;
-            min-width: 18px;
-            height: 18px;
-            padding: 0 5px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(20, 20, 22, 0.7);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #f0f0f0;
-            font-size: 13px;
-            font-weight: 700;
-            font-family: 'Poppins', sans-serif;
-            z-index: 3;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-        }
-        .stack-badge.rare {
-            background: linear-gradient(135deg, rgba(109, 68, 0, 0.7), rgba(58, 36, 0, 0.8));
-            border-color: rgba(255, 152, 0, 0.4);
-            text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
-        }
-        .stack-badge.super-rare {
-            background: linear-gradient(135deg, rgba(110, 20, 20, 0.7), rgba(50, 9, 9, 0.8));
-            border-color: rgba(211, 47, 47, 0.4);
-            text-shadow: 0 0 5px rgba(255, 64, 129, 0.8);
-        }
-        /* --- END STYLES --- */
 	    .character-box.super-rare {
 	        border: 2px solid #D32F2F;
 	        box-shadow: 0 0 15px rgba(211, 47, 47, 0.5), 0 4px 12px rgba(211, 47, 47, 0.7);
+	    }
+	    .small-character-img.super-rare {
+	        border: 2px solid #D32F2F;
+	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
 	    }
 	    .character-box.gold-border {
 	        border: 2px solid #ffc107;
@@ -1158,6 +1077,9 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
+			const isMobile = window.innerWidth <= 768;
+			const overlapMargin = isMobile ? -25 : -28; 
+
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1212,48 +1134,42 @@
                         count++;
                         i++;
                     }
-                    
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-stack-wrapper';
-
-                    const img = document.createElement('img');
-                    img.src = currentImgData.src;
-                    img.alt = currentImgData.alt;
-                    img.className = 'small-character-img';
-                    
-                    const isRare = currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh');
-                    const rarityClass = isRare ? 'rare' : 'super-rare';
-                    img.classList.add(rarityClass);
-                    
-                    wrapper.appendChild(img);
-
                     if (count > 1) {
-                        // 스택 카드들은 대표 이미지의 너비(auto)가 아닌 고정된 너비를 기준으로 위치해야 함
-                        const baseWidth = 50; 
-                        
-                        for (let j = 1; j < count; j++) {
-                            const stackCard = document.createElement('div');
-                            stackCard.className = `stack-card ${rarityClass}`;
-                            // stackCard는 wrapper 기준이 아닌, 대표 이미지의 위치를 기준으로 transform 되어야 함
-                            stackCard.style.transform = `translateX(${j * 5}px)`;
-                            wrapper.appendChild(stackCard);
+                        const stackContainer = document.createElement('div');
+                        stackContainer.style.display = 'flex';
+                        stackContainer.style.alignItems = 'center';
+                        for (let j = 0; j < count; j++) {
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src;
+                            img.alt = currentImgData.alt;
+                            img.className = 'small-character-img';
+                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                                img.classList.add('rare');
+                            } else {
+                                img.classList.add('super-rare');
+                            }
+                            img.style.position = 'relative';
+                            img.style.zIndex = count - j;
+                            if (j > 0) {
+                                img.style.marginLeft = `${overlapMargin}px`;
+                                img.style.filter = 'brightness(70%)';
+                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                            }
+                            stackContainer.appendChild(img);
                         }
-                        const badge = document.createElement('div');
-                        badge.className = `stack-badge ${rarityClass}`;
-                        badge.textContent = count;
-                        wrapper.appendChild(badge);
-
-                        // ★★★ 래퍼의 전체 너비 계산 및 적용 ★★★
-                        const finalWidth = baseWidth + (count - 1) * 5;
-                        wrapper.style.width = finalWidth + 'px';
-
+                        leftSection.appendChild(stackContainer);
                     } else {
-                        // 스택이 없는 경우에도 너비 지정
-                        wrapper.style.width = '50px';
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
+                        leftSection.appendChild(img);
                     }
-                    
-                    leftSection.appendChild(wrapper);
-
                     i++;
                 }
 
