@@ -320,54 +320,6 @@
 	        border: 2px solid #D32F2F;
 	        box-shadow: 0 0 8px rgba(211, 47, 47, 0.6);
 	    }
-        
-        /* --- NEW STACK STYLES --- */
-        .image-stack-container {
-            position: relative;
-            display: inline-block;
-            vertical-align: middle;
-            margin: 3px 6px 3px 0; /* 스택 그림자를 위한 여백 */
-        }
-        .image-stack-container .small-character-img {
-            position: relative; /* 다른 요소 위에 있도록 z-index 컨텍스트 생성 */
-            z-index: 2;
-        }
-        .stack-outline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 8px;
-            z-index: 1;
-            box-sizing: border-box; /* 테두리를 크기 안에 포함 */
-        }
-        .stack-outline.rare {
-            border: 2px solid rgba(255, 152, 0, 0.5);
-        }
-        .stack-outline.super-rare {
-            border: 2px solid rgba(211, 47, 47, 0.5);
-        }
-        .stack-count-badge {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            transform: translate(25%, 25%); /* 바깥쪽 모서리로 살짝 이동 */
-            background-color: rgba(26, 26, 26, 0.9);
-            color: #e0e0e0;
-            font-family: 'Poppins', sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 2px 6px;
-            border-radius: 6px;
-            z-index: 3; /* 최상단에 표시 */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            line-height: 1.2;
-            min-width: 10px;
-            text-align: center;
-        }
-        /* --- END NEW STACK STYLES --- */
-
 	    .character-box.gold-border {
 	        border: 2px solid #ffc107;
 	        box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 12px rgba(255, 193, 7, 0.7);
@@ -1125,6 +1077,9 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
+			const isMobile = window.innerWidth <= 768;
+			const overlapMargin = isMobile ? -25 : -28; 
+
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1179,45 +1134,29 @@
                         count++;
                         i++;
                     }
-
-                    // *** MODIFIED BLOCK START ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
-                        stackContainer.className = 'image-stack-container';
-
-                        // 최대 2개의 뒷 배경 외곽선 생성
-                        for (let j = 1; j <= Math.min(count - 1, 2); j++) {
-                            const outline = document.createElement('div');
-                            outline.className = 'stack-outline';
-                            
+                        stackContainer.style.display = 'flex';
+                        stackContainer.style.alignItems = 'center';
+                        for (let j = 0; j < count; j++) {
+                            const img = document.createElement('img');
+                            img.src = currentImgData.src;
+                            img.alt = currentImgData.alt;
+                            img.className = 'small-character-img';
                             if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                outline.classList.add('rare');
+                                img.classList.add('rare');
                             } else {
-                                outline.classList.add('super-rare');
+                                img.classList.add('super-rare');
                             }
-                            
-                            outline.style.transform = `translate(${j * 3}px, ${j * 3}px)`;
-                            stackContainer.appendChild(outline);
+                            img.style.position = 'relative';
+                            img.style.zIndex = count - j;
+                            if (j > 0) {
+                                img.style.marginLeft = `${overlapMargin}px`;
+                                img.style.filter = 'brightness(70%)';
+                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                            }
+                            stackContainer.appendChild(img);
                         }
-                        
-                        // 메인 이미지
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        stackContainer.appendChild(img);
-
-                        // 카운트 뱃지
-                        const countBadge = document.createElement('div');
-                        countBadge.className = 'stack-count-badge';
-                        countBadge.textContent = count;
-                        stackContainer.appendChild(countBadge);
-
                         leftSection.appendChild(stackContainer);
                     } else {
                         const img = document.createElement('img');
@@ -1231,7 +1170,6 @@
                         }
                         leftSection.appendChild(img);
                     }
-                    // *** MODIFIED BLOCK END ***
                     i++;
                 }
 
