@@ -637,6 +637,72 @@
 				padding: 20px;
 			}
 	    }
+		
+        .image-stack-container {
+            position: relative; /* 자식 요소들을 위치시킬 기준점 */
+            display: inline-block; /* 다른 아이템들과 잘 어울리도록 */
+            vertical-align: middle;
+            /* 스택과 뱃지가 다른 요소와 겹치지 않도록 여백 확보 */
+            margin-right: 10px; 
+            margin-bottom: 3px;
+        }
+
+        .stack-outline {
+            position: absolute; /* 겹치기 위해 absolute 속성 사용 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            box-sizing: border-box; /* 테두리가 크기에 영향을 주지 않도록 함 */
+            opacity: 0.7; /* 뒷 배경은 살짝 연하게 */
+            z-index: 1; /* 메인 이미지보다 뒤에 있도록 설정 */
+        }
+        .stack-outline.rare {
+            border: 2px solid #ff9800;
+        }
+        .stack-outline.super-rare {
+            border: 2px solid #D32F2F;
+        }
+
+        /* 스택의 메인 이미지는 항상 위에 있도록 z-index 추가 */
+        .image-stack-container .small-character-img {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stack-count-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            transform: translate(40%, 40%);
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 20, 22, 0.7);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            z-index: 3; /* 모든 요소 중 가장 위에 표시 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        .stack-count-badge.rare {
+            background: linear-gradient(135deg, rgba(109, 68, 0, 0.6), rgba(58, 36, 0, 0.7));
+            border-color: rgba(255, 152, 0, 0.3);
+            text-shadow: 0 0 5px rgba(255, 152, 0, 0.7);
+        }
+        .stack-count-badge.super-rare {
+            background: linear-gradient(135deg, rgba(110, 20, 20, 0.6), rgba(50, 9, 9, 0.7));
+            border-color: rgba(211, 47, 47, 0.3);
+            text-shadow: 0 0 5px rgba(255, 64, 129, 0.8);
+        }
 	</style>
 </head>
 <body>
@@ -1065,7 +1131,7 @@
             });
         }
 		
-		function displayResults(data) {
+        function displayResults(data) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
 			const fragment = document.createDocumentFragment();
@@ -1076,9 +1142,6 @@
 			const sortedKeys = Object.keys(data).sort((a, b) => {
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
-
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
 
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
@@ -1134,31 +1197,54 @@
                         count++;
                         i++;
                     }
+                    
+                    // *** START OF REPLACEMENT BLOCK ***
                     if (count > 1) {
                         const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
+                        stackContainer.className = 'image-stack-container';
+
+                        // 1. 뒷 배경(outline)들을 먼저 생성
+                        for (let j = 1; j < count; j++) { // 메인 이미지를 제외하고 (count - 1)개 생성
+                            const outline = document.createElement('div');
+                            outline.className = 'stack-outline';
+                            
                             if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
+                                outline.classList.add('rare');
                             } else {
-                                img.classList.add('super-rare');
+                                outline.classList.add('super-rare');
                             }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
+                            
+                            // 5px씩 오른쪽으로 이동
+                            outline.style.transform = `translateX(${j * 5}px)`;
+                            stackContainer.appendChild(outline);
                         }
+                        
+                        // 2. 맨 앞의 메인 이미지를 생성
+                        const img = document.createElement('img');
+                        img.src = currentImgData.src;
+                        img.alt = currentImgData.alt;
+                        img.className = 'small-character-img';
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            img.classList.add('rare');
+                        } else {
+                            img.classList.add('super-rare');
+                        }
+                        stackContainer.appendChild(img);
+
+                        // 3. 카운트 뱃지를 생성
+                        const countBadge = document.createElement('div');
+                        countBadge.className = 'stack-count-badge';
+                        countBadge.textContent = count;
+                        if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
+                            countBadge.classList.add('rare');
+                        } else {
+                            countBadge.classList.add('super-rare');
+                        }
+                        stackContainer.appendChild(countBadge);
+
                         leftSection.appendChild(stackContainer);
-                    } else {
+
+                    } else { // 캐릭터가 1개일 경우 그냥 이미지만 표시
                         const img = document.createElement('img');
                         img.src = currentImgData.src;
                         img.alt = currentImgData.alt;
@@ -1170,6 +1256,7 @@
                         }
                         leftSection.appendChild(img);
                     }
+                    // *** END OF REPLACEMENT BLOCK ***
                     i++;
                 }
 
