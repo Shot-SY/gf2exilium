@@ -244,9 +244,9 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
-            transition: opacity 0.3s ease-in-out; /* 동적 효과를 위한 transition */
+            transition: opacity 0.15s ease-in-out; /* 애니메이션 속도 향상 */
 		}
-        #results.sorting { /* 동적 효과를 위한 클래스 */
+        #results.sorting {
             opacity: 0;
         }
 	    #results .content-container {
@@ -467,6 +467,7 @@
 	    }
 	    #sortDropdown:focus, #sortDropdown:hover {
 	        border-color: #ff4081;
+            outline: none; /* 포커스 외곽선 제거 */
 	    }
 	    
 	    #tsparticles {
@@ -1156,7 +1157,7 @@
                 
                 displayResults(data, sortedKeys);
                 resultsDiv.classList.remove('sorting');
-            }, 300);
+            }, 150); // 애니메이션 속도 향상
         }
 
         function checkConditions(chars, itemKey) {
