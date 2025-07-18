@@ -1077,9 +1077,6 @@
 				return itemDetailsMap[b].price - itemDetailsMap[a].price;
 			});
 
-			const isMobile = window.innerWidth <= 768;
-			const overlapMargin = isMobile ? -25 : -28; 
-
 			sortedKeys.forEach(k => {
 				const item = document.createElement('div');
 				item.className = 'result-item';
@@ -1134,42 +1131,44 @@
                         count++;
                         i++;
                     }
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-stack-wrapper';
+
+                    const img = document.createElement('img');
+                    img.src = currentImgData.src;
+                    img.alt = currentImgData.alt;
+                    img.className = 'small-character-img';
+                    
+                    // ★★★ 오타 수정된 부분 ★★★
+                    const isRare = currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh');
+                    const rarityClass = isRare ? 'rare' : 'super-rare';
+                    img.classList.add(rarityClass);
+                    
+                    wrapper.appendChild(img);
+
+                    const baseWidth = 50; 
+                    
                     if (count > 1) {
-                        const stackContainer = document.createElement('div');
-                        stackContainer.style.display = 'flex';
-                        stackContainer.style.alignItems = 'center';
-                        for (let j = 0; j < count; j++) {
-                            const img = document.createElement('img');
-                            img.src = currentImgData.src;
-                            img.alt = currentImgData.alt;
-                            img.className = 'small-character-img';
-                            if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                                img.classList.add('rare');
-                            } else {
-                                img.classList.add('super-rare');
-                            }
-                            img.style.position = 'relative';
-                            img.style.zIndex = count - j;
-                            if (j > 0) {
-                                img.style.marginLeft = `${overlapMargin}px`;
-                                img.style.filter = 'brightness(70%)';
-                                img.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
-                            }
-                            stackContainer.appendChild(img);
+                        for (let j = 1; j < count; j++) {
+                            const stackCard = document.createElement('div');
+                            stackCard.className = `stack-card ${rarityClass}`;
+                            stackCard.style.transform = `translateX(${j * 5}px)`;
+                            wrapper.appendChild(stackCard);
                         }
-                        leftSection.appendChild(stackContainer);
+                        const badge = document.createElement('div');
+                        badge.className = `stack-badge ${rarityClass}`;
+                        badge.textContent = count;
+                        wrapper.appendChild(badge);
+                        
+                        const finalWidth = baseWidth + (count - 1) * 5;
+                        wrapper.style.width = finalWidth + 'px';
                     } else {
-                        const img = document.createElement('img');
-                        img.src = currentImgData.src;
-                        img.alt = currentImgData.alt;
-                        img.className = 'small-character-img';
-                         if (currentImgData.engName.startsWith('gy') || currentImgData.engName.startsWith('to') || currentImgData.engName.startsWith('st') || currentImgData.engName.startsWith('sh')) {
-                            img.classList.add('rare');
-                        } else {
-                            img.classList.add('super-rare');
-                        }
-                        leftSection.appendChild(img);
+                        wrapper.style.width = baseWidth + 'px';
                     }
+                    
+                    leftSection.appendChild(wrapper);
+
                     i++;
                 }
 
