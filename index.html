@@ -1291,7 +1291,15 @@
 				});
 
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
-                
+				
+			    // 아이템에서 마우스가 벗어날 때(호버 해제) 해당 아이템의 스크롤을 리셋합니다.
+			    item.addEventListener('mouseleave', () => {
+			        const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+			        if (container && container.scrollLeft > 0) {
+			            container.scroll({ left: 0, behavior: 'smooth' });
+			        }
+			    });
+				
                 // [수정됨] 스크롤 영역과 인디케이터를 감싸는 wrapper 생성
                 const imagesWrapper = document.createElement('div');
                 imagesWrapper.className = 'item-images-wrapper';
@@ -1614,6 +1622,7 @@
                     resetAllScrolledItems();
                 }
             });
+			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
 		});
     </script>
 </body>
