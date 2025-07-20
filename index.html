@@ -507,10 +507,11 @@
 	        z-index: 0;
 	        pointer-events: none;
 	    }
-        /* [수정/추가됨] */
+        /* [수정됨] '...' 버튼 스타일 수정 */
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
+            right: 30px; /* 위치를 오른쪽 기준으로 고정 */
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
@@ -519,7 +520,7 @@
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
-			display: none;
+			display: none; /* 기본적으로 숨김 */
 			align-items: center;
 			justify-content: center;
 			font-size: 18px;
@@ -530,13 +531,36 @@
 			transition: opacity 0.2s;
             text-shadow: 0 0 4px rgba(0,0,0,0.5);
 		}
+        /* 스크롤이 가능할 때 버튼 표시 */
 		.item-images.has-scroll + .scroll-indicator {
 			display: flex;
 		}
+        /* [수정됨] 스크롤이 끝에 도달하면 버튼 숨김 */
 		.item-images.scrolled-to-end + .scroll-indicator {
 			opacity: 0;
 			pointer-events: none;
 		}
+
+        /* [수정됨] 그라데이션을 모든 화면 크기에 기본 적용 */
+        .result-item:has(.item-images.has-scroll)::after {
+            content: '';
+            position: absolute;
+            top: 12px; /* .result-item의 상단 padding */
+            right: 20px; /* .result-item의 우측 padding */
+            width: 70px; /* 데스크탑에서 그라데이션 너비 확장 */
+            height: 60px; /* 데스크탑 이미지 영역 높이 (이미지 50px + 상하 padding 10px) */
+            background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20 80%);
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 0.3s;
+            opacity: 1;
+        }
+
+        /* [수정됨] 스크롤이 끝에 도달하면 그라데이션 숨김 */
+        .result-item:has(.item-images.scrolled-to-end)::after {
+            opacity: 0;
+        }
+
 	    #loader {
 	        position: fixed;
 	        top: 0;
@@ -689,7 +713,6 @@
 	            padding: 10px;
 				flex-wrap: wrap;
 	        }
-            /* [수정/추가됨] */
             .item-images {
                 position: relative; /* 모바일 그라데이션을 위한 position 설정 */
             }
@@ -716,25 +739,12 @@
 			.scroll-indicator {
 				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
 			}
-			/* 그라데이션을 스크롤되지 않는 부모(.result-item)에 적용하여 위치를 고정합니다. */
+			/* [수정됨] 모바일용 그라데이션 스타일 재조정 */
 			.result-item:has(.item-images.has-scroll)::after {
-			    content: '';
-			    position: absolute;
 			    top: 10px; /* result-item의 상단 padding 값 */
 			    right: 10px; /* result-item의 우측 padding 값 */
 			    width: 60px; /* 그라데이션 효과를 더 강하게 하기 위해 너비 증가 */
 			    height: 55px; /* 이미지 영역의 높이 (이미지 45px + 상하 padding 10px) */
-			    /* 배경색(#1a1c20)으로 자연스럽게 사라지는, 더 강한 그라데이션 효과 */
-			    background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20);
-			    pointer-events: none; /* 그라데이션이 클릭 이벤트를 막지 않도록 설정 */
-			    z-index: 5; /* 다른 요소들 위에 표시되도록 z-index 설정 */
-			    transition: opacity 0.3s;
-			    opacity: 1;
-			}
-			
-			/* [수정됨] 스크롤이 끝에 도달하면 그라데이션을 숨깁니다. */
-			.result-item:has(.item-images.scrolled-to-end)::after {
-			    opacity: 0;
 			}
 	        #copyInstruction {
 	            font-size: 1em;
@@ -1275,7 +1285,6 @@
 					copyToClipboard(item);
 				});
 
-                /* [수정/추가됨] 다른 아이템 호버 시, 나머지 스크롤된 아이템 리셋 */
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
 
 				const leftSection = document.createElement('div');
@@ -1396,8 +1405,7 @@
 			resultItems.forEach(item => {
 				const imagesContainer = item.querySelector('.item-images');
 				const scrollIndicator = item.querySelector('.scroll-indicator');
-				const rightInfo = item.querySelector('.result-info-right');
-				if (!imagesContainer || !rightInfo) return;
+				if (!imagesContainer || !scrollIndicator) return;
 
 				requestAnimationFrame(() => {
 					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
@@ -1405,9 +1413,7 @@
 						imagesContainer.classList.add('has-scroll');
 						
                         if (scrollIndicator) {
-                            const rightInfoWidth = rightInfo.offsetWidth;
-                            const itemGap = parseInt(window.getComputedStyle(item).gap, 10) || 15;
-                            scrollIndicator.style.right = `${rightInfoWidth + (itemGap / 2)}px`;
+                            /* [삭제됨] JavaScript에서 더 이상 위치를 계산하지 않음 */
 
                             scrollIndicator.onclick = (e) => {
                                 e.stopPropagation();
@@ -1422,13 +1428,8 @@
                             // 5px의 오차 허용
 							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
                             
-                            if (scrollIndicator) {
-							    const isScrolled = imagesContainer.scrollLeft > 10;
-                                scrollIndicator.style.opacity = isScrolled ? '0' : '1';
-                                scrollIndicator.style.pointerEvents = isScrolled ? 'none' : 'auto';
-                            }
+                            /* [삭제됨] 버튼 투명도 조절 로직을 CSS로 이전 */
                             
-                            // [수정/추가됨] 모바일 그라데이션을 위한 클래스 토글
 							if (isAtEnd) {
 								imagesContainer.classList.add('scrolled-to-end');
 							} else {
@@ -1443,7 +1444,6 @@
 			});
 		}
         
-        /* [수정/추가됨] 가로 스크롤 상태를 해제하는 함수 */
 		function resetAllScrolledItems() {
 			document.querySelectorAll('.item-images.has-scroll').forEach(container => {
 				if (container.scrollLeft > 0) {
@@ -1452,7 +1452,6 @@
 			});
 		}
 
-        /* [수정/추가됨] 현재 아이템을 제외한 나머지 아이템의 스크롤을 리셋하는 함수 */
         function resetOtherScrolledItems(currentItem) {
             document.querySelectorAll('.result-item').forEach(item => {
                 if (item !== currentItem) {
