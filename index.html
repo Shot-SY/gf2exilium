@@ -1249,18 +1249,9 @@
 					}
 				}
                 
-                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
-                    if (!acc[imgData.src]) {
-                        acc[imgData.src] = { ...imgData, count: 0 };
-                    }
-                    acc[imgData.src].count++;
-                    return acc;
-                }, {});
-
-                Object.values(groupedRareChars).forEach(charData => {
-                    const container = document.createElement('div');
-                    container.className = 'image-with-count-container';
-
+                // [수정된 부분 시작]
+                // 기존의 그룹화 및 개수 표시 로직을 제거하고, 개수만큼 이미지를 나열하는 로직으로 변경합니다.
+                rareCharImages.forEach(charData => {
                     const img = document.createElement('img');
                     img.src = charData.src;
                     img.alt = charData.alt;
@@ -1272,23 +1263,10 @@
                     } else {
                         img.classList.add('rare');
                     }
-                    container.appendChild(img);
-
-                    if (charData.count > 1) {
-                        const badge = document.createElement('div');
-                        badge.className = 'image-count-badge';
-                        badge.textContent = `x${charData.count}`;
-                        
-                        if (isSuperRare) {
-                            badge.classList.add('super-rare-badge');
-                        } else {
-                            badge.classList.add('rare-badge');
-                        }
-                        container.appendChild(badge);
-                    }
                     
-                    leftSection.appendChild(container);
+                    leftSection.appendChild(img);
                 });
+                // [수정된 부분 끝]
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
