@@ -271,10 +271,10 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			flex-wrap: nowrap; /* [수정] 줄바꿈 방지 */
+			flex-wrap: nowrap;
 			gap: 15px;
 			position: relative;
-			overflow: hidden; /* [수정] 자식요소 absolute 포지셔닝 기준 */
+			overflow: hidden;
 		}
 		.result-item::before {
 			content: '';
@@ -291,10 +291,10 @@
 		.item-images {
 			display: flex;
 			align-items: center;
-			flex-wrap: nowrap; /* [수정] 가로 스크롤을 위해 nowrap 적용 */
+			flex-wrap: nowrap;
 			gap: 8px;
-            flex-grow: 1; /* [추가] 남는 공간 차지 */
-            overflow-x: auto; /* [수정] 가로 스크롤 활성화 */
+            flex-grow: 1;
+            overflow-x: auto;
             padding: 5px 0;
             margin: -5px 0;
             scrollbar-width: none; /* Firefox 스크롤바 숨김 */
@@ -309,7 +309,7 @@
 			flex-wrap: wrap;
 			gap: 8px;
 			justify-content: flex-end;
-            flex-shrink: 0; /* [추가] 너비 줄어들지 않도록 설정 */
+            flex-shrink: 0;
 		}
 
 	    .small-character-img {
@@ -319,7 +319,7 @@
 			border-radius: 8px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
-            flex-shrink: 0; /* [추가] 스크롤 시 이미지 축소 방지 */
+            flex-shrink: 0;
 	    }
 		.extras-box {
 			display: flex;
@@ -333,7 +333,7 @@
 			border-radius: 8px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
-            flex-shrink: 0; /* [추가] 스크롤 시 박스 축소 방지 */
+            flex-shrink: 0;
 		}
 
 	    .small-character-img.rare {
@@ -507,13 +507,14 @@
 	        z-index: 0;
 	        pointer-events: none;
 	    }
+        /* [수정/추가됨] */
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
-			background: rgba(0,0,0,0.6);
+			background: linear-gradient(135deg, rgba(40,40,40,0.8), rgba(20,20,20,0.8));
 			backdrop-filter: blur(5px);
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
@@ -527,6 +528,7 @@
 			cursor: pointer;
 			z-index: 10;
 			transition: opacity 0.2s;
+            text-shadow: 0 0 4px rgba(0,0,0,0.5);
 		}
 		.item-images.has-scroll + .scroll-indicator {
 			display: flex;
@@ -685,8 +687,12 @@
 	        }
 	        .result-item {
 	            padding: 10px;
-				flex-wrap: wrap; /* [수정] 모바일에서는 다시 줄바꿈 허용 */
+				flex-wrap: wrap;
 	        }
+            /* [수정/추가됨] */
+            .item-images {
+                position: relative; /* 모바일 그라데이션을 위한 position 설정 */
+            }
 			.item-images, .result-info-right {
 				flex-basis: 100%;
 			}
@@ -710,6 +716,22 @@
 			.scroll-indicator {
 				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
 			}
+            /* [수정/추가됨] 모바일에서 스크롤 가능함을 알리는 그라데이션 */
+            .item-images.has-scroll::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 40px;
+                height: 100%;
+                background: linear-gradient(to right, transparent, #1a1c20);
+                pointer-events: none;
+                transition: opacity 0.3s;
+                opacity: 1;
+            }
+            .item-images.scrolled-to-end::after {
+                opacity: 0;
+            }
 	        #copyInstruction {
 	            font-size: 1em;
 	        }
@@ -823,7 +845,7 @@
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
-                .then(() => applyFiltersAndSort()) // <<-- 수정됨
+                .then(() => applyFiltersAndSort())
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
@@ -1249,6 +1271,9 @@
 					copyToClipboard(item);
 				});
 
+                /* [수정/추가됨] 다른 아이템 호버 시, 나머지 스크롤된 아이템 리셋 */
+                item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
+
 				const leftSection = document.createElement('div');
 				leftSection.className = 'item-images'; 
 
@@ -1368,29 +1393,43 @@
 				const imagesContainer = item.querySelector('.item-images');
 				const scrollIndicator = item.querySelector('.scroll-indicator');
 				const rightInfo = item.querySelector('.result-info-right');
-				if (!imagesContainer || !scrollIndicator || !rightInfo) return;
+				if (!imagesContainer || !rightInfo) return;
 
 				requestAnimationFrame(() => {
 					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
 					if (hasScroll) {
 						imagesContainer.classList.add('has-scroll');
 						
-						const rightInfoWidth = rightInfo.offsetWidth;
-						const itemGap = parseInt(window.getComputedStyle(item).gap, 10) || 15;
-						scrollIndicator.style.right = `${rightInfoWidth + (itemGap / 2)}px`;
+                        if (scrollIndicator) {
+                            const rightInfoWidth = rightInfo.offsetWidth;
+                            const itemGap = parseInt(window.getComputedStyle(item).gap, 10) || 15;
+                            scrollIndicator.style.right = `${rightInfoWidth + (itemGap / 2)}px`;
 
-						scrollIndicator.onclick = (e) => {
-							e.stopPropagation();
-							imagesContainer.scroll({
-								left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
-								behavior: 'smooth'
-							});
-						};
+                            scrollIndicator.onclick = (e) => {
+                                e.stopPropagation();
+                                imagesContainer.scroll({
+                                    left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
+                                    behavior: 'smooth'
+                                });
+                            };
+                        }
 
 						imagesContainer.onscroll = () => {
-							const isScrolled = imagesContainer.scrollLeft > 10;
-							scrollIndicator.style.opacity = isScrolled ? '0' : '1';
-							scrollIndicator.style.pointerEvents = isScrolled ? 'none' : 'auto';
+                            // 5px의 오차 허용
+							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
+                            
+                            if (scrollIndicator) {
+							    const isScrolled = imagesContainer.scrollLeft > 10;
+                                scrollIndicator.style.opacity = isScrolled ? '0' : '1';
+                                scrollIndicator.style.pointerEvents = isScrolled ? 'none' : 'auto';
+                            }
+                            
+                            // [수정/추가됨] 모바일 그라데이션을 위한 클래스 토글
+							if (isAtEnd) {
+								imagesContainer.classList.add('scrolled-to-end');
+							} else {
+								imagesContainer.classList.remove('scrolled-to-end');
+							}
 						};
 
 					} else {
@@ -1399,7 +1438,8 @@
 				});
 			});
 		}
-
+        
+        /* [수정/추가됨] 가로 스크롤 상태를 해제하는 함수 */
 		function resetAllScrolledItems() {
 			document.querySelectorAll('.item-images.has-scroll').forEach(container => {
 				if (container.scrollLeft > 0) {
@@ -1407,6 +1447,18 @@
 				}
 			});
 		}
+
+        /* [수정/추가됨] 현재 아이템을 제외한 나머지 아이템의 스크롤을 리셋하는 함수 */
+        function resetOtherScrolledItems(currentItem) {
+            document.querySelectorAll('.result-item').forEach(item => {
+                if (item !== currentItem) {
+                    const container = item.querySelector('.item-images.has-scroll');
+                    if (container && container.scrollLeft > 0) {
+                        container.scroll({ left: 0, behavior: 'smooth' });
+                    }
+                }
+            });
+        }
 
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
@@ -1542,10 +1594,12 @@
 
             const resultsContainer = document.getElementById('results');
             if (resultsContainer) {
+                // 상하 스크롤 시 모든 가로 스크롤 리셋
                 resultsContainer.addEventListener('scroll', resetAllScrolledItems);
             }
             document.body.addEventListener('click', (e) => {
-                if (!e.target.closest('.result-item') && !e.target.classList.contains('scroll-indicator')) {
+                // result-item 외부 클릭 시 모든 가로 스크롤 리셋
+                if (!e.target.closest('.result-item')) {
                     resetAllScrolledItems();
                 }
             });
