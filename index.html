@@ -1313,15 +1313,9 @@
 					}
 				}
                 
-                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
-                    if (!acc[imgData.src]) {
-                        acc[imgData.src] = { ...imgData, count: 0 };
-                    }
-                    acc[imgData.src].count++;
-                    return acc;
-                }, {});
-
-                Object.values(groupedRareChars).forEach(charData => {
+                // ================== CODE MODIFICATION START ==================
+                // 기존의 그룹화 로직을 제거하고, rareCharImages 배열을 직접 순회하여 각 캐릭터 이미지를 나열합니다.
+                rareCharImages.forEach(charData => {
                     const imgContainer = document.createElement('div');
                     imgContainer.className = 'image-with-count-container';
 
@@ -1336,23 +1330,11 @@
                     } else {
                         img.classList.add('rare');
                     }
-                    imgContainer.appendChild(img);
-
-                    if (charData.count > 1) {
-                        const badge = document.createElement('div');
-                        badge.className = 'image-count-badge';
-                        badge.textContent = `x${charData.count}`;
-                        
-                        if (isSuperRare) {
-                            badge.classList.add('super-rare-badge');
-                        } else {
-                            badge.classList.add('rare-badge');
-                        }
-                        imgContainer.appendChild(badge);
-                    }
                     
+                    imgContainer.appendChild(img);
                     itemImages.appendChild(imgContainer);
                 });
+                // =================== CODE MODIFICATION END ===================
 
                 const scrollIndicator = document.createElement('div');
                 scrollIndicator.className = 'scroll-indicator';
