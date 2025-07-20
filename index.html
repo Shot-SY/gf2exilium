@@ -244,7 +244,7 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease-in-out; /* 깜빡임 애니메이션 속도 */
 		}
         #results.sorting {
             opacity: 0;
@@ -273,10 +273,8 @@
 			justify-content: space-between;
 			flex-wrap: wrap;
 			gap: 15px;
-            /* ▼▼▼ 수정된 부분 ▼▼▼ */
 			position: relative;
-			overflow: visible; /* 자식 인디케이터가 보일 수 있도록 */
-            /* ▲▲▲ 수정된 부분 ▲▲▲ */
+			overflow: hidden;
 		}
 		.result-item::before {
 			content: '';
@@ -293,69 +291,11 @@
 		.item-images, .result-info-right {
 			display: flex;
 			align-items: center;
+			flex-wrap: wrap;
 			gap: 8px;
 		}
-		
-		/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
-		/*           가로 스크롤 & 페이드 스타일            */
-		/* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
-		.item-images {
-			flex: 1;
-			flex-wrap: nowrap;
-			overflow-x: auto;
-			min-width: 0;
-            position: relative; /* 스크롤 인디케이터의 기준점 */
-			scroll-behavior: smooth;
-            
-            /* 스크롤바 숨기기 */
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-		}
-        .item-images::-webkit-scrollbar {
-            display: none;
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 2;
-            font-size: 24px;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.7);
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .scroll-indicator.visible {
-            opacity: 1;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-        .scroll-indicator:hover {
-            color: #fff;
-        }
-
-        .scroll-indicator-left {
-            left: -20px; /* result-item의 padding을 고려하여 배치 */
-            background: linear-gradient(to right, #202228 30%, transparent);
-        }
-        
-        .scroll-indicator-right {
-            right: -20px; /* result-item의 padding을 고려하여 배치 */
-            background: linear-gradient(to left, #202228 30%, transparent);
-        }
-		/* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
-
 		.result-info-right {
 			justify-content: flex-end;
-			flex-wrap: wrap;
 		}
 
 	    .small-character-img {
@@ -414,7 +354,6 @@
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            flex-shrink: 0;
         }
 
 		.image-count-badge {
@@ -626,7 +565,6 @@
 			border-radius: 8px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
-            flex-shrink: 0;
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
@@ -708,7 +646,6 @@
 	        }
 	        .result-item {
 	            padding: 10px;
-                overflow: hidden; /* 모바일에서는 인디케이터를 아이템 안쪽에 배치 */
 	        }
 			.item-images, .result-info-right {
 				flex-basis: 100%;
@@ -730,13 +667,6 @@
 	        .item-images {
 	            gap: 5px;
 	        }
-            /* 모바일 인디케이터 위치 조정 */
-            .scroll-indicator-left {
-                left: 0;
-            }
-            .scroll-indicator-right {
-                right: 0;
-            }
 	        #copyInstruction {
 	            font-size: 1em;
 	        }
@@ -850,7 +780,7 @@
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
-                .then(() => applyFiltersAndSort())
+                .then(() => applyFiltersAndSort()) // <<-- 수정됨
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
@@ -1168,15 +1098,17 @@
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
+        // <<-- [시작] 함수 통합 및 수정 -->>
         function applyFiltersAndSort() {
             const resultsDiv = document.getElementById('results');
-            resultsDiv.classList.add('sorting'); 
+            resultsDiv.classList.add('sorting'); // UI를 한번만 숨김
             
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
 
             setTimeout(() => {
+                // --- 1. 필터링 로직 ---
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g) || [];
@@ -1184,6 +1116,7 @@
                 }
                 currentFilteredData = filtered;
 
+                // --- 2. 정렬 로직 ---
                 const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
@@ -1211,14 +1144,17 @@
                     return primarySort;
                 });
                 
+                // --- 3. 결과 표시 ---
                 displayResults(data, sortedKeys);
                 
-                resultsDiv.classList.remove('sorting');
+                // --- 4. UI 업데이트 ---
+                resultsDiv.classList.remove('sorting'); // 결과를 다시 표시
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }, 200);
         }
+        // <<-- [끝] 함수 통합 및 수정 -->>
 
         function checkConditions(chars, itemKey) {
             const count = {};
@@ -1259,76 +1195,6 @@
             });
         }
 		
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        //         스크롤 헬퍼 함수
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        let scrollIntervals = new Map();
-
-        function setupHorizontalScrolling(itemElement) {
-            const scrollContainer = itemElement.querySelector('.item-images');
-            const indicatorLeft = itemElement.querySelector('.scroll-indicator-left');
-            const indicatorRight = itemElement.querySelector('.scroll-indicator-right');
-
-            if (!scrollContainer || !indicatorLeft || !indicatorRight) return;
-
-            const updateIndicators = () => {
-                const hasOverflow = scrollContainer.scrollWidth > scrollContainer.clientWidth + 2; // +2 오차보정
-                if (!hasOverflow) {
-                    indicatorLeft.classList.remove('visible');
-                    indicatorRight.classList.remove('visible');
-                    return;
-                }
-                
-                indicatorLeft.classList.toggle('visible', scrollContainer.scrollLeft > 0);
-
-                const isAtEnd = scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 1;
-                indicatorRight.classList.toggle('visible', !isAtEnd);
-            };
-
-            const startScrolling = (direction) => {
-                stopScrolling(scrollContainer);
-                const interval = setInterval(() => {
-                    scrollContainer.scrollLeft += direction * 3;
-                }, 10);
-                scrollIntervals.set(scrollContainer, interval);
-            };
-
-            const stopScrolling = (container) => {
-                if (scrollIntervals.has(container)) {
-                    clearInterval(scrollIntervals.get(container));
-                    scrollIntervals.delete(container);
-                }
-            };
-            
-            scrollContainer.addEventListener('scroll', updateIndicators, { passive: true });
-            indicatorLeft.addEventListener('mouseenter', () => startScrolling(-1));
-            indicatorRight.addEventListener('mouseenter', () => startScrolling(1));
-            indicatorLeft.addEventListener('mouseleave', () => stopScrolling(scrollContainer));
-            indicatorRight.addEventListener('mouseleave', () => stopScrolling(scrollContainer));
-
-            new ResizeObserver(updateIndicators).observe(scrollContainer);
-            
-            // 이미지 로딩이 완료된 후 인디케이터를 다시 업데이트
-            // 모든 이미지가 로드되었음을 보장하기 위해 Promise.all 사용
-            const images = Array.from(scrollContainer.querySelectorAll('img'));
-            const imageLoadPromises = images.map(img => {
-                return new Promise(resolve => {
-                    if (img.complete) {
-                        resolve();
-                    } else {
-                        img.onload = img.onerror = resolve;
-                    }
-                });
-            });
-
-            Promise.all(imageLoadPromises).then(() => {
-                updateIndicators();
-            });
-
-            updateIndicators();
-        }
-        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-		
 		function displayResults(data, sortedKeys) {
 			const res = document.getElementById('results');
 			res.scrollTop = 0;
@@ -1342,22 +1208,12 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					if (e.target.closest('.extras-box') || e.target.closest('.scroll-indicator')) return;
+					if (e.target.closest('.extras-box')) return;
 					copyToClipboard(item)
 				});
 
 				const leftSection = document.createElement('div');
 				leftSection.className = 'item-images'; 
-
-                // ▼▼▼ 인디케이터 추가 ▼▼▼
-                const indicatorLeft = document.createElement('div');
-                indicatorLeft.className = 'scroll-indicator scroll-indicator-left';
-                indicatorLeft.innerHTML = '‹';
-                
-                const indicatorRight = document.createElement('div');
-                indicatorRight.className = 'scroll-indicator scroll-indicator-right';
-                indicatorRight.innerHTML = '›';
-                // ▲▲▲ 인디케이터 추가 ▲▲▲
 
 				const rightSection = document.createElement('div');
 				rightSection.className = 'result-info-right';
@@ -1478,22 +1334,12 @@
 				rightSection.appendChild(priceBox);
 
 				item.appendChild(leftSection);
-                // ▼▼▼ item-images 요소에 인디케이터 추가
-                leftSection.appendChild(indicatorLeft);
-                leftSection.appendChild(indicatorRight);
-                // ▲▲▲
 				item.appendChild(rightSection);
 				container.appendChild(item);
 			});
 
 			res.innerHTML = '';
 			res.appendChild(fragment);
-
-            // 렌더링 후 스크롤링 설정
-            res.querySelectorAll('.result-item').forEach(item => {
-                setupHorizontalScrolling(item);
-            });
-
 			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
@@ -1579,7 +1425,7 @@
         const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
-                applyFiltersAndSort();
+                applyFiltersAndSort(); // <<-- 수정됨
                 gtag('event', 'apply_filter', {
                     'selected_characters': getSelectedCharacters()
                 });
@@ -1592,7 +1438,7 @@
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
         
         document.getElementById('sortDropdown').addEventListener('change', function() {
-            applyFiltersAndSort();
+            applyFiltersAndSort(); // <<-- 수정됨
             this.blur(); 
         });
 
