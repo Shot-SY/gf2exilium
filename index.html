@@ -244,7 +244,7 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
-            transition: opacity 0.2s ease-in-out; /* 깜빡임 애니메이션 속도 */
+            transition: opacity 0.2s ease-in-out;
 		}
         #results.sorting {
             opacity: 0;
@@ -288,19 +288,26 @@
 			transition: opacity 0.3s;
 		}
 
+        /* [수정됨] 스크롤 컨텐츠와 인디케이터를 감싸는 래퍼 스타일 */
+        .item-images-wrapper {
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            position: relative; /* 자식 요소(그라데이션, 버튼)의 position 기준 */
+            overflow: hidden; /* 내부 컨텐츠가 넘치지 않도록 */
+            display: flex;
+        }
+
 		.item-images {
 			display: flex;
 			align-items: center;
 			flex-wrap: nowrap;
 			gap: 8px;
-            flex-grow: 1;
             overflow-x: auto;
             padding: 5px 0;
             margin: -5px 0;
-            scrollbar-width: none; /* Firefox 스크롤바 숨김 */
+            scrollbar-width: none; /* Firefox */
 		}
         .item-images::-webkit-scrollbar {
-            display: none; /* Chrome, Safari 스크롤바 숨김 */
+            display: none; /* Chrome, Safari */
         }
 
 		.result-info-right {
@@ -511,7 +518,7 @@
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
-            right: 30px; /* 위치를 오른쪽 기준으로 고정 */
+            right: 15px; /* 그라데이션 안쪽으로 위치 조정 */
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
@@ -520,7 +527,7 @@
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
-			display: none; /* 기본적으로 숨김 */
+			display: none; /* JS로 컨트롤 */
 			align-items: center;
 			justify-content: center;
 			font-size: 18px;
@@ -531,24 +538,24 @@
 			transition: opacity 0.2s;
             text-shadow: 0 0 4px rgba(0,0,0,0.5);
 		}
-        /* 스크롤이 가능할 때 버튼 표시 */
-		.item-images.has-scroll + .scroll-indicator {
+        /* [수정됨] wrapper에 .has-scroll 클래스가 있을 때 버튼 표시 */
+		.item-images-wrapper.has-scroll .scroll-indicator {
 			display: flex;
 		}
-        /* [수정됨] 스크롤이 끝에 도달하면 버튼 숨김 */
-		.item-images.scrolled-to-end + .scroll-indicator {
+        /* [수정됨] wrapper에 .scrolled-to-end 클래스가 있을 때 버튼 숨김 */
+		.item-images-wrapper.scrolled-to-end .scroll-indicator {
 			opacity: 0;
 			pointer-events: none;
 		}
 
-        /* [수정됨] 그라데이션을 모든 화면 크기에 기본 적용 */
-        .result-item:has(.item-images.has-scroll)::after {
+        /* [수정됨] 그라데이션을 wrapper 기준으로 적용 */
+        .item-images-wrapper.has-scroll::after {
             content: '';
             position: absolute;
-            top: 12px; /* .result-item의 상단 padding */
-            right: 20px; /* .result-item의 우측 padding */
-            width: 70px; /* 데스크탑에서 그라데이션 너비 확장 */
-            height: 60px; /* 데스크탑 이미지 영역 높이 (이미지 50px + 상하 padding 10px) */
+            top: 0;
+            right: 0;
+            width: 70px;
+            height: 100%;
             background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20 80%);
             pointer-events: none;
             z-index: 5;
@@ -557,7 +564,7 @@
         }
 
         /* [수정됨] 스크롤이 끝에 도달하면 그라데이션 숨김 */
-        .result-item:has(.item-images.scrolled-to-end)::after {
+        .item-images-wrapper.scrolled-to-end::after {
             opacity: 0;
         }
 
@@ -713,10 +720,8 @@
 	            padding: 10px;
 				flex-wrap: wrap;
 	        }
-            .item-images {
-                position: relative; /* 모바일 그라데이션을 위한 position 설정 */
-            }
-			.item-images, .result-info-right {
+            /* [수정됨] 모바일에서는 wrapper가 전체 너비를 차지 */
+            .item-images-wrapper, .result-info-right {
 				flex-basis: 100%;
 			}
 			.result-info-right {
@@ -740,11 +745,9 @@
 				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
 			}
 			/* [수정됨] 모바일용 그라데이션 스타일 재조정 */
-			.result-item:has(.item-images.has-scroll)::after {
-			    top: 10px; /* result-item의 상단 padding 값 */
-			    right: 10px; /* result-item의 우측 padding 값 */
-			    width: 60px; /* 그라데이션 효과를 더 강하게 하기 위해 너비 증가 */
-			    height: 55px; /* 이미지 영역의 높이 (이미지 45px + 상하 padding 10px) */
+			.item-images-wrapper.has-scroll::after {
+			    width: 60px;
+                /* height: 100%는 데스크탑에서 상속받으므로 재정의 필요 없음 */
 			}
 	        #copyInstruction {
 	            font-size: 1em;
@@ -783,6 +786,7 @@
 	</style>
 </head>
 <body>
+    <!-- (body content remains the same until script tag) -->
     <div id="loader">
         <div class="spinner"></div>
     </div>
@@ -828,6 +832,7 @@
 	</div>
 
     <script>
+        // (script content remains the same until displayResults function)
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -1286,6 +1291,10 @@
 				});
 
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
+                
+                // [수정됨] 스크롤 영역과 인디케이터를 감싸는 wrapper 생성
+                const imagesWrapper = document.createElement('div');
+                imagesWrapper.className = 'item-images-wrapper';
 
 				const leftSection = document.createElement('div');
 				leftSection.className = 'item-images'; 
@@ -1386,9 +1395,13 @@
                 const scrollIndicator = document.createElement('div');
                 scrollIndicator.className = 'scroll-indicator';
                 scrollIndicator.innerHTML = '...';
+                
+                // [수정됨] wrapper에 이미지 목록과 버튼 추가
+                imagesWrapper.appendChild(leftSection);
+                imagesWrapper.appendChild(scrollIndicator);
 
-				item.appendChild(leftSection);
-                item.appendChild(scrollIndicator);
+                // [수정됨] 메인 아이템에 wrapper와 오른쪽 정보 추가
+				item.appendChild(imagesWrapper);
 				item.appendChild(rightSection);
 				container.appendChild(item);
 			});
@@ -1403,42 +1416,39 @@
 			const resultItems = document.querySelectorAll('#results .result-item');
 
 			resultItems.forEach(item => {
+                // [수정됨] wrapper와 그 내부의 이미지 컨테이너를 선택
+				const wrapper = item.querySelector('.item-images-wrapper');
 				const imagesContainer = item.querySelector('.item-images');
-				const scrollIndicator = item.querySelector('.scroll-indicator');
-				if (!imagesContainer || !scrollIndicator) return;
+                const scrollIndicator = item.querySelector('.scroll-indicator');
+
+				if (!wrapper || !imagesContainer || !scrollIndicator) return;
 
 				requestAnimationFrame(() => {
 					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
 					if (hasScroll) {
-						imagesContainer.classList.add('has-scroll');
+                        // [수정됨] 클래스를 wrapper에 추가
+						wrapper.classList.add('has-scroll');
 						
-                        if (scrollIndicator) {
-                            /* [삭제됨] JavaScript에서 더 이상 위치를 계산하지 않음 */
-
-                            scrollIndicator.onclick = (e) => {
-                                e.stopPropagation();
-                                imagesContainer.scroll({
-                                    left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
-                                    behavior: 'smooth'
-                                });
-                            };
-                        }
+                        scrollIndicator.onclick = (e) => {
+                            e.stopPropagation();
+                            imagesContainer.scroll({
+                                left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
+                                behavior: 'smooth'
+                            });
+                        };
 
 						imagesContainer.onscroll = () => {
-                            // 5px의 오차 허용
 							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
-                            
-                            /* [삭제됨] 버튼 투명도 조절 로직을 CSS로 이전 */
-                            
+                            // [수정됨] 클래스를 wrapper에 토글
 							if (isAtEnd) {
-								imagesContainer.classList.add('scrolled-to-end');
+								wrapper.classList.add('scrolled-to-end');
 							} else {
-								imagesContainer.classList.remove('scrolled-to-end');
+								wrapper.classList.remove('scrolled-to-end');
 							}
 						};
 
 					} else {
-						imagesContainer.classList.remove('has-scroll');
+						wrapper.classList.remove('has-scroll');
 					}
 				});
 			});
@@ -1455,7 +1465,7 @@
         function resetOtherScrolledItems(currentItem) {
             document.querySelectorAll('.result-item').forEach(item => {
                 if (item !== currentItem) {
-                    const container = item.querySelector('.item-images.has-scroll');
+                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
                     if (container && container.scrollLeft > 0) {
                         container.scroll({ left: 0, behavior: 'smooth' });
                     }
@@ -1597,11 +1607,9 @@
 
             const resultsContainer = document.getElementById('results');
             if (resultsContainer) {
-                // 상하 스크롤 시 모든 가로 스크롤 리셋
                 resultsContainer.addEventListener('scroll', resetAllScrolledItems);
             }
             document.body.addEventListener('click', (e) => {
-                // result-item 외부 클릭 시 모든 가로 스크롤 리셋
                 if (!e.target.closest('.result-item')) {
                     resetAllScrolledItems();
                 }
