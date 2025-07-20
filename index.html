@@ -1290,17 +1290,18 @@
 					copyToClipboard(item);
 				});
 
+                // 다른 아이템 호버 시, 이전에 스크롤된 아이템을 리셋
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
-				
-			    // 아이템에서 마우스가 벗어날 때(호버 해제) 해당 아이템의 스크롤을 리셋합니다.
-			    item.addEventListener('mouseleave', () => {
-			        const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
-			        if (container && container.scrollLeft > 0) {
-			            container.scroll({ left: 0, behavior: 'smooth' });
-			        }
-			    });
-				
-                // [수정됨] 스크롤 영역과 인디케이터를 감싸는 wrapper 생성
+                
+                // [이전 요청 반영] 아이템 호버 해제 시, 해당 아이템의 스크롤 리셋
+                item.addEventListener('mouseleave', () => {
+                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+                    if (container && container.scrollLeft > 0) {
+                        container.scroll({ left: 0, behavior: 'smooth' });
+                    }
+                });
+                
+                // 스크롤 영역과 인디케이터를 감싸는 wrapper
                 const imagesWrapper = document.createElement('div');
                 imagesWrapper.className = 'item-images-wrapper';
 
@@ -1313,6 +1314,7 @@
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
 				
+                // 1. 캐릭터 데이터를 희귀/기타로 분리 (기존과 동일)
 				const rareCharImages = [];
 				const extraCharImages = [];
 				const charPattern = /([a-z]{2})(\d)/g;
@@ -1341,7 +1343,23 @@
 					}
 				}
                 
-                rareCharImages.forEach(charData => {
+                // ▼▼▼▼▼ [변경점] 이전 코드의 '개수 표시' 로직 적용 ▼▼▼▼▼
+
+                // 2. 희귀 캐릭터들을 이름(engName) 기준으로 그룹화하고 개수를 셉니다.
+                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
+                    const key = imgData.engName;
+                    if (!acc[key]) {
+                        acc[key] = { ...imgData, count: 0 };
+                    }
+                    acc[key].count++;
+                    return acc;
+                }, {});
+
+                // 3. 그룹화된 캐릭터 정보를 바탕으로 이미지와 배지를 생성합니다.
+                Object.values(groupedRareChars).forEach(charData => {
+                    const container = document.createElement('div');
+                    container.className = 'image-with-count-container';
+
                     const img = document.createElement('img');
                     img.src = charData.src;
                     img.alt = charData.alt;
@@ -1353,9 +1371,26 @@
                     } else {
                         img.classList.add('rare');
                     }
+                    container.appendChild(img);
+
+                    // 4. 개수가 2 이상일 경우에만 배지를 추가합니다.
+                    if (charData.count > 1) {
+                        const badge = document.createElement('div');
+                        badge.className = 'image-count-badge';
+                        badge.textContent = `x${charData.count}`;
+                        
+                        if (isSuperRare) {
+                            badge.classList.add('super-rare-badge');
+                        } else {
+                            badge.classList.add('rare-badge');
+                        }
+                        container.appendChild(badge);
+                    }
                     
-                    leftSection.appendChild(img);
+                    leftSection.appendChild(container);
                 });
+
+                // ▲▲▲▲▲ [여기까지 변경] ▲▲▲▲▲
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1400,15 +1435,16 @@
                 
 				rightSection.appendChild(priceBox);
 
+                // 스크롤 버튼 생성
                 const scrollIndicator = document.createElement('div');
                 scrollIndicator.className = 'scroll-indicator';
                 scrollIndicator.innerHTML = '...';
                 
-                // [수정됨] wrapper에 이미지 목록과 버튼 추가
+                // wrapper에 이미지 목록과 버튼 추가
                 imagesWrapper.appendChild(leftSection);
                 imagesWrapper.appendChild(scrollIndicator);
 
-                // [수정됨] 메인 아이템에 wrapper와 오른쪽 정보 추가
+                // 메인 아이템에 wrapper와 오른쪽 정보 추가
 				item.appendChild(imagesWrapper);
 				item.appendChild(rightSection);
 				container.appendChild(item);
@@ -1417,6 +1453,8 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
+            
+            // 가로 스크롤 기능 설정
             setupScrollIndicators();
 		}
 
@@ -1463,11 +1501,11 @@
 		}
         
 		function resetAllScrolledItems() {
-			document.querySelectorAll('.item-images.has-scroll').forEach(container => {
-				if (container.scrollLeft > 0) {
-					container.scroll({ left: 0, behavior: 'smooth' });
-				}
-			});
+		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
+		        if (container.scrollLeft > 0) {
+		            container.scroll({ left: 0, behavior: 'smooth' });
+		        }
+		    });
 		}
 
         function resetOtherScrolledItems(currentItem) {
