@@ -292,19 +292,19 @@
         .item-images-wrapper {
             flex-grow: 1; /* 남은 공간을 모두 차지 */
             position: relative; /* 자식 요소(그라데이션, 버튼)의 position 기준 */
+            overflow: hidden; /* 내부 컨텐츠가 넘치지 않도록 */
             display: flex;
-			clip-path: inset(-15px -15px -15px -15px); 
         }
 
 		.item-images {
-		    display: flex;
-		    align-items: center;
-		    flex-wrap: nowrap;
-		    gap: 8px;
-		    overflow-x: auto;
-		    /* 오른쪽 스크롤 끝 부분의 여유 공간을 위해 패딩을 약간 더 줍니다. */
-		    padding: 8px 15px 8px 8px;
-		    scrollbar-width: none; /* Firefox */
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			gap: 8px;
+            overflow-x: auto;
+            padding: 5px 0;
+            margin: -5px 0;
+            scrollbar-width: none; /* Firefox */
 		}
         .item-images::-webkit-scrollbar {
             display: none; /* Chrome, Safari */
