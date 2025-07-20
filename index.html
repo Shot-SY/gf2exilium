@@ -271,10 +271,10 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			flex-wrap: wrap;
+			flex-wrap: nowrap; /* [수정] 줄바꿈 방지 */
 			gap: 15px;
 			position: relative;
-			overflow: hidden;
+			overflow: hidden; /* [수정] 자식요소 absolute 포지셔닝 기준 */
 		}
 		.result-item::before {
 			content: '';
@@ -288,14 +288,28 @@
 			transition: opacity 0.3s;
 		}
 
-		.item-images, .result-info-right {
+		.item-images {
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap; /* [수정] 가로 스크롤을 위해 nowrap 적용 */
+			gap: 8px;
+            flex-grow: 1; /* [추가] 남는 공간 차지 */
+            overflow-x: auto; /* [수정] 가로 스크롤 활성화 */
+            padding: 5px 0;
+            margin: -5px 0;
+            scrollbar-width: none; /* Firefox 스크롤바 숨김 */
+		}
+        .item-images::-webkit-scrollbar {
+            display: none; /* Chrome, Safari 스크롤바 숨김 */
+        }
+
+		.result-info-right {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
 			gap: 8px;
-		}
-		.result-info-right {
 			justify-content: flex-end;
+            flex-shrink: 0; /* [추가] 너비 줄어들지 않도록 설정 */
 		}
 
 	    .small-character-img {
@@ -305,7 +319,23 @@
 			border-radius: 8px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0; /* [추가] 스크롤 시 이미지 축소 방지 */
 	    }
+		.extras-box {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 50px;
+			min-width: 70px;
+			padding: 0 10px;
+			background: rgba(176, 176, 176, 0.1);
+			border: 1px dashed rgba(176, 176, 176, 0.5);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: background 0.2s, border-color 0.2s;
+            flex-shrink: 0; /* [추가] 스크롤 시 박스 축소 방지 */
+		}
+
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
@@ -477,6 +507,34 @@
 	        z-index: 0;
 	        pointer-events: none;
 	    }
+		.scroll-indicator {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 28px;
+			height: 28px;
+			background: rgba(0,0,0,0.6);
+			backdrop-filter: blur(5px);
+			border: 1px solid rgba(255,255,255,0.2);
+			color: #fff;
+			border-radius: 50%;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			line-height: 28px;
+			font-weight: bold;
+			cursor: pointer;
+			z-index: 10;
+			transition: opacity 0.2s;
+		}
+		.item-images.has-scroll + .scroll-indicator {
+			display: flex;
+		}
+		.item-images.scrolled-to-end + .scroll-indicator {
+			opacity: 0;
+			pointer-events: none;
+		}
 	    #loader {
 	        position: fixed;
 	        top: 0;
@@ -553,25 +611,6 @@
 	        border-radius: 5px;
 	        object-fit: contain;
 	    }
-		.extras-box {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 50px;
-			min-width: 70px;
-			padding: 0 10px;
-			background: rgba(176, 176, 176, 0.1);
-			border: 1px dashed rgba(176, 176, 176, 0.5);
-			border-radius: 8px;
-			cursor: pointer;
-			transition: background 0.2s, border-color 0.2s;
-		}
-		.extras-box .item-title {
-			color: #e0e0e0;
-			font-size: 14px;
-			text-decoration: none;
-			font-weight: bold;
-		}
         .extras-character-border {
             border: 2px solid #b0b0b0;
             box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
@@ -646,6 +685,7 @@
 	        }
 	        .result-item {
 	            padding: 10px;
+				flex-wrap: wrap; /* [수정] 모바일에서는 다시 줄바꿈 허용 */
 	        }
 			.item-images, .result-info-right {
 				flex-basis: 100%;
@@ -667,6 +707,9 @@
 	        .item-images {
 	            gap: 5px;
 	        }
+			.scroll-indicator {
+				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
+			}
 	        #copyInstruction {
 	            font-size: 1em;
 	        }
@@ -1098,17 +1141,15 @@
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
-        // <<-- [시작] 함수 통합 및 수정 -->>
         function applyFiltersAndSort() {
             const resultsDiv = document.getElementById('results');
-            resultsDiv.classList.add('sorting'); // UI를 한번만 숨김
+            resultsDiv.classList.add('sorting'); 
             
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
 
             setTimeout(() => {
-                // --- 1. 필터링 로직 ---
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g) || [];
@@ -1116,7 +1157,6 @@
                 }
                 currentFilteredData = filtered;
 
-                // --- 2. 정렬 로직 ---
                 const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
@@ -1144,17 +1184,14 @@
                     return primarySort;
                 });
                 
-                // --- 3. 결과 표시 ---
                 displayResults(data, sortedKeys);
                 
-                // --- 4. UI 업데이트 ---
-                resultsDiv.classList.remove('sorting'); // 결과를 다시 표시
+                resultsDiv.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }, 200);
         }
-        // <<-- [끝] 함수 통합 및 수정 -->>
 
         function checkConditions(chars, itemKey) {
             const count = {};
@@ -1208,8 +1245,8 @@
 				item.className = 'result-item';
 				item.dataset.itemKey = k;
 				item.addEventListener('click', (e) => {
-					if (e.target.closest('.extras-box')) return;
-					copyToClipboard(item)
+					if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
+					copyToClipboard(item);
 				});
 
 				const leftSection = document.createElement('div');
@@ -1249,8 +1286,6 @@
 					}
 				}
                 
-                // [수정된 부분 시작]
-                // 기존의 그룹화 및 개수 표시 로직을 제거하고, 개수만큼 이미지를 나열하는 로직으로 변경합니다.
                 rareCharImages.forEach(charData => {
                     const img = document.createElement('img');
                     img.src = charData.src;
@@ -1266,7 +1301,6 @@
                     
                     leftSection.appendChild(img);
                 });
-                // [수정된 부분 끝]
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1311,7 +1345,12 @@
                 
 				rightSection.appendChild(priceBox);
 
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'scroll-indicator';
+                scrollIndicator.innerHTML = '...';
+
 				item.appendChild(leftSection);
+                item.appendChild(scrollIndicator);
 				item.appendChild(rightSection);
 				container.appendChild(item);
 			});
@@ -1319,6 +1358,54 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
+            setupScrollIndicators();
+		}
+
+		function setupScrollIndicators() {
+			const resultItems = document.querySelectorAll('#results .result-item');
+
+			resultItems.forEach(item => {
+				const imagesContainer = item.querySelector('.item-images');
+				const scrollIndicator = item.querySelector('.scroll-indicator');
+				const rightInfo = item.querySelector('.result-info-right');
+				if (!imagesContainer || !scrollIndicator || !rightInfo) return;
+
+				requestAnimationFrame(() => {
+					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
+					if (hasScroll) {
+						imagesContainer.classList.add('has-scroll');
+						
+						const rightInfoWidth = rightInfo.offsetWidth;
+						const itemGap = parseInt(window.getComputedStyle(item).gap, 10) || 15;
+						scrollIndicator.style.right = `${rightInfoWidth + (itemGap / 2)}px`;
+
+						scrollIndicator.onclick = (e) => {
+							e.stopPropagation();
+							imagesContainer.scroll({
+								left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
+								behavior: 'smooth'
+							});
+						};
+
+						imagesContainer.onscroll = () => {
+							const isScrolled = imagesContainer.scrollLeft > 10;
+							scrollIndicator.style.opacity = isScrolled ? '0' : '1';
+							scrollIndicator.style.pointerEvents = isScrolled ? 'none' : 'auto';
+						};
+
+					} else {
+						imagesContainer.classList.remove('has-scroll');
+					}
+				});
+			});
+		}
+
+		function resetAllScrolledItems() {
+			document.querySelectorAll('.item-images.has-scroll').forEach(container => {
+				if (container.scrollLeft > 0) {
+					container.scroll({ left: 0, behavior: 'smooth' });
+				}
+			});
 		}
 
 		function showExtrasPopup(images) {
@@ -1403,7 +1490,7 @@
         const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
-                applyFiltersAndSort(); // <<-- 수정됨
+                applyFiltersAndSort();
                 gtag('event', 'apply_filter', {
                     'selected_characters': getSelectedCharacters()
                 });
@@ -1416,7 +1503,7 @@
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
         
         document.getElementById('sortDropdown').addEventListener('change', function() {
-            applyFiltersAndSort(); // <<-- 수정됨
+            applyFiltersAndSort();
             this.blur(); 
         });
 
@@ -1452,6 +1539,16 @@
 					hideExtrasPopup();
 				}
 			});
+
+            const resultsContainer = document.getElementById('results');
+            if (resultsContainer) {
+                resultsContainer.addEventListener('scroll', resetAllScrolledItems);
+            }
+            document.body.addEventListener('click', (e) => {
+                if (!e.target.closest('.result-item') && !e.target.classList.contains('scroll-indicator')) {
+                    resetAllScrolledItems();
+                }
+            });
 		});
     </script>
 </body>
