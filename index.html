@@ -1428,7 +1428,7 @@
                 const usdPrice = itemDetails.price.toFixed(2);
                 const krwPriceRaw = itemDetails.price * 1400;
                 const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-                const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
+                const formattedKrwPrice = '₩' + krwPriceRounded.toLocaleString();
 
                 priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
                 
