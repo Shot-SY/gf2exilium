@@ -244,7 +244,7 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease-in-out; /* 깜빡임 애니메이션 속도 */
 		}
         #results.sorting {
             opacity: 0;
@@ -288,22 +288,25 @@
 			transition: opacity 0.3s;
 		}
 
-		.item-list-left {
+		.item-list-left, .result-info-right {
 			display: flex;
 			align-items: center;
 			gap: 8px;
+		}
+        .item-list-left {
             flex-grow: 1;
-            min-width: 0;
-            position: relative;
-		}
+            min-width: 0; /* Important for flex-grow to work inside a flex container */
+        }
 		.result-info-right {
-			display: flex;
-			align-items: center;
 			justify-content: flex-end;
-            flex-wrap: wrap;
-			gap: 8px;
+            flex-wrap: wrap; /* Allow wrapping of price boxes if needed */
 		}
-
+        .item-images-container {
+            position: relative;
+            flex-grow: 1;
+            flex-shrink: 1;
+            min-width: 50px;
+        }
         .item-images {
             display: flex;
             align-items: center;
@@ -311,13 +314,12 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             flex-wrap: nowrap;
-            flex: 1;
-            min-width: 0;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            /* Hide scrollbar */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
         }
         .item-images::-webkit-scrollbar {
-            display: none;
+            display: none; /* Safari and Chrome */
         }
         .scroll-indicator {
             position: absolute;
@@ -325,7 +327,7 @@
             top: 0;
             bottom: 0;
             width: 30px;
-            display: none;
+            display: none; /* Hidden by default */
             align-items: center;
             justify-content: center;
             background: linear-gradient(to left, #202228 50%, transparent 100%);
@@ -335,12 +337,11 @@
             user-select: none;
             cursor: pointer;
             z-index: 2;
-            pointer-events: all;
         }
-        .item-list-left.is-scrollable .scroll-indicator {
+        .item-images-container.is-scrollable .scroll-indicator {
             display: flex;
         }
-        .item-list-left.is-scrolled-end .scroll-indicator {
+        .item-images-container.is-scrolled-end .scroll-indicator {
             display: none;
         }
 
@@ -400,7 +401,6 @@
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            flex-shrink: 0;
         }
 
 		.image-count-badge {
@@ -612,7 +612,7 @@
 			border-radius: 8px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
-            flex-shrink: 0;
+            flex-shrink: 0; /* Prevent it from shrinking */
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
@@ -697,10 +697,8 @@
 	        }
 			.item-list-left, .result-info-right {
 				flex-basis: 100%;
-			}
-            .item-list-left {
                 flex-wrap: nowrap;
-            }
+			}
 			.result-info-right {
 				justify-content: space-between;
 			}
@@ -853,6 +851,7 @@
                                         document.body.classList.add('is-scrolling');
                                     }
                                     
+                                    // Reset horizontal scroll on vertical scroll
                                     results.querySelectorAll('.item-images').forEach(scroller => {
                                         if (scroller.scrollLeft !== 0) scroller.scrollLeft = 0;
                                     });
@@ -887,6 +886,7 @@
                 });
         });
 
+        // Reset horizontal scroll when clicking outside a result item
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.result-item')) {
                 document.querySelectorAll('.item-images').forEach(scroller => {
@@ -1273,6 +1273,9 @@
 				const leftSection = document.createElement('div');
 				leftSection.className = 'item-list-left'; 
 
+                const itemImagesContainer = document.createElement('div');
+                itemImagesContainer.className = 'item-images-container';
+
                 const itemImages = document.createElement('div');
                 itemImages.className = 'item-images';
 
@@ -1338,18 +1341,28 @@
                     if (charData.count > 1) {
                         const badge = document.createElement('div');
                         badge.className = 'image-count-badge';
+                        badge.textContent = `x${charData.count}`;
                         
                         if (isSuperRare) {
                             badge.classList.add('super-rare-badge');
                         } else {
                             badge.classList.add('rare-badge');
                         }
-                        badge.textContent = `x${charData.count}`;
                         imgContainer.appendChild(badge);
                     }
                     
                     itemImages.appendChild(imgContainer);
                 });
+
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'scroll-indicator';
+                scrollIndicator.innerHTML = '...';
+                scrollIndicator.title = "See more characters";
+                scrollIndicator.addEventListener('click', e => e.stopPropagation());
+
+                itemImagesContainer.appendChild(itemImages);
+                itemImagesContainer.appendChild(scrollIndicator);
+                leftSection.appendChild(itemImagesContainer);
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1366,17 +1379,8 @@
 						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
 					});
-                    // *** MODIFICATION HERE: Append to itemImages instead of leftSection ***
-					itemImages.appendChild(extrasBox);
+					leftSection.appendChild(extrasBox);
 				}
-                
-                leftSection.appendChild(itemImages);
-                const scrollIndicator = document.createElement('div');
-                scrollIndicator.className = 'scroll-indicator';
-                scrollIndicator.innerHTML = '...';
-                scrollIndicator.title = "See more characters";
-                leftSection.appendChild(scrollIndicator);
-
 
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
@@ -1415,30 +1419,30 @@
 			res.innerHTML = '';
 			res.appendChild(fragment);
             
+            // After rendering, check for overflow and add interaction listeners
             res.querySelectorAll('.result-item').forEach(item => {
-                const leftSection = item.querySelector('.item-list-left');
                 const scroller = item.querySelector('.item-images');
-                if (!leftSection || !scroller) return;
+                if (!scroller) return;
+                const container = scroller.parentElement;
+                const indicator = container.querySelector('.scroll-indicator');
 
                 const checkScrollable = () => {
-                    requestAnimationFrame(() => {
+                    requestAnimationFrame(() => { // Ensure layout is calculated
                         const isOverflowing = scroller.scrollWidth > scroller.clientWidth;
-                        leftSection.classList.toggle('is-scrollable', isOverflowing);
+                        container.classList.toggle('is-scrollable', isOverflowing);
                     });
                 };
 
                 checkScrollable();
-                window.addEventListener('resize', checkScrollable);
+                window.addEventListener('resize', checkScrollable); // For responsiveness
 
                 scroller.addEventListener('scroll', () => {
                     const isAtEnd = scroller.scrollWidth - scroller.scrollLeft - scroller.clientWidth < 1;
-                    leftSection.classList.toggle('is-scrolled-end', isAtEnd);
+                    container.classList.toggle('is-scrolled-end', isAtEnd);
                 }, { passive: true });
                 
-                const indicator = leftSection.querySelector('.scroll-indicator');
                 if (indicator) {
-                    indicator.addEventListener('click', (e) => {
-                        e.stopPropagation();
+                    indicator.addEventListener('click', () => {
                         scroller.scrollLeft = scroller.scrollWidth;
                     });
                 }
