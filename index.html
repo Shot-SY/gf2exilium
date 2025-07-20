@@ -288,13 +288,11 @@
 			transition: opacity 0.3s;
 		}
 
-        /* --- START OF CORRECTED HORIZONTAL SCROLL STYLES --- */
 		.item-list-left {
 			display: flex;
 			align-items: center;
 			gap: 8px;
             flex-grow: 1;
-            /* This is the key fix: it allows the flex item to shrink below its content size */
             min-width: 0;
             position: relative;
 		}
@@ -313,15 +311,13 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             flex-wrap: nowrap;
-            /* This makes it a growing flex item and allows it to shrink */
             flex: 1;
             min-width: 0;
-            /* Hide scrollbar */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
         .item-images::-webkit-scrollbar {
-            display: none; /* Safari and Chrome */
+            display: none;
         }
         .scroll-indicator {
             position: absolute;
@@ -347,7 +343,6 @@
         .item-list-left.is-scrolled-end .scroll-indicator {
             display: none;
         }
-        /* --- END OF CORRECTED STYLES --- */
 
 	    .small-character-img {
 			height: 50px;
@@ -405,7 +400,7 @@
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            flex-shrink: 0; /* Prevent images from shrinking */
+            flex-shrink: 0;
         }
 
 		.image-count-badge {
@@ -1343,26 +1338,18 @@
                     if (charData.count > 1) {
                         const badge = document.createElement('div');
                         badge.className = 'image-count-badge';
-                        badge.textContent = `x${charData.count}`;
                         
                         if (isSuperRare) {
                             badge.classList.add('super-rare-badge');
                         } else {
                             badge.classList.add('rare-badge');
                         }
+                        badge.textContent = `x${charData.count}`;
                         imgContainer.appendChild(badge);
                     }
                     
                     itemImages.appendChild(imgContainer);
                 });
-
-                leftSection.appendChild(itemImages);
-
-                const scrollIndicator = document.createElement('div');
-                scrollIndicator.className = 'scroll-indicator';
-                scrollIndicator.innerHTML = '...';
-                scrollIndicator.title = "See more characters";
-                leftSection.appendChild(scrollIndicator);
 
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
@@ -1379,8 +1366,17 @@
 						e.stopPropagation();
 						showExtrasPopup(extraCharImages);
 					});
-					leftSection.appendChild(extrasBox);
+                    // *** MODIFICATION HERE: Append to itemImages instead of leftSection ***
+					itemImages.appendChild(extrasBox);
 				}
+                
+                leftSection.appendChild(itemImages);
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'scroll-indicator';
+                scrollIndicator.innerHTML = '...';
+                scrollIndicator.title = "See more characters";
+                leftSection.appendChild(scrollIndicator);
+
 
 				if (itemDetails.guaranteed) {
 					const guaranteedBox = document.createElement('div');
