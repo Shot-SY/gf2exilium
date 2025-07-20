@@ -716,22 +716,26 @@
 			.scroll-indicator {
 				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
 			}
-            /* [수정/추가됨] 모바일에서 스크롤 가능함을 알리는 그라데이션 */
-            .item-images.has-scroll::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 40px;
-                height: 100%;
-                background: linear-gradient(to right, transparent, #1a1c20);
-                pointer-events: none;
-                transition: opacity 0.3s;
-                opacity: 1;
-            }
-            .item-images.scrolled-to-end::after {
-                opacity: 0;
-            }
+			/* 그라데이션을 스크롤되지 않는 부모(.result-item)에 적용하여 위치를 고정합니다. */
+			.result-item:has(.item-images.has-scroll)::after {
+			    content: '';
+			    position: absolute;
+			    top: 10px; /* result-item의 상단 padding 값 */
+			    right: 10px; /* result-item의 우측 padding 값 */
+			    width: 60px; /* 그라데이션 효과를 더 강하게 하기 위해 너비 증가 */
+			    height: 55px; /* 이미지 영역의 높이 (이미지 45px + 상하 padding 10px) */
+			    /* 배경색(#1a1c20)으로 자연스럽게 사라지는, 더 강한 그라데이션 효과 */
+			    background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20);
+			    pointer-events: none; /* 그라데이션이 클릭 이벤트를 막지 않도록 설정 */
+			    z-index: 5; /* 다른 요소들 위에 표시되도록 z-index 설정 */
+			    transition: opacity 0.3s;
+			    opacity: 1;
+			}
+			
+			/* [수정됨] 스크롤이 끝에 도달하면 그라데이션을 숨깁니다. */
+			.result-item:has(.item-images.scrolled-to-end)::after {
+			    opacity: 0;
+			}
 	        #copyInstruction {
 	            font-size: 1em;
 	        }
