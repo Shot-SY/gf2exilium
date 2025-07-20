@@ -34,70 +34,16 @@
 	        position: relative;
 	        z-index: 1;
 	    }
-        
-        /* --- [START] Horizontal Scroll Styles --- */
-	    .character-scroll-container {
-            position: relative;
-            margin-bottom: 30px;
-            /* Add vertical padding to ensure hover/select effects are not clipped */
-            padding: 10px 0;
-        }
-
-        .character-scroll-container::after {
-            content: '...';
-            position: absolute;
-            right: 0;
-            top: 10px;
-            bottom: 10px;
-            width: 80px;
-            background: linear-gradient(to left, #121212 40%, rgba(18, 18, 18, 0));
-            pointer-events: none;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 15px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .character-scroll-container.is-scrollable::after {
-            opacity: 1;
-        }
-
 	    .character-grid {
-	        /* display: grid; (REMOVED) */
-	        /* grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); (REMOVED) */
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch; /* For smooth mobile scrolling */
+	        display: grid;
+	        grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
 	        gap: 20px;
+	        margin-bottom: 30px;
 	        position: relative;
 	        z-index: 1;
 	        transform: translateZ(0);
-            /* Add padding to prevent content from sitting right under the gradient */
-            padding-right: 30px;
-            /* Add bottom padding for badges and effects to not get clipped */
-            padding-bottom: 15px;
-            /* Use negative margin to visually align items with the container's edges */
-            margin-left: -10px;
-            padding-left: 10px;
-            /* Hide the scrollbar */
-            scrollbar-width: none; /* Firefox */
 	    }
-        .character-grid::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Edge */
-        }
-        /* --- [END] Horizontal Scroll Styles --- */
-
 	    .character-box {
-            flex-shrink: 0; /* Prevent items from shrinking */
-            width: 120px; /* Set a fixed width for items */
 	        background: rgba(26,26,26,0.2);
 	        border: none;
 	        padding: 15px;
@@ -675,13 +621,11 @@
 		}
 
 	    @media (max-width: 768px) {
-            /* Adjustments for horizontal scroll on mobile */
 	        .character-grid {
-	            /* grid-template-columns: repeat(auto-fill, minmax(80px,1fr)); (REMOVED) */
+	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
 	            gap: 10px;
-            }
+	        }
 	        .character-box {
-                width: 80px; /* Set fixed width for mobile */
 	            height: 125px; 
 	            padding: 8px;
 	        }
@@ -765,10 +709,7 @@
     </div>
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
-    <!-- [MODIFIED] Added a wrapper for horizontal scrolling -->
-    <div class="character-scroll-container">
-        <div class="character-grid" id="characterGrid"></div>
-    </div>
+    <div class="character-grid" id="characterGrid"></div>
     <button id="filterButton">Apply Filter</button>
 	<div id="copyInstruction">
 	  All accounts have the
@@ -942,16 +883,6 @@
         let superRarePrefixes = new Set();
         let currentFilteredData = {};
 
-        // [NEW] Function to check if the character grid is scrollable and toggle the fade effect
-        function checkScroll() {
-            const container = document.querySelector('.character-scroll-container');
-            const grid = document.getElementById('characterGrid');
-            if (container && grid) {
-                const isScrollable = grid.scrollWidth > grid.clientWidth;
-                container.classList.toggle('is-scrollable', isScrollable);
-            }
-        }
-
 		function loadCharacters() {
             const ts = new Date().getTime();
             return fetch(`Characters.txt?t=${ts}`)
@@ -993,8 +924,6 @@
                     new Image().src = 'Portrait/파파샤.png';
 
                     createCharacterBoxes();
-                    checkScroll(); // Check scroll after creating boxes
-                    window.addEventListener('resize', checkScroll); // Re-check on window resize
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
