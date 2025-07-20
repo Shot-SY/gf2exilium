@@ -244,7 +244,7 @@
 		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease-in-out; /* 깜빡임 애니메이션 속도 */
 		}
         #results.sorting {
             opacity: 0;
@@ -271,7 +271,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			flex-wrap: nowrap; /* 자식 요소 줄바꿈 방지 */
+			flex-wrap: wrap;
 			gap: 15px;
 			position: relative;
 			overflow: hidden;
@@ -287,63 +287,16 @@
 			opacity: 0.6;
 			transition: opacity 0.3s;
 		}
-		
-		/* --- [START] 신규/수정된 CSS --- */
-		.scroll-container {
-			position: relative;
-			flex: 1; /* 남는 공간을 모두 차지 */
-			min-width: 0; /* flex 아이템이 수축할 수 있도록 함 */
-		}
 
-		.item-images {
+		.item-images, .result-info-right {
 			display: flex;
 			align-items: center;
-			flex-wrap: nowrap; /* 중요: 캐릭터 리스트가 한 줄로 표시되도록 함 */
+			flex-wrap: wrap;
 			gap: 8px;
-			overflow-x: auto; /* 내용이 넘칠 경우 가로 스크롤 생성 */
-			-webkit-overflow-scrolling: touch; /* 모바일 부드러운 스크롤 */
-			scrollbar-width: none; /* 스크롤바 숨기기 (Firefox) */
-            padding-bottom: 10px; /* 뱃지가 잘리지 않도록 아래쪽 여백 확보 */
-            margin-bottom: -10px; /* 레이아웃 유지를 위해 여백 상쇄 */
-            min-height: 70px; /* 컨텐츠 높이 확보 (이미지 50px + 패딩 10px + 여유) */
 		}
-        .item-images::-webkit-scrollbar {
-            display: none; /* 스크롤바 숨기기 (Chrome, Safari) */
-        }
-        
-        .scroll-container::after {
-            content: '...';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 10px; /* item-images의 padding-bottom을 고려 */
-            width: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #e0e0e0;
-            background: linear-gradient(to left, #202228 30%, transparent 100%);
-            pointer-events: none; /* 클릭/스크롤 방해하지 않도록 함 */
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-        
-        .scroll-container.is-scrollable::after {
-            opacity: 1; /* 스크롤 가능할 때만 ... 표시 */
-        }
-
 		.result-info-right {
-			display: flex;
-			align-items: center;
-			flex-wrap: nowrap;
-			gap: 8px;
 			justify-content: flex-end;
-            flex-shrink: 0; /* 오른쪽 정보 영역이 찌그러지지 않도록 함 */
 		}
-		/* --- [END] 신규/수정된 CSS --- */
 
 	    .small-character-img {
 			height: 50px;
@@ -401,7 +354,6 @@
             position: relative;
             display: inline-block;
             vertical-align: middle;
-            flex-shrink: 0; /* 스크롤 시 이미지 크기 유지 */
         }
 
 		.image-count-badge {
@@ -613,7 +565,6 @@
 			border-radius: 8px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
-            flex-shrink: 0;
 		}
 		.extras-box .item-title {
 			color: #e0e0e0;
@@ -695,14 +646,10 @@
 	        }
 	        .result-item {
 	            padding: 10px;
-                flex-wrap: wrap; /* 모바일에서는 다시 줄바꿈 허용 */
 	        }
-			.scroll-container, .result-info-right {
+			.item-images, .result-info-right {
 				flex-basis: 100%;
 			}
-            .scroll-container {
-                min-width: 100%;
-            }
 			.result-info-right {
 				justify-content: space-between;
 			}
@@ -717,9 +664,9 @@
 			.small-character-img, .item-box, .extras-box, .price-box {
 				height: 45px;
 			}
-            .item-images {
-                min-height: 65px; /* 모바일 높이 재조정 */
-            }
+	        .item-images {
+	            gap: 5px;
+	        }
 	        #copyInstruction {
 	            font-size: 1em;
 	        }
@@ -833,7 +780,7 @@
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
-                .then(() => applyFiltersAndSort())
+                .then(() => applyFiltersAndSort()) // <<-- 수정됨
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
@@ -1151,15 +1098,17 @@
                 }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
 
+        // <<-- [시작] 함수 통합 및 수정 -->>
         function applyFiltersAndSort() {
             const resultsDiv = document.getElementById('results');
-            resultsDiv.classList.add('sorting');
+            resultsDiv.classList.add('sorting'); // UI를 한번만 숨김
             
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
 
             setTimeout(() => {
+                // --- 1. 필터링 로직 ---
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
                     const chars = v.match(/.{1,3}/g) || [];
@@ -1167,6 +1116,7 @@
                 }
                 currentFilteredData = filtered;
 
+                // --- 2. 정렬 로직 ---
                 const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
@@ -1194,15 +1144,18 @@
                     return primarySort;
                 });
                 
+                // --- 3. 결과 표시 ---
                 displayResults(data, sortedKeys);
                 
-                resultsDiv.classList.remove('sorting');
+                // --- 4. UI 업데이트 ---
+                resultsDiv.classList.remove('sorting'); // 결과를 다시 표시
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
             }, 200);
         }
-        
+        // <<-- [끝] 함수 통합 및 수정 -->>
+
         function checkConditions(chars, itemKey) {
             const count = {};
             chars.forEach(c => {
@@ -1241,161 +1194,153 @@
                 if (!img.hasAttribute('decoding')) img.decoding = 'async';
             });
         }
-
-        // --- [START] 신규 함수 ---
-        function updateScrollIndicators() {
-            const containers = document.querySelectorAll('.scroll-container');
-            containers.forEach(container => {
-                const scroller = container.querySelector('.item-images');
-                if (scroller) {
-                    // 부동소수점 오차를 고려하여 1px의 여유를 둡니다.
-                    const isScrollable = scroller.scrollWidth > scroller.clientWidth + 1;
-                    if (isScrollable) {
-                        container.classList.add('is-scrollable');
-                    } else {
-                        container.classList.remove('is-scrollable');
-                    }
-                }
-            });
-        }
-        // --- [END] 신규 함수 ---
 		
 		function displayResults(data, sortedKeys) {
-		    const res = document.getElementById('results');
-		    res.scrollTop = 0;
-		    const fragment = document.createDocumentFragment();
-		    const container = document.createElement('div');
-		    container.className = 'content-container';
-		    fragment.appendChild(container);
-		    
-		    sortedKeys.forEach(k => {
-		        const item = document.createElement('div');
-		        item.className = 'result-item';
-		        item.dataset.itemKey = k;
-		        item.addEventListener('click', (e) => {
-		            if (e.target.closest('.extras-box')) return;
-		            copyToClipboard(item)
-		        });
-		
-		        const scrollContainer = document.createElement('div');
-		        scrollContainer.className = 'scroll-container';
-		
-		        const leftSection = document.createElement('div');
-		        leftSection.className = 'item-images'; 
-		
-		        const rightSection = document.createElement('div');
-		        rightSection.className = 'result-info-right';
-		
-		        const charValue = data[k];
-		        const itemDetails = itemDetailsMap[k];
-		        
-		        const rareCharImages = [];
-		        const extraCharImages = [];
-		        const charPattern = /([a-z]{2})(\d)/g;
-		        let match;
-		
-		        while ((match = charPattern.exec(charValue)) !== null) {
-		            const code = match[1];
-		            const count = parseInt(match[2]);
-		            const charInfo = characters.find(([eng]) => eng.startsWith(code));
-		            if (charInfo) {
-		                const [engName, korName] = charInfo;
-		                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-		                const imageData = {
-		                    src: `Portrait/${korName}.png`,
-		                    alt: korName,
-		                    isRare: isGenerallyRare,
-		                    engName: engName
-		                };
-		                for (let i = 0; i < count; i++) {
-		                    if (isGenerallyRare) {
-		                        rareCharImages.push(imageData);
-		                    } else {
-		                        extraCharImages.push(imageData);
-		                    }
-		                }
-		            }
-		        }
-		        
-		        // =================================================================
-		        // [수정된 부분] 캐릭터를 그룹화하지 않고 개수만큼 이미지를 나열합니다.
-		        // =================================================================
-		        rareCharImages.forEach(charData => {
-		            const img = document.createElement('img');
-		            img.src = charData.src;
-		            img.alt = charData.alt;
-		            img.className = 'small-character-img';
-		
-		            // 등급(레어/슈퍼레어)에 따라 CSS 클래스를 부여합니다.
-		            const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
-		            if (isSuperRare) {
-		                img.classList.add('super-rare');
-		            } else {
-		                img.classList.add('rare');
-		            }
-		            
-		            leftSection.appendChild(img);
-		        });
-		        // =================================================================
-		        // [수정 완료]
-		        // =================================================================
-		
-		        extraCharImages.push({
-		            src: 'Portrait/파파샤.png',
-		            alt: '파파샤',
-		            isRare: false,
-		            engName: 'papasha'
-		        });
-		
-		        if (extraCharImages.length > 0) {
-		            const extrasBox = document.createElement('div');
-		            extrasBox.className = 'extras-box'; 
-		            extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
-		            extrasBox.addEventListener('click', (e) => {
-		                e.stopPropagation();
-		                showExtrasPopup(extraCharImages);
-		            });
-		            leftSection.appendChild(extrasBox);
-		        }
-		
-		        if (itemDetails.guaranteed) {
-		            const guaranteedBox = document.createElement('div');
-		            guaranteedBox.className = 'item-box';
-		            guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
-		            rightSection.appendChild(guaranteedBox);
-		        }
-		        if (itemDetails.gemsCount > 0) {
-		            const gemsBox = document.createElement('div');
-		            gemsBox.className = 'item-box';
-		            gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
-		            rightSection.appendChild(gemsBox);
-		        }
-		        
-		        const priceBox = document.createElement('div');
-		        priceBox.className = 'price-box';
-		        
-		        const usdPrice = itemDetails.price.toFixed(2);
-		        const krwPriceRaw = itemDetails.price * 1400;
-		        const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-		        const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
-		
-		        priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
-		        
-		        rightSection.appendChild(priceBox);
-		
-		        scrollContainer.appendChild(leftSection);
-		        item.appendChild(scrollContainer);
-		        item.appendChild(rightSection);
-		        container.appendChild(item);
-		    });
-		
-		    res.innerHTML = '';
-		    res.appendChild(fragment);
-		    document.getElementById('copyInstruction').style.display = 'block';
-		
-		    requestAnimationFrame(() => {
-		        updateScrollIndicators();
-		    });
+			const res = document.getElementById('results');
+			res.scrollTop = 0;
+			const fragment = document.createDocumentFragment();
+			const container = document.createElement('div');
+			container.className = 'content-container';
+			fragment.appendChild(container);
+			
+			sortedKeys.forEach(k => {
+				const item = document.createElement('div');
+				item.className = 'result-item';
+				item.dataset.itemKey = k;
+				item.addEventListener('click', (e) => {
+					if (e.target.closest('.extras-box')) return;
+					copyToClipboard(item)
+				});
+
+				const leftSection = document.createElement('div');
+				leftSection.className = 'item-images'; 
+
+				const rightSection = document.createElement('div');
+				rightSection.className = 'result-info-right';
+
+				const charValue = data[k];
+				const itemDetails = itemDetailsMap[k];
+				
+				const rareCharImages = [];
+				const extraCharImages = [];
+				const charPattern = /([a-z]{2})(\d)/g;
+				let match;
+
+				while ((match = charPattern.exec(charValue)) !== null) {
+					const code = match[1];
+					const count = parseInt(match[2]);
+					const charInfo = characters.find(([eng]) => eng.startsWith(code));
+					if (charInfo) {
+						const [engName, korName] = charInfo;
+						const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+						const imageData = {
+							src: `Portrait/${korName}.png`,
+							alt: korName,
+							isRare: isGenerallyRare,
+							engName: engName
+						};
+						for (let i = 0; i < count; i++) {
+							if (isGenerallyRare) {
+								rareCharImages.push(imageData);
+							} else {
+								extraCharImages.push(imageData);
+							}
+						}
+					}
+				}
+                
+                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
+                    if (!acc[imgData.src]) {
+                        acc[imgData.src] = { ...imgData, count: 0 };
+                    }
+                    acc[imgData.src].count++;
+                    return acc;
+                }, {});
+
+                Object.values(groupedRareChars).forEach(charData => {
+                    const container = document.createElement('div');
+                    container.className = 'image-with-count-container';
+
+                    const img = document.createElement('img');
+                    img.src = charData.src;
+                    img.alt = charData.alt;
+                    img.className = 'small-character-img';
+
+                    const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+                    if (isSuperRare) {
+                        img.classList.add('super-rare');
+                    } else {
+                        img.classList.add('rare');
+                    }
+                    container.appendChild(img);
+
+                    if (charData.count > 1) {
+                        const badge = document.createElement('div');
+                        badge.className = 'image-count-badge';
+                        badge.textContent = `x${charData.count}`;
+                        
+                        if (isSuperRare) {
+                            badge.classList.add('super-rare-badge');
+                        } else {
+                            badge.classList.add('rare-badge');
+                        }
+                        container.appendChild(badge);
+                    }
+                    
+                    leftSection.appendChild(container);
+                });
+
+				extraCharImages.push({
+					src: 'Portrait/파파샤.png',
+					alt: '파파샤',
+					isRare: false,
+					engName: 'papasha'
+				});
+
+				if (extraCharImages.length > 0) {
+					const extrasBox = document.createElement('div');
+					extrasBox.className = 'extras-box'; 
+					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
+					extrasBox.addEventListener('click', (e) => {
+						e.stopPropagation();
+						showExtrasPopup(extraCharImages);
+					});
+					leftSection.appendChild(extrasBox);
+				}
+
+				if (itemDetails.guaranteed) {
+					const guaranteedBox = document.createElement('div');
+					guaranteedBox.className = 'item-box';
+					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
+					rightSection.appendChild(guaranteedBox);
+				}
+				if (itemDetails.gemsCount > 0) {
+					const gemsBox = document.createElement('div');
+					gemsBox.className = 'item-box';
+					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+					rightSection.appendChild(gemsBox);
+				}
+                
+				const priceBox = document.createElement('div');
+				priceBox.className = 'price-box';
+				
+                const usdPrice = itemDetails.price.toFixed(2);
+                const krwPriceRaw = itemDetails.price * 1400;
+                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
+                const formattedKrwPrice = krwPriceRounded.toLocaleString() + '원';
+
+                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
+                
+				rightSection.appendChild(priceBox);
+
+				item.appendChild(leftSection);
+				item.appendChild(rightSection);
+				container.appendChild(item);
+			});
+
+			res.innerHTML = '';
+			res.appendChild(fragment);
+			document.getElementById('copyInstruction').style.display = 'block';
 		}
 
 		function showExtrasPopup(images) {
@@ -1480,7 +1425,7 @@
         const throttledFilterHandler = throttle(function() {
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             loadData().then(() => {
-                applyFiltersAndSort();
+                applyFiltersAndSort(); // <<-- 수정됨
                 gtag('event', 'apply_filter', {
                     'selected_characters': getSelectedCharacters()
                 });
@@ -1493,7 +1438,7 @@
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
         
         document.getElementById('sortDropdown').addEventListener('change', function() {
-            applyFiltersAndSort();
+            applyFiltersAndSort(); // <<-- 수정됨
             this.blur(); 
         });
 
@@ -1529,11 +1474,6 @@
 					hideExtrasPopup();
 				}
 			});
-
-            // --- [START] 추가된 부분 ---
-            // 창 크기가 변경될 때 스크롤 표시를 다시 계산
-            window.addEventListener('resize', throttle(updateScrollIndicators, 150));
-            // --- [END] 추가된 부분 ---
 		});
     </script>
 </body>
