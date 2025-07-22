@@ -1597,6 +1597,16 @@
             };
         }
 
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+
 		const throttledFilterHandler = throttle(function() {
 		    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 		    loadData().then(() => {
@@ -1663,6 +1673,9 @@
                 }
             });
 			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
+			
+            const debouncedScrollSetup = debounce(setupScrollIndicators, 250);
+            window.addEventListener('resize', debouncedScrollSetup);
 		});
     </script>
 </body>
