@@ -518,7 +518,7 @@ A233 klukai1 springfield2 suomi1 makiato1 gyunggu1 tororo4 sabrina2 peritia2 fay
 A1S2 klukai1 springfield2 suomi1 makiato1 gyunggu2 tororo2 sabrina2 peritia3 faye1 342PickupTicket = $83.60
 
 === kl1_sp2_su1_ve1_ma0_yo0_me0_ce0_gy2_to2 ===
-A1TM klukai1 springfield2 suomi1 vector1 gyunggu2 tororo2 sabrina3 peritia1 faye1 bepri1 mosinnagang1 373PickupTicket = $90.00
+A1TM klukai1 springfield2 suomi1 vector1 gyunggu2 tororo2 sabrina3 peritia1 faye1 bepri1 mosinnagang1 373PickupTicket GUARANTEED = $93.60
 
 === kl1_sp0_su1_ve0_ma1_yo2_me0_ce0_gy3_to1 ===
 A1TA klukai1 suomi1 makiato1 yoohee2 gyunggu3 tororo1 sabrina3 peritia1 faye1 mosinnagang1 408PickupTicket GUARANTEED = $99.30
