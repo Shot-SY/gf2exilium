@@ -1674,7 +1674,7 @@
             });
 			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
 			
-            const debouncedScrollSetup = debounce(setupScrollIndicators, 250);
+            const debouncedScrollSetup = debounce(setupScrollIndicators, 50);
             window.addEventListener('resize', debouncedScrollSetup);
 		});
     </script>
