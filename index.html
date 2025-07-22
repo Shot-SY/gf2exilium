@@ -1597,18 +1597,21 @@
             };
         }
 
-        const throttledFilterHandler = throttle(function() {
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-            loadData().then(() => {
-                applyFiltersAndSort();
-                gtag('event', 'apply_filter', {
-                    'selected_characters': getSelectedCharacters()
-                });
-            })
-            .catch(error => {
-                console.error('필터 적용 에러:', error);
-            });
-        }, 300);
+		const throttledFilterHandler = throttle(function() {
+		    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+		    loadData().then(() => {
+		        applyFiltersAndSort();
+		        const selectedCharsString = getSelectedCharacters();
+		        if (selectedCharsString) {
+		            gtag('event', 'apply_filter', {
+		                'selected_characters': selectedCharsString
+		            });
+		        }
+		    })
+		    .catch(error => {
+		        console.error('필터 적용 에러:', error);
+		    });
+		}, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
         
