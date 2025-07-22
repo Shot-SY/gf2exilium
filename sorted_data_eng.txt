@@ -1206,7 +1206,6 @@ A1OR klukai1 suomi2 vector1 gyunggu1 tororo4 sabrina2 peritia1 faye1 mosinnagang
 === kl1_sp2_su1_ve0_ma0_yo0_me0_ce0_gy1_to4 ===
 1SU klukai1 springfield2 suomi1 gyunggu1 tororo4 sabrina1 peritia2 faye1 mosinnagang1 stonepillar1 233PickupTicket = $47.90
 1S9 klukai1 springfield2 suomi1 gyunggu1 tororo4 sabrina1 peritia1 faye1 bepri1 230PickupTicket = $45.00
-1H0 klukai1 springfield2 suomi1 gyunggu1 tororo4 sabrina2 peritia2 faye1 mosinnagang1 167PickupTicket = $35.00
 
 === kl1_sp2_su1_ve0_ma0_yo0_me0_ce0_gy4_to1 ===
 1R7 klukai1 springfield2 suomi1 gyunggu4 tororo1 sabrina1 peritia1 faye1 bepri2 mosinnagang1 418PickupTicket = $78.60
