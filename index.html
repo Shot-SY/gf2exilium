@@ -855,7 +855,7 @@
         window.addEventListener('load', () => {
             const lastLoad = localStorage.getItem('lastLoadTime');
             const currentTime = Date.now();
-            if (!lastLoad || (currentTime - parseInt(lastLoad)) > 1000) {
+            if (!lastLoad || (currentTime - parseInt(lastLoad)) > 10000) {
                 localStorage.setItem('lastLoadTime', currentTime);
                 window.location.reload(true);
                 return;
