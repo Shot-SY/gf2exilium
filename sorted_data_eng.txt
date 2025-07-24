@@ -222,7 +222,7 @@ A1RW klukai1 springfield1 suomi1 makiato1 yoohee1 centaureissi1 gyunggu2 tororo2
 A1RO klukai1 springfield1 suomi1 vector1 makiato1 yoohee1 gyunggu2 tororo2 sabrina1 peritia2 faye1 378PickupTicket = $100.00
 
 === kl1_sp0_su1_qi1_ve1_ma1_yo0_me1_ce0_gy1_to3 ===
-1RN klukai1 suomi1 qiuhua1 vector1 makiato1 mechty1 gyunggu1 tororo3 sabrina4 peritia1 faye1 357PickupTicket = $97.10
+1RN klukai1 suomi1 qiuhua1 vector1 makiato1 mechty1 gyunggu1 tororo3 sabrina4 peritia1 faye1 357PickupTicket GUARANTEED = $100.70
 
 === kl1_sp1_su1_qi0_ve0_ma1_yo1_me1_ce0_gy1_to3 ===
 1TI klukai1 springfield1 suomi1 makiato1 yoohee1 mechty1 gyunggu1 tororo3 sabrina1 peritia2 faye1 381PickupTicket = $100.00
@@ -1212,7 +1212,7 @@ A1RE klukai1 springfield1 suomi1 makiato1 gyunggu3 tororo4 sabrina1 peritia1 fay
 A1UZ klukai1 springfield1 suomi1 makiato1 gyunggu4 tororo3 sabrina1 peritia1 faye1 mosinnagang1 416PickupTicket GUARANTEED = $86.40
 
 === kl1_sp1_su1_qi0_ve1_ma0_yo0_me0_ce0_gy3_to4 ===
-1OK klukai1 springfield1 suomi1 vector1 gyunggu3 tororo4 sabrina2 peritia2 faye1 mosinnagang1 373PickupTicket = $76.40
+1OK klukai1 springfield1 suomi1 vector1 gyunggu3 tororo4 sabrina2 peritia2 faye1 mosinnagang1 373PickupTicket GUARANTEED = $80.00
 
 === kl1_sp1_su0_qi0_ve1_ma1_yo0_me0_ce0_gy2_to5 ===
 A1WI klukai1 springfield1 vector1 makiato1 gyunggu2 tororo5 sabrina2 peritia4 faye1 370PickupTicket = $76.40
