@@ -1144,7 +1144,8 @@
                                 guaranteed: line.includes('GUARANTEED'),
                                 displayText: '',
                                 gemsCount: 0,
-                                superRareCount: 0
+                                superRareCount: 0,
+                                uniqueSuperRareCount: 0 // [수정 1] 고유 캐릭터 종류 수를 저장할 속성 추가
                             };
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
@@ -1152,6 +1153,8 @@
                             }
 
                             let superRareCount = 0;
+                            const uniqueSuperRares = new Set(); // [수정 2] 고유 캐릭터 접두사를 저장할 Set 생성
+
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
                                 if (match) {
@@ -1162,11 +1165,13 @@
                                     
                                     if (superRarePrefixes.has(prefix)) {
                                         superRareCount += numCount;
+                                        uniqueSuperRares.add(prefix); // [수정 3] Set에 고유한 접두사 추가
                                     }
                                 }
                                 j++;
                             }
                             itemDetails.superRareCount = superRareCount;
+                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; // [수정 4] Set의 크기(고유 종류 수)를 저장
 
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
@@ -1207,7 +1212,8 @@
 
                     switch (sortKey) {
                         case 'character':
-                            primarySort = (itemB.superRareCount || 0) - (itemA.superRareCount || 0);
+                            // [수정 5] 총합(superRareCount) 대신 고유 종류 수(uniqueSuperRareCount)로 정렬
+                            primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
                             break;
                         case 'pticket':
                             primarySort = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
