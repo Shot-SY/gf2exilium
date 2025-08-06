@@ -1298,7 +1298,7 @@
                 // 다른 아이템 호버 시, 이전에 스크롤된 아이템을 리셋
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
                 
-                // [이전 요청 반영] 아이템 호버 해제 시, 해당 아이템의 스크롤 리셋
+                // 아이템 호버 해제 시, 해당 아이템의 스크롤 리셋
                 item.addEventListener('mouseleave', () => {
                     const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
                     if (container && container.scrollLeft > 0) {
@@ -1319,49 +1319,50 @@
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
 				
-                // 1. 캐릭터 데이터를 희귀/기타로 분리 (기존과 동일)
-				const rareCharImages = [];
-				const extraCharImages = [];
-				const charPattern = /([a-z]{2})(\d)/g;
-				let match;
+                // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
 
-				while ((match = charPattern.exec(charValue)) !== null) {
-					const code = match[1];
-					const count = parseInt(match[2]);
-					const charInfo = characters.find(([eng]) => eng.startsWith(code));
-					if (charInfo) {
-						const [engName, korName] = charInfo;
-						const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-						const imageData = {
-							src: `Portrait/${korName}.png`,
-							alt: korName,
-							isRare: isGenerallyRare,
-							engName: engName
-						};
-						for (let i = 0; i < count; i++) {
-							if (isGenerallyRare) {
-								rareCharImages.push(imageData);
-							} else {
-								extraCharImages.push(imageData);
-							}
-						}
-					}
-				}
-                
-                // ▼▼▼▼▼ [변경점] 이전 코드의 '개수 표시' 로직 적용 ▼▼▼▼▼
+                // 1. 모든 캐릭터 데이터를 수집하되, Characters.txt의 원본 순서를 기억합니다.
+                const allRareCharsData = [];
+                const extraCharImages = []; // 기타 캐릭터는 순서가 중요하지 않으므로 기존 방식 유지
+                const charPattern = /([a-z]{2})(\d)/g;
+                let match;
 
-                // 2. 희귀 캐릭터들을 이름(engName) 기준으로 그룹화하고 개수를 셉니다.
-                const groupedRareChars = rareCharImages.reduce((acc, imgData) => {
-                    const key = imgData.engName;
-                    if (!acc[key]) {
-                        acc[key] = { ...imgData, count: 0 };
+                while ((match = charPattern.exec(charValue)) !== null) {
+                    const code = match[1];
+                    const count = parseInt(match[2]);
+                    const charInfo = characters.find(([eng]) => eng.startsWith(code));
+
+                    if (charInfo) {
+                        const [engName, korName] = charInfo;
+                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        
+                        // Characters.txt 에서의 원래 인덱스를 찾습니다.
+                        const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
+
+                        const imageData = {
+                            src: `Portrait/${korName}.png`,
+                            alt: korName,
+                            engName: engName,
+                            count: count,
+                            originalIndex: originalIndex // 원본 순서를 저장
+                        };
+
+                        if (isGenerallyRare) {
+                            allRareCharsData.push(imageData);
+                        } else {
+                            // 기타 캐릭터는 팝업에 표시되므로 개별 이미지 데이터가 필요합니다.
+                            for (let i = 0; i < count; i++) {
+                                extraCharImages.push({ ...imageData });
+                            }
+                        }
                     }
-                    acc[key].count++;
-                    return acc;
-                }, {});
+                }
 
-                // 3. 그룹화된 캐릭터 정보를 바탕으로 이미지와 배지를 생성합니다.
-                Object.values(groupedRareChars).forEach(charData => {
+                // 2. 수집된 희귀 캐릭터들을 Characters.txt의 순서(originalIndex)에 따라 정렬합니다.
+                allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
+
+                // 3. 정렬된 순서대로 희귀 캐릭터 이미지와 배지를 생성합니다.
+                allRareCharsData.forEach(charData => {
                     const container = document.createElement('div');
                     container.className = 'image-with-count-container';
 
@@ -1370,6 +1371,7 @@
                     img.alt = charData.alt;
                     img.className = 'small-character-img';
 
+                    // 희귀도에 따라 테두리 스타일 적용
                     const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
                     if (isSuperRare) {
                         img.classList.add('super-rare');
@@ -1377,8 +1379,8 @@
                         img.classList.add('rare');
                     }
                     container.appendChild(img);
-
-                    // 4. 개수가 2 이상일 경우에만 배지를 추가합니다.
+                    
+                    // 개수가 1개 초과일 때만 배지 표시
                     if (charData.count > 1) {
                         const badge = document.createElement('div');
                         badge.className = 'image-count-badge';
@@ -1395,14 +1397,15 @@
                     leftSection.appendChild(container);
                 });
 
-                // ▲▲▲▲▲ [여기까지 변경] ▲▲▲▲▲
-
+                // 기본 포함 캐릭터 (파파샤) 추가
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
 					alt: '파파샤',
 					isRare: false,
 					engName: 'papasha'
 				});
+
+                // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
 
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
