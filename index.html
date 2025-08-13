@@ -260,19 +260,19 @@
 	        transition: none !important;
 	    }
 		.result-item {
-			margin-bottom: 15px;
-			padding: 12px 20px;
+			margin-bottom: 18px;
+			padding: 14px 24px;
 			background: linear-gradient(135deg, #202228, #1a1c20);
 			cursor: pointer;
 			transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
-			border-radius: 12px;
+			border-radius: 14px;
 			border: 1px solid rgba(255, 255, 255, 0.1);
 			box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 2px rgba(0,0,0,0.4);
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			flex-wrap: nowrap;
-			gap: 15px;
+			gap: 18px;
 			position: relative;
 			overflow: hidden;
 		}
@@ -300,9 +300,9 @@
 			display: flex;
 			align-items: center;
 			flex-wrap: nowrap;
-			gap: 8px;
+			gap: 10px;
             overflow-x: auto;
-            padding: 5px;
+            padding: 6px;
             scrollbar-width: none; /* Firefox */
 		}
         .item-images::-webkit-scrollbar {
@@ -312,17 +312,17 @@
 		.result-info-right {
 			display: flex;
 			align-items: center;
-			flex-wrap: wrap;
-			gap: 8px;
+			flex-wrap: nowrap;
+			gap: 10px;
 			justify-content: flex-end;
             flex-shrink: 0;
 		}
 
 	    .small-character-img {
-			height: 50px;
+			height: 60px;
 			width: auto;
 			object-fit: contain;
-			border-radius: 8px;
+			border-radius: 10px;
 			transition: transform 0.2s;
 			border: 1px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
@@ -331,12 +331,12 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			height: 50px;
-			min-width: 70px;
-			padding: 0 10px;
+			height: 60px;
+			min-width: 84px;
+			padding: 0 12px;
 			background: rgba(176, 176, 176, 0.1);
 			border: 1px dashed rgba(176, 176, 176, 0.5);
-			border-radius: 8px;
+			border-radius: 10px;
 			cursor: pointer;
 			transition: background 0.2s, border-color 0.2s;
             flex-shrink: 0;
@@ -394,18 +394,18 @@
 
 		.image-count-badge {
 		    position: absolute;
-		    bottom: -4px;
-		    right: -4px; 
-		    min-width: 18px;
+		    bottom: -5px;
+		    right: -5px; 
+		    min-width: 22px;
 		    text-align: center;
 		    background: rgba(0, 0, 0, 0.75);
 		    backdrop-filter: blur(4px);
 		    -webkit-backdrop-filter: blur(4px);
 		    color: #fff;
-		    padding: 1px 6px;
-		    border-radius: 8px; 
+		    padding: 2px 7px;
+		    border-radius: 10px; 
 		    font-family: 'Poppins', sans-serif;
-		    font-size: 13px; 
+		    font-size: 15px; 
 		    font-weight: 600;
 		    line-height: 1.4;
 		    border: 1px solid rgba(255, 255, 255, 0.1);
@@ -426,24 +426,24 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			height: 50px;
-			min-width: 70px;
-			padding: 0 10px;
+			height: 60px;
+			min-width: 84px;
+			padding: 0 12px;
 			background: rgba(255, 193, 7, 0.05);
 			border: 1px solid rgba(255, 193, 7, 0.5);
-			border-radius: 8px;
+			border-radius: 10px;
 			text-align: center;
 		}
 		.item-box .item-title {
 			color: rgba(255, 193, 7, 0.8);
-			font-size: 12px;
+			font-size: 14px;
 			font-weight: normal;
 			text-transform: uppercase;
 			margin-bottom: 2px;
 		}
 		.item-box .item-count {
 			color: #fff;
-			font-size: 16px;
+			font-size: 19px;
 			font-weight: 700;
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
@@ -454,21 +454,21 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: flex-end;
-			height: 50px;
-			min-width: 95px;
-			padding: 0 10px;
+			height: 60px;
+			min-width: 114px;
+			padding: 0 12px;
 			background: linear-gradient(270deg, rgba(39, 174, 96, 0.2), transparent);
-			border-radius: 8px;
+			border-radius: 10px;
 			font-family: 'Poppins', sans-serif;
 		}
 		.price-box .price-usd {
-			font-size: 18px;
+			font-size: 22px;
 			font-weight: 700;
 			color: #2ecc71;
 			text-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
 		}
 		.price-box .price-krw {
-			font-size: 12px;
+			font-size: 14px;
 			color: #bdc3c7;
 		}
 	    
@@ -716,7 +716,7 @@
 	            padding: 12px;
 	        }
 	        .result-item {
-	            padding: 10px;
+	            padding: 12px;
 				flex-wrap: wrap;
 	        }
             /* [수정됨] 모바일에서는 wrapper가 전체 너비를 차지 */
@@ -735,10 +735,10 @@
 				flex-grow: 1;
 			}
 			.small-character-img, .item-box, .extras-box, .price-box {
-				height: 45px;
+				height: 54px;
 			}
 	        .item-images {
-	            gap: 5px;
+	            gap: 6px;
 	        }
 			.scroll-indicator {
 				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
@@ -756,19 +756,19 @@
 	            padding: 15px 20px;
 	        }
 			.item-box .item-title {
-				font-size: 10px;
+				font-size: 12px;
 			}
 			.extras-box .item-title {
 				font-size: 12px;
 			}
 			.item-box .item-count {
-				font-size: 14px;
+				font-size: 17px;
 			}
 			.price-box .price-usd {
-				font-size: 16px;
+				font-size: 19px;
 			}
 			.price-box .price-krw {
-				font-size: 10px;
+				font-size: 12px;
 			}
 	        #skinInfoPopup {
 	            padding: 10px;
