@@ -1050,32 +1050,32 @@
                             let lastScrollTime = 0;
                             const scrollThreshold = 16; 
                             results.addEventListener('scroll', function(e) {
-                                const now = performance.now();
-                                if (now - lastScrollTime >= scrollThreshold) {
-                                    lastScrollTime = now;
-                                    if (!results.isScrolling) {
-                                        results.isScrolling = true;
-                                        results.classList.add('scrolling');
-                                        document.body.classList.add('is-scrolling');
-                                    }
-                                    clearTimeout(results.scrollEndTimer);
-                                    results.scrollEndTimer = setTimeout(function() {
-                                        results.isScrolling = false;
-                                        results.classList.remove('scrolling');
-                                        document.body.classList.remove('is-scrolling');
-                                    }, 100);
-                                }
-                            }, { passive: true });
-                            results.addEventListener('touchstart', function() {
-                                results.classList.add('scrolling');
-                                document.body.classList.add('is-scrolling');
-                            }, { passive: true });
-                            results.addEventListener('touchend', function() {
-                                setTimeout(function() {
-                                    results.classList.remove('scrolling');
-                                    document.body.classList.remove('is-scrolling');
-                                }, 100);
-                            }, { passive: true });
+							    const now = performance.now();
+							    if (now - lastScrollTime >= scrollThreshold) {
+							        lastScrollTime = now;
+							        if (!results.isScrolling) {
+							            results.isScrolling = true;
+							            results.classList.add('scrolling');
+							            // [제거] document.body.classList.add('is-scrolling');
+							        }
+							        clearTimeout(results.scrollEndTimer);
+							        results.scrollEndTimer = setTimeout(function() {
+							            results.isScrolling = false;
+							            results.classList.remove('scrolling');
+							            // [제거] document.body.classList.remove('is-scrolling');
+							        }, 150); // 타이머 시간을 약간 늘려 안정성 확보
+							    }
+							}, { passive: true });
+							results.addEventListener('touchstart', function() {
+							    results.classList.add('scrolling');
+							    // [제거] document.body.classList.add('is-scrolling');
+							}, { passive: true });
+							results.addEventListener('touchend', function() {
+							    setTimeout(function() {
+							        results.classList.remove('scrolling');
+							        // [제거] document.body.classList.remove('is-scrolling');
+							    }, 150); // 타이머 시간을 약간 늘려 안정성 확보
+							}, { passive: true });
                         }
                         optimizeImages();
                         optimizeParticles();
