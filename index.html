@@ -448,17 +448,17 @@
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
 
-		.pticket-box {
-		    background-image: url('Portrait/픽업티켓.png');
-		    background-size: contain; /* cover에서 contain으로 변경 */
-		    background-repeat: no-repeat; /* 이미지 반복 방지 */
-		    background-position: center;
-		    border: 1px solid rgba(255, 193, 7, 0.8);
-		    box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
-		    flex-direction: row; 
-		    justify-content: center;
-		    align-items: center;
-		}
+        /* [수정됨] PTICKET 박스를 위한 새 스타일 */
+        .pticket-box {
+            background-image: url('Portrait/픽업티켓.png');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 193, 7, 0.8);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+            flex-direction: row; /* 기존 column 방향 덮어쓰기 */
+            justify-content: center;
+            align-items: center;
+        }
         .pticket-box .item-count {
             color: #fff;
             font-size: 24px;
@@ -740,12 +740,14 @@
 				justify-content: space-between;
 			}
 			.price-box {
-				flex-grow: 1;
-				align-items: center;
-				background: rgba(39, 174, 96, 0.1);
+			    flex-grow: 1;
+			    align-items: center;
+			    background: rgba(39, 174, 96, 0.1);
+			    min-width: 0;
 			}
 			.item-box {
-				flex-grow: 1;
+			    flex-grow: 1;
+			    min-width: 0;
 			}
 			.small-character-img, .item-box, .extras-box, .price-box {
 				height: 54px;
