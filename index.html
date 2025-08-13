@@ -447,25 +447,26 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
-
-        /* [수정됨] PTICKET 박스를 위한 새 스타일 */
-        .pticket-box {
-            background-image: url('Portrait/픽업티켓.png');
-            background-size: cover;
-            background-position: center;
-            border: 1px solid rgba(255, 193, 7, 0.8);
-            box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
-            flex-direction: row; /* 기존 column 방향 덮어쓰기 */
-            justify-content: center;
-            align-items: center;
-        }
-        .pticket-box .item-count {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
-            margin: 0;
-        }
+		
+		/* [수정됨] PTICKET 박스를 위한 새 스타일 */
+		.pticket-box {
+			background-image: url('Portrait/픽업티켓.png');
+			background-size: 80%; /* 수정: 이미지 크기 80%로 조정 */
+			background-position: center;
+			background-repeat: no-repeat; /* 추가: 이미지 반복 방지 */
+			border: 1px solid rgba(255, 193, 7, 0.8);
+			box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+			flex-direction: row; 
+			justify-content: center;
+			align-items: center;
+		}
+		.pticket-box .item-count {
+			color: #fff;
+			font-size: 24px;
+			font-weight: 700;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
+			margin: 0;
+		}
 
 
 		.price-box {
@@ -1228,7 +1229,9 @@
                             primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
                             break;
                         case 'pticket':
-                            primarySort = (itemB.gemsCount || 0) - (itemA.gemsCount || 0);
+                            let countA = itemA.gemsCount + (itemA.guaranteed ? 20 : 0);
+                            let countB = itemB.gemsCount + (itemB.guaranteed ? 20 : 0);
+                            primarySort = countB - countA;
                             break;
                         case 'price':
                         default:
@@ -1274,7 +1277,12 @@
             if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
                 const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
                 const itemDetails = itemDetailsMap[itemKey];
-                const hasTickets = itemDetails?.gemsCount || 0;
+                
+                let hasTickets = itemDetails.gemsCount || 0;
+                if (itemDetails.guaranteed) {
+                    hasTickets += 20;
+                }
+
                 if (hasTickets < requiredTickets) {
                     return false;
                 }
@@ -1414,23 +1422,23 @@
 					});
 					leftSection.appendChild(extrasBox);
 				}
-
-				if (itemDetails.guaranteed) {
-					const guaranteedBox = document.createElement('div');
-					guaranteedBox.className = 'item-box';
-					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
-					rightSection.appendChild(guaranteedBox);
-				}
-                
+				
                 // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
-				if (itemDetails.gemsCount >= 0) {
-					const gemsBox = document.createElement('div');
-                    // item-box 클래스와 함께 새로운 pticket-box 클래스 추가
-					gemsBox.className = 'item-box pticket-box'; 
-                    // 'PTicket' 타이틀 제거, 숫자만 표시
-					gemsBox.innerHTML = `<div class="item-count">${itemDetails.gemsCount}</div>`;
-					rightSection.appendChild(gemsBox);
-				}
+
+                // 'Ready' 박스 로직을 PTicket과 통합
+                let finalGemsCount = itemDetails.gemsCount;
+                if (itemDetails.guaranteed) {
+                    finalGemsCount += 20; // 확정인 경우 티켓 20개 추가
+                }
+
+                // PTicket 박스 생성 (통합된 카운트 사용)
+                if (itemDetails.gemsCount >= 0) { // 기존 아이템에 티켓 정보가 있을 때만 박스 생성
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box pticket-box'; 
+                    gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
+                    rightSection.appendChild(gemsBox);
+                }
+                
                 // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
                 
 				const priceBox = document.createElement('div');
