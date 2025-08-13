@@ -41,10 +41,9 @@
 	        margin-bottom: 30px;
 	        position: relative;
 	        z-index: 1;
-	        transform: translateZ(0);
 	    }
 	    .character-box {
-	        background: rgba(26,26,26,0.2);
+	        background: rgba(26,26,26,0.5); /* [수정] Alpha 값 조정, blur 제거 */
 	        border: none;
 	        padding: 15px;
 	        text-align: center;
@@ -57,9 +56,8 @@
 	        height: 160px;
 	        border-radius: 15px;
 	        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-	        backdrop-filter: blur(5px);
+	        /* [제거] backdrop-filter: blur(5px); */
 	        z-index: 1;
-	        transform: translateZ(0);
 	    }
 	    .character-box.rare {
 	        border: 2px solid #ff9800;
@@ -99,7 +97,6 @@
 	        margin-bottom: 10px;
 	        border-radius: 10px;
 	        transition: transform 0.3s;
-	        transform: translateZ(0);
 	        backface-visibility: hidden;
 	    }
 	    .character-name {
@@ -158,7 +155,6 @@
 	        font-weight: 600;
 	        position: relative;
 	        z-index: 1;
-	        transform: translateZ(0);
 	    }
 	     #filterButton:hover {
 	        background: linear-gradient(45deg, #ff4081, #f50057);
@@ -196,7 +192,6 @@
 	        z-index: 1000;
 	        transition: opacity 0.3s ease, transform 0.3s ease;
 	        border-left: 4px solid #ff4081;
-	        will-change: transform, opacity;
 	    }
 	    #copyMessage.show {
 	        display: flex;
@@ -218,7 +213,6 @@
 	        align-items: center;
 	        justify-content: center;
 	        animation: pulse 1s infinite;
-	        transform: translateZ(0);
 	    }
 	    @keyframes pulse {
 	        0% { box-shadow: 0 0 0 0 rgba(255, 64, 129, 0.7); }
@@ -229,7 +223,6 @@
 	        width: 14px;
 	        height: 14px;
 	        fill: white;
-	        transform: translateZ(0);
 	    }
 		#results {
 		    padding: 20px;
@@ -241,20 +234,18 @@
 		    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 		    position: relative;
 		    z-index: 1;
-		    will-change: scroll-position;
 		    -webkit-overflow-scrolling: touch;
-		    transform: translateZ(0);
             transition: opacity 0.2s ease-in-out;
+            /* [제거] will-change, transform: translateZ(0) */
 		}
         #results.sorting {
             opacity: 0;
         }
 	    #results .content-container {
-	        transform: translateZ(0);
-	        will-change: opacity;
 	        transition: opacity 0.2s ease;
-	        contain: layout paint style;
+	        contain: layout paint style; /* 이 속성은 유용하므로 유지 */
 	        backface-visibility: hidden;
+            /* [제거] transform: translateZ(0), will-change */
 	    }
 	    #results.scrolling .result-item {
 	        transition: none !important;
@@ -397,9 +388,8 @@
 		    right: -5px; 
 		    min-width: 22px;
 		    text-align: center;
-		    background: rgba(0, 0, 0, 0.75);
-		    backdrop-filter: blur(4px);
-		    -webkit-backdrop-filter: blur(4px);
+		    background: rgba(0, 0, 0, 0.85); /* [수정] Alpha 값 조정, blur 제거 */
+		    /* [제거] backdrop-filter, -webkit-backdrop-filter */
 		    color: #fff;
 		    padding: 2px 7px;
 		    border-radius: 10px; 
@@ -433,29 +423,16 @@
 			border-radius: 10px;
 			text-align: center;
 		}
-		.item-box .item-title {
-			color: rgba(255, 193, 7, 0.8);
-			font-size: 14px;
-			font-weight: normal;
-			text-transform: uppercase;
-			margin-bottom: 2px;
-		}
-		.item-box .item-count {
-			color: #fff;
-			font-size: 19px;
-			font-weight: 700;
-			font-family: 'Poppins', sans-serif;
-			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
-		}
-		
-		/* [수정됨] PTICKET 박스를 위한 새 스타일 */
+        
+        /* [신규] PTicket 박스를 위한 스타일 */
 		.pticket-box {
+            background-color: rgba(255, 193, 7, 0.1);
 			background-image: url('Portrait/픽업티켓.png');
-			background-size: 80%; /* 수정: 이미지 크기 80%로 조정 */
+			background-size: 80%;
 			background-position: center;
-			background-repeat: no-repeat; /* 추가: 이미지 반복 방지 */
+			background-repeat: no-repeat;
 			border: 1px solid rgba(255, 193, 7, 0.8);
-			box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+			box-shadow: 0 0 10px rgba(255, 193, 7, 0.4);
 			flex-direction: row; 
 			justify-content: center;
 			align-items: center;
@@ -464,8 +441,9 @@
 			color: #fff;
 			font-size: 24px;
 			font-weight: 700;
-			text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
+			text-shadow: 0 1px 2px rgba(0,0,0,0.7), 0 0 8px rgba(0,0,0,0.7);
 			margin: 0;
+            padding-top: 2px; /* 텍스트 중앙 정렬 미세 조정 */
 		}
 
 
@@ -540,8 +518,8 @@
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
-			background: linear-gradient(135deg, rgba(40,40,40,0.8), rgba(20,20,20,0.8));
-			backdrop-filter: blur(5px);
+			background: linear-gradient(135deg, rgba(50,50,50,0.9), rgba(30,30,30,0.9)); /* [수정] Alpha값 조정, blur 제거 */
+			/* [제거] backdrop-filter */
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
@@ -608,7 +586,7 @@
 	        height: 60px;
 	        animation: spin 1s linear infinite;
 	        margin-bottom: 20px;
-	        transform: translateZ(0);
+	        transform: translateZ(0); /* [유지] 스피너는 계속 움직이므로 유지하는 것이 좋음 */
 	    }
 	    @keyframes spin {
 	        0% { transform: rotate(0deg); }
@@ -776,7 +754,7 @@
 			.extras-box .item-title {
 				font-size: 12px;
 			}
-			.item-box .item-count {
+			.item-box .item-count, .pticket-box .item-count {
 				font-size: 17px;
 			}
 			.price-box .price-usd {
@@ -800,57 +778,15 @@
 	</style>
 </head>
 <body>
-    <!-- (body content remains the same until script tag) -->
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
-    <div id="tsparticles"></div>
-    <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
-    <div class="character-grid" id="characterGrid"></div>
-    <button id="filterButton">Apply Filter</button>
-	<div id="copyInstruction">
-	  All accounts have the
-	  <strong style="color: skyblue;">
-	    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
-	      Klukai skin & colphne skin <span class="skin-tooltip-icon">?</span>
-	    </span>
-	  </strong><br>※ Bittersweet is Makiato's weapon, but Nikita can also equip it, and it's better than Nikita's own weapon<br>
-	  ※ Click item to copy
-	</div>
-    <div class="sort-container">
-        <select id="sortDropdown">
-            <option value="price" selected>Price</option>
-            <option value="character">Character</option>
-            <option value="pticket">PTicket</option>
-        </select>
-    </div>
-    <div id="results"></div>
-    <div id="copyMessage">
-        <div class="copy-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>
-        </div>
-        <span>Copied</span>
-    </div>
-
-	<div id="skinInfoPopup">
-	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
-	</div>
-
-	<div id="extrasPopup">
-		<div class="extras-popup-content">
-			<span class="close-button" id="closeExtrasPopup">×</span>
-			<div id="extras-popup-grid"></div>
-		</div>
-	</div>
+    <!-- HTML Body 내용은 동일하므로 생략 -->
+    <div id="loader"> <div class="spinner"></div> </div> <div id="tsparticles"></div> <h1>GIRLS FRONTLINE 2: EXILIUM</h1> <div class="character-grid" id="characterGrid"></div> <button id="filterButton">Apply Filter</button> <div id="copyInstruction"> All accounts have the <strong style="color: skyblue;"> <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기"> Klukai skin & colphne skin <span class="skin-tooltip-icon">?</span> </span> </strong><br>※ Bittersweet is Makiato's weapon, but Nikita can also equip it, and it's better than Nikita's own weapon<br> ※ Click item to copy </div> <div class="sort-container"> <select id="sortDropdown"> <option value="price" selected>Price</option> <option value="character">Character</option> <option value="pticket">PTicket</option> </select> </div> <div id="results"></div> <div id="copyMessage"> <div class="copy-icon"> <svg viewBox="0 0 24 24" fill="currentColor"> <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/> </svg> </div> <span>Copied</span> </div> <div id="skinInfoPopup"> <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지"> </div> <div id="extrasPopup"> <div class="extras-popup-content"> <span class="close-button" id="closeExtrasPopup">×</span> <div id="extras-popup-grid"></div> </div> </div>
 
     <script>
-        // (script content remains the same until displayResults function)
+        // 자바스크립트 로직은 대부분 건전한 최적화를 수행하고 있으므로,
+        // displayResults와 checkConditions, applyFiltersAndSort 함수만 수정합니다.
+        
         let lastActivityTime = Date.now();
-        const updateActivityTime = () => {
-            lastActivityTime = Date.now();
-        };
+        const updateActivityTime = () => { lastActivityTime = Date.now(); };
         ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => {
             document.addEventListener(event, updateActivityTime);
         });
@@ -886,8 +822,7 @@
                         loader.style.display = 'none';
                         const results = document.getElementById('results');
                         if (results) {
-                            results.style.willChange = 'scroll-position';
-                            results.style.webkitOverflowScrolling = 'touch';
+                            // [수정] JS에서 직접 스타일을 제어하는 대신 CSS에 위임
                             let lastScrollTime = 0;
                             const scrollThreshold = 16; 
                             results.addEventListener('scroll', function(e) {
@@ -1230,8 +1165,9 @@
                             primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
                             break;
                         case 'pticket':
-                            let countA = itemA.gemsCount + (itemA.guaranteed ? 20 : 0);
-                            let countB = itemB.gemsCount + (itemB.guaranteed ? 20 : 0);
+                            // [수정] 확정 티켓(20개)을 합산하여 정렬
+                            let countA = (itemA.gemsCount || 0) + (itemA.guaranteed ? 20 : 0);
+                            let countB = (itemB.gemsCount || 0) + (itemB.guaranteed ? 20 : 0);
                             primarySort = countB - countA;
                             break;
                         case 'price':
@@ -1279,6 +1215,7 @@
                 const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
                 const itemDetails = itemDetailsMap[itemKey];
                 
+                // [수정] 확정 티켓(20개)을 합산하여 조건 체크
                 let hasTickets = itemDetails.gemsCount || 0;
                 if (itemDetails.guaranteed) {
                     hasTickets += 20;
@@ -1424,23 +1361,18 @@
 					leftSection.appendChild(extrasBox);
 				}
 				
-                // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
-
-                // 'Ready' 박스 로직을 PTicket과 통합
+                // [수정] PTicket 표시 로직 통합
                 let finalGemsCount = itemDetails.gemsCount;
                 if (itemDetails.guaranteed) {
-                    finalGemsCount += 20; // 확정인 경우 티켓 20개 추가
+                    finalGemsCount += 20; 
                 }
 
-                // PTicket 박스 생성 (통합된 카운트 사용)
-                if (itemDetails.gemsCount >= 0) { // 기존 아이템에 티켓 정보가 있을 때만 박스 생성
+                if (itemDetails.gemsCount >= 0) {
                     const gemsBox = document.createElement('div');
-                    gemsBox.className = 'item-box pticket-box'; 
+                    gemsBox.className = 'item-box pticket-box'; // 새로운 스타일 적용
                     gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
                     rightSection.appendChild(gemsBox);
                 }
-                
-                // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
                 
 				const priceBox = document.createElement('div');
 				priceBox.className = 'price-box';
@@ -1483,6 +1415,7 @@
 
 				if (!wrapper || !imagesContainer || !scrollIndicator) return;
 
+                // requestAnimationFrame으로 다음 프레임에서 계산하여 정확도 향상
 				requestAnimationFrame(() => {
 					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
 					if (hasScroll) {
