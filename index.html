@@ -288,11 +288,10 @@
 			transition: opacity 0.3s;
 		}
 
-        /* [수정됨] 스크롤 컨텐츠와 인디케이터를 감싸는 래퍼 스타일 */
         .item-images-wrapper {
-            flex-grow: 1; /* 남은 공간을 모두 차지 */
-            position: relative; /* 자식 요소(그라데이션, 버튼)의 position 기준 */
-            overflow: hidden; /* 내부 컨텐츠가 넘치지 않도록 */
+            flex-grow: 1; 
+            position: relative; 
+            overflow: hidden; 
             display: flex;
         }
 
@@ -303,10 +302,10 @@
 			gap: 10px;
             overflow-x: auto;
             padding: 6px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
 		}
         .item-images::-webkit-scrollbar {
-            display: none; /* Chrome, Safari */
+            display: none; 
         }
 
 		.result-info-right {
@@ -449,6 +448,26 @@
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
 
+        /* [수정됨] PTICKET 박스를 위한 새 스타일 */
+        .pticket-box {
+            background-image: url('Portrait/픽업티켓.png');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 193, 7, 0.8);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+            flex-direction: row; /* 기존 column 방향 덮어쓰기 */
+            justify-content: center;
+            align-items: center;
+        }
+        .pticket-box .item-count {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
+            margin: 0;
+        }
+
+
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -513,11 +532,10 @@
 	        z-index: 0;
 	        pointer-events: none;
 	    }
-        /* [수정됨] '...' 버튼 스타일 수정 */
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
-            right: 15px; /* 그라데이션 안쪽으로 위치 조정 */
+            right: 15px; 
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
@@ -526,7 +544,7 @@
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
-			display: none; /* JS로 컨트롤 */
+			display: none; 
 			align-items: center;
 			justify-content: center;
 			font-size: 18px;
@@ -537,17 +555,14 @@
 			transition: opacity 0.2s;
             text-shadow: 0 0 4px rgba(0,0,0,0.5);
 		}
-        /* [수정됨] wrapper에 .has-scroll 클래스가 있을 때 버튼 표시 */
 		.item-images-wrapper.has-scroll .scroll-indicator {
 			display: flex;
 		}
-        /* [수정됨] wrapper에 .scrolled-to-end 클래스가 있을 때 버튼 숨김 */
 		.item-images-wrapper.scrolled-to-end .scroll-indicator {
 			opacity: 0;
 			pointer-events: none;
 		}
 
-        /* [수정됨] 그라데이션을 wrapper 기준으로 적용 */
         .item-images-wrapper.has-scroll::after {
             content: '';
             position: absolute;
@@ -562,7 +577,6 @@
             opacity: 1;
         }
 
-        /* [수정됨] 스크롤이 끝에 도달하면 그라데이션 숨김 */
         .item-images-wrapper.scrolled-to-end::after {
             opacity: 0;
         }
@@ -719,7 +733,6 @@
 	            padding: 12px;
 				flex-wrap: wrap;
 	        }
-            /* [수정됨] 모바일에서는 wrapper가 전체 너비를 차지 */
             .item-images-wrapper, .result-info-right {
 				flex-basis: 100%;
 			}
@@ -741,12 +754,10 @@
 	            gap: 6px;
 	        }
 			.scroll-indicator {
-				display: none !important; /* 모바일에서는 스크롤 버튼 숨김 */
+				display: none !important;
 			}
-			/* [수정됨] 모바일용 그라데이션 스타일 재조정 */
 			.item-images-wrapper.has-scroll::after {
 			    width: 60px;
-                /* height: 100%는 데스크탑에서 상속받으므로 재정의 필요 없음 */
 			}
 	        #copyInstruction {
 	            font-size: 1em;
@@ -1145,7 +1156,7 @@
                                 displayText: '',
                                 gemsCount: 0,
                                 superRareCount: 0,
-                                uniqueSuperRareCount: 0 // [수정 1] 고유 캐릭터 종류 수를 저장할 속성 추가
+                                uniqueSuperRareCount: 0 
                             };
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
@@ -1153,7 +1164,7 @@
                             }
 
                             let superRareCount = 0;
-                            const uniqueSuperRares = new Set(); // [수정 2] 고유 캐릭터 접두사를 저장할 Set 생성
+                            const uniqueSuperRares = new Set(); 
 
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
@@ -1165,13 +1176,13 @@
                                     
                                     if (superRarePrefixes.has(prefix)) {
                                         superRareCount += numCount;
-                                        uniqueSuperRares.add(prefix); // [수정 3] Set에 고유한 접두사 추가
+                                        uniqueSuperRares.add(prefix); 
                                     }
                                 }
                                 j++;
                             }
                             itemDetails.superRareCount = superRareCount;
-                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; // [수정 4] Set의 크기(고유 종류 수)를 저장
+                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; 
 
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
@@ -1212,7 +1223,6 @@
 
                     switch (sortKey) {
                         case 'character':
-                            // [수정 5] 총합(superRareCount) 대신 고유 종류 수(uniqueSuperRareCount)로 정렬
                             primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
                             break;
                         case 'pticket':
@@ -1295,10 +1305,8 @@
 					copyToClipboard(item);
 				});
 
-                // 다른 아이템 호버 시, 이전에 스크롤된 아이템을 리셋
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
                 
-                // 아이템 호버 해제 시, 해당 아이템의 스크롤 리셋
                 item.addEventListener('mouseleave', () => {
                     const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
                     if (container && container.scrollLeft > 0) {
@@ -1306,7 +1314,6 @@
                     }
                 });
                 
-                // 스크롤 영역과 인디케이터를 감싸는 wrapper
                 const imagesWrapper = document.createElement('div');
                 imagesWrapper.className = 'item-images-wrapper';
 
@@ -1319,11 +1326,8 @@
 				const charValue = data[k];
 				const itemDetails = itemDetailsMap[k];
 				
-                // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
-
-                // 1. 모든 캐릭터 데이터를 수집하되, Characters.txt의 원본 순서를 기억합니다.
                 const allRareCharsData = [];
-                const extraCharImages = []; // 기타 캐릭터는 순서가 중요하지 않으므로 기존 방식 유지
+                const extraCharImages = []; 
                 const charPattern = /([a-z]{2})(\d)/g;
                 let match;
 
@@ -1336,7 +1340,6 @@
                         const [engName, korName] = charInfo;
                         const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
                         
-                        // Characters.txt 에서의 원래 인덱스를 찾습니다.
                         const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
 
                         const imageData = {
@@ -1344,13 +1347,12 @@
                             alt: korName,
                             engName: engName,
                             count: count,
-                            originalIndex: originalIndex // 원본 순서를 저장
+                            originalIndex: originalIndex 
                         };
 
                         if (isGenerallyRare) {
                             allRareCharsData.push(imageData);
                         } else {
-                            // 기타 캐릭터는 팝업에 표시되므로 개별 이미지 데이터가 필요합니다.
                             for (let i = 0; i < count; i++) {
                                 extraCharImages.push({ ...imageData });
                             }
@@ -1358,10 +1360,8 @@
                     }
                 }
 
-                // 2. 수집된 희귀 캐릭터들을 Characters.txt의 순서(originalIndex)에 따라 정렬합니다.
                 allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
 
-                // 3. 정렬된 순서대로 희귀 캐릭터 이미지와 배지를 생성합니다.
                 allRareCharsData.forEach(charData => {
                     const container = document.createElement('div');
                     container.className = 'image-with-count-container';
@@ -1371,7 +1371,6 @@
                     img.alt = charData.alt;
                     img.className = 'small-character-img';
 
-                    // 희귀도에 따라 테두리 스타일 적용
                     const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
                     if (isSuperRare) {
                         img.classList.add('super-rare');
@@ -1380,7 +1379,6 @@
                     }
                     container.appendChild(img);
                     
-                    // 개수가 1개 초과일 때만 배지 표시
                     if (charData.count > 1) {
                         const badge = document.createElement('div');
                         badge.className = 'image-count-badge';
@@ -1397,15 +1395,12 @@
                     leftSection.appendChild(container);
                 });
 
-                // 기본 포함 캐릭터 (파파샤) 추가
 				extraCharImages.push({
 					src: 'Portrait/파파샤.png',
 					alt: '파파샤',
 					isRare: false,
 					engName: 'papasha'
 				});
-
-                // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
 
 				if (extraCharImages.length > 0) {
 					const extrasBox = document.createElement('div');
@@ -1424,12 +1419,17 @@
 					guaranteedBox.innerHTML = `<div class="item-title">Pickup</div><div class="item-count">Ready</div>`;
 					rightSection.appendChild(guaranteedBox);
 				}
+                
+                // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
 				if (itemDetails.gemsCount >= 0) {
 					const gemsBox = document.createElement('div');
-					gemsBox.className = 'item-box';
-					gemsBox.innerHTML = `<div class="item-title">PTicket</div><div class="item-count">${itemDetails.gemsCount}</div>`;
+                    // item-box 클래스와 함께 새로운 pticket-box 클래스 추가
+					gemsBox.className = 'item-box pticket-box'; 
+                    // 'PTicket' 타이틀 제거, 숫자만 표시
+					gemsBox.innerHTML = `<div class="item-count">${itemDetails.gemsCount}</div>`;
 					rightSection.appendChild(gemsBox);
 				}
+                // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
                 
 				const priceBox = document.createElement('div');
 				priceBox.className = 'price-box';
@@ -1443,16 +1443,13 @@
                 
 				rightSection.appendChild(priceBox);
 
-                // 스크롤 버튼 생성
                 const scrollIndicator = document.createElement('div');
                 scrollIndicator.className = 'scroll-indicator';
                 scrollIndicator.innerHTML = '...';
                 
-                // wrapper에 이미지 목록과 버튼 추가
                 imagesWrapper.appendChild(leftSection);
                 imagesWrapper.appendChild(scrollIndicator);
 
-                // 메인 아이템에 wrapper와 오른쪽 정보 추가
 				item.appendChild(imagesWrapper);
 				item.appendChild(rightSection);
 				container.appendChild(item);
@@ -1462,7 +1459,6 @@
 			res.appendChild(fragment);
 			document.getElementById('copyInstruction').style.display = 'block';
             
-            // 가로 스크롤 기능 설정
             setupScrollIndicators();
 		}
 
@@ -1470,7 +1466,6 @@
 			const resultItems = document.querySelectorAll('#results .result-item');
 
 			resultItems.forEach(item => {
-                // [수정됨] wrapper와 그 내부의 이미지 컨테이너를 선택
 				const wrapper = item.querySelector('.item-images-wrapper');
 				const imagesContainer = item.querySelector('.item-images');
                 const scrollIndicator = item.querySelector('.scroll-indicator');
@@ -1480,7 +1475,6 @@
 				requestAnimationFrame(() => {
 					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
 					if (hasScroll) {
-                        // [수정됨] 클래스를 wrapper에 추가
 						wrapper.classList.add('has-scroll');
 						
                         scrollIndicator.onclick = (e) => {
@@ -1493,7 +1487,6 @@
 
 						imagesContainer.onscroll = () => {
 							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
-                            // [수정됨] 클래스를 wrapper에 토글
 							if (isAtEnd) {
 								wrapper.classList.add('scrolled-to-end');
 							} else {
