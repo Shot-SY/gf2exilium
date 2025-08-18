@@ -232,7 +232,6 @@
 	        transform: translateZ(0);
 	    }
 		#results {
-		    padding: 20px;
 		    height: 800px;
 		    max-height: 800px;
 		    overflow-y: auto;
@@ -242,15 +241,16 @@
 		    position: relative;
 		    z-index: 1;
 		    will-change: scroll-position;
-		    -webkit-overflow-scrolling: touch;
-		    transform: translateZ(0);
-            transition: opacity 0.2s ease-in-out;
-            /* 가상 스크롤을 위해 padding 제거, 내부에서 처리 */
-            padding: 0;
+		    -webkit-overflow-scrolling: touch; /* 모바일 관성 스크롤 유지 */
+            overscroll-behavior-y: contain; /* 페이지 전체가 스크롤되는 것 방지 */
+            padding: 10px;
+            box-sizing: border-box;
 		}
-        #results.sorting {
-            opacity: 0;
-        }
+        #results.sorting { opacity: 0; }
+
+        /* [신규] Intersection Observer를 위한 센티널 스타일 */
+        .sentinel { height: 1px; }
+
 		.result-item {
 			margin-bottom: 18px;
 			padding: 35px 24px 14px 24px;
@@ -267,9 +267,7 @@
 			gap: 18px;
 			position: relative;
 			overflow: hidden;
-            /* 가상 스크롤 아이템 박스 크기 고정 */
             box-sizing: border-box;
-            height: 127px; /* 데스크탑 높이: 패딩 35+14 + 컨텐츠 60 + 마진 18 = 127 */
 		}
 		.result-item::before {
 			content: '';
@@ -311,6 +309,8 @@
             overflow-x: auto;
             padding: 6px;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
 		}
         .item-images::-webkit-scrollbar {
             display: none; 
@@ -552,7 +552,7 @@
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
-			display: none; 
+			display: flex;
 			align-items: center;
 			justify-content: center;
 			font-size: 18px;
@@ -560,16 +560,18 @@
 			font-weight: bold;
 			cursor: pointer;
 			z-index: 10;
-			transition: opacity 0.2s;
             text-shadow: 0 0 4px rgba(0,0,0,0.5);
+            /* [수정됨] JS 대신 CSS 애니메이션으로 제어 */
+            animation: fade-in-out auto linear;
+            animation-timeline: scroll(ancestor horizontal);
 		}
-		.item-images-wrapper.has-scroll .scroll-indicator {
-			display: flex;
-		}
-		.item-images-wrapper.scrolled-to-end .scroll-indicator {
-			opacity: 0;
-			pointer-events: none;
-		}
+
+        /* [신규] CSS 스크롤 기반 애니메이션 키프레임 */
+        @keyframes fade-in-out {
+            0% { opacity: 1; pointer-events: auto; }
+            80% { opacity: 1; pointer-events: auto; }
+            100% { opacity: 0; pointer-events: none; }
+        }
 
         .item-images-wrapper.has-scroll::after {
             content: '';
@@ -581,12 +583,9 @@
             background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20 80%);
             pointer-events: none;
             z-index: 5;
-            transition: opacity 0.3s;
-            opacity: 1;
-        }
-
-        .item-images-wrapper.scrolled-to-end::after {
-            opacity: 0;
+            /* [수정됨] JS 대신 CSS 애니메이션으로 제어 */
+            animation: fade-in-out auto linear;
+            animation-timeline: scroll(ancestor horizontal);
         }
 
 	    #loader {
@@ -740,8 +739,6 @@
 	        .result-item {
 	            padding: 32px 12px 12px 12px;
 				flex-wrap: wrap;
-                /* 모바일 높이: 패딩 32+12 + 컨텐츠 (54+54) + 마진 18 = 170 */
-                height: 170px;
 	        }
             .result-item-info {
                 top: 10px;
@@ -880,22 +877,103 @@
         });
 
         // =================================================================
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 가상 스크롤링 최적화 관련 변수 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+        // ▼▼▼▼▼▼▼▼▼▼ [신규/수정] Intersection Observer 기반 가상 스크롤러 ▼▼▼▼▼▼▼▼
         // =================================================================
         const resultsContainer = document.getElementById('results');
-        let sortedItemKeys = []; // 필터링되고 정렬된 모든 아이템의 키를 저장하는 배열
-        let itemHeight; // 각 아이템의 높이 (반응형)
-        const VIRTUAL_SCROLL_BUFFER = 5; // 화면 위/아래로 미리 렌더링할 아이템 개수
+        let sortedItemKeys = [];
+        let virtualScroller; // 가상 스크롤러 인스턴스를 저장할 변수
 
-        function determineItemHeight() {
-            // CSS에 정의된 높이를 기반으로 설정
-            // 데스크탑: 127px, 모바일: 170px
-            itemHeight = window.innerWidth <= 768 ? 170 : 127;
+        class VirtualScroller {
+            constructor(container, allKeys, itemRenderer) {
+                this.container = container;
+                this.allKeys = allKeys;
+                this.itemRenderer = itemRenderer;
+
+                this.chunkSize = 15;
+                this.maxDomNodes = 50; 
+
+                this.renderedIndices = new Set();
+                this.topSentinel = this.createSentinel('top');
+                this.bottomSentinel = this.createSentinel('bottom');
+
+                this.container.innerHTML = '';
+                this.container.appendChild(this.topSentinel);
+                this.container.appendChild(this.bottomSentinel);
+
+                this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
+                    root: this.container,
+                });
+                this.observer.observe(this.topSentinel);
+                this.observer.observe(this.bottomSentinel);
+            }
+
+            createSentinel(type) {
+                const sentinel = document.createElement('div');
+                sentinel.className = 'sentinel';
+                sentinel.dataset.type = type;
+                return sentinel;
+            }
+
+            handleIntersection(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const type = entry.target.dataset.type;
+                        if (type === 'bottom') {
+                            this.loadMore(false);
+                        }
+                    }
+                });
+            }
+
+            loadMore(isPrepending = false) {
+                let lastIndex = -1;
+                if (this.renderedIndices.size > 0) {
+                     lastIndex = Math.max(...this.renderedIndices);
+                }
+
+                const fragment = document.createDocumentFragment();
+                const nextIndex = lastIndex + 1;
+                const endIndex = Math.min(nextIndex + this.chunkSize, this.allKeys.length);
+                
+                for (let i = nextIndex; i < endIndex; i++) {
+                    if (!this.renderedIndices.has(i)) {
+                        const key = this.allKeys[i];
+                        const itemElement = this.itemRenderer(key);
+                        fragment.appendChild(itemElement);
+                        this.renderedIndices.add(i);
+                    }
+                }
+
+                if (fragment.children.length > 0) {
+                    this.container.insertBefore(fragment, this.bottomSentinel);
+                }
+
+                this.cleanup();
+            }
+
+            cleanup() {
+                while (this.container.children.length - 2 > this.maxDomNodes) {
+                    const firstItem = this.container.children[1];
+                    if (firstItem && firstItem !== this.bottomSentinel) {
+                        const indexToRemove = Array.from(this.container.children).indexOf(firstItem) -1;
+                         if(this.renderedIndices.has(indexToRemove)) {
+                           this.renderedIndices.delete(indexToRemove);
+                        }
+                        firstItem.remove();
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            destroy() {
+                this.observer.disconnect();
+                this.container.innerHTML = '';
+            }
         }
         // =================================================================
-        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 가상 스크롤링 최적화 관련 변수 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+        // ▲▲▲▲▲▲▲▲▲▲ [신규/수정] Intersection Observer 기반 가상 스크롤러 ▲▲▲▲▲▲▲▲
         // =================================================================
-
 
         window.addEventListener('load', () => {
             const lastLoad = localStorage.getItem('lastLoadTime');
@@ -905,8 +983,6 @@
                 window.location.reload(true);
                 return;
             }
-            determineItemHeight(); // 페이지 로드 시 아이템 높이 계산
-            
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
@@ -1205,7 +1281,6 @@
                 window.tsParticles.domItem(0).pause();
             }
 
-            // 실제 DOM 렌더링은 비동기로 처리하여 로딩 애니메이션이 보이게 함
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
@@ -1217,7 +1292,7 @@
                 const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
-                const sortedKeys = Object.keys(data).sort((a, b) => {
+                sortedItemKeys = Object.keys(data).sort((a, b) => {
                     const itemA = itemDetailsMap[a];
                     const itemB = itemDetailsMap[b];
                     let primarySort = 0;
@@ -1241,14 +1316,18 @@
                     return primarySort;
                 });
                 
-                // [수정됨] displayResults 대신 가상 스크롤 설정 함수 호출
-                setupVirtualScroll(sortedKeys);
+                // 가상 스크롤러 초기화
+                if (virtualScroller) {
+                    virtualScroller.destroy();
+                }
+                virtualScroller = new VirtualScroller(resultsContainer, sortedItemKeys, createResultItemElement);
+                virtualScroller.loadMore(); // 초기 데이터 로드
                 
                 resultsContainer.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
                 }
-            }, 100); // 렌더링 전에 잠시 틈을 줌
+            }, 100);
         }
 
         function checkConditions(chars, itemKey) {
@@ -1295,98 +1374,15 @@
             });
         }
 		
-        // ==========================================================================
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ [수정/신규] 가상 스크롤링 핵심 함수들 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        // ==========================================================================
-        
-        /**
-         * 가상 스크롤을 위한 기본 DOM 구조를 설정하고 초기 렌더링을 수행합니다.
-         */
-        function setupVirtualScroll(keys) {
-            sortedItemKeys = keys;
-            resultsContainer.scrollTop = 0;
+        // [신규] HTML 문자열 대신 실제 DOM Element를 생성하여 반환하는 함수
+        function createResultItemElement(k) {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'result-item';
+            itemElement.dataset.itemKey = k;
 
-            const totalHeight = sortedItemKeys.length * itemHeight;
-
-            // 가상 스크롤을 위한 구조: 전체 높이를 가진 spacer와 실제 컨텐츠를 담을 content
-            resultsContainer.innerHTML = `
-                <div class="virtual-scroll-spacer" style="position: relative; width: 100%; height: ${totalHeight}px;">
-                    <div class="virtual-scroll-content" style="position: absolute; top: 0; left: 0; width: 100%;"></div>
-                </div>
-            `;
-
-            // 이벤트 위임을 사용하여 클릭 이벤트 처리
-            const contentDiv = resultsContainer.querySelector('.virtual-scroll-content');
-            contentDiv.addEventListener('click', handleResultItemClick);
-            
-            // 스크롤 이벤트 리스너 연결
-            resultsContainer.removeEventListener('scroll', handleVirtualScroll); // 기존 리스너 제거
-            resultsContainer.addEventListener('scroll', handleVirtualScroll);
-            
-            renderVisibleItems(); // 초기 렌더링
-        }
-
-        const handleVirtualScroll = throttle(() => {
-            requestAnimationFrame(renderVisibleItems);
-        }, 16);
-
-        /**
-         * 현재 스크롤 위치에 따라 보여야 할 아이템들만 DOM으로 렌더링합니다.
-         */
-        function renderVisibleItems() {
-            const contentDiv = resultsContainer.querySelector('.virtual-scroll-content');
-            if (!contentDiv || sortedItemKeys.length === 0) {
-                 if(contentDiv) contentDiv.innerHTML = '';
-                 return;
-            }
-
-            const scrollTop = resultsContainer.scrollTop;
-            const viewportHeight = resultsContainer.clientHeight;
-
-            let startIndex = Math.floor(scrollTop / itemHeight);
-            let endIndex = Math.ceil((scrollTop + viewportHeight) / itemHeight);
-
-            startIndex = Math.max(0, startIndex - VIRTUAL_SCROLL_BUFFER);
-            endIndex = Math.min(sortedItemKeys.length - 1, endIndex + VIRTUAL_SCROLL_BUFFER);
-
-            const visibleItemKeys = sortedItemKeys.slice(startIndex, endIndex + 1);
-            
-            // visibleItemKeys를 순회하며 HTML 문자열 생성
-            const newHtml = visibleItemKeys.map(key => createResultItemHTML(key)).join('');
-            
-            // contentDiv의 위치를 조정하고 내용물을 교체
-            contentDiv.style.transform = `translateY(${startIndex * itemHeight}px)`;
-            contentDiv.innerHTML = newHtml;
-
-            setupScrollIndicators();
-        }
-
-        /**
-         * 이벤트 위임을 통해 결과 아이템 클릭 이벤트를 처리합니다.
-         */
-        function handleResultItemClick(event) {
-            const itemElement = event.target.closest('.result-item');
-            if (!itemElement) return;
-
-            // extras-box나 scroll-indicator 클릭 시 복사 방지
-            if (event.target.closest('.extras-box') || event.target.classList.contains('scroll-indicator')) {
-                const itemKey = itemElement.dataset.itemKey;
-                const charValue = currentFilteredData[itemKey];
-                const extraCharImages = getExtraCharImages(charValue);
-                showExtrasPopup(extraCharImages);
-                return;
-            }
-            
-            copyToClipboard(itemElement);
-        }
-
-        /**
-         * 주어진 키(key)에 해당하는 아이템의 HTML 문자열을 생성하여 반환합니다.
-         * 기존 displayResults의 forEach 루프 로직을 재사용합니다.
-         */
-        function createResultItemHTML(k) {
             const itemDetails = itemDetailsMap[k];
             const charValue = currentFilteredData[k];
+
             const allRareCharsData = [];
             const extraCharImages = [];
             const charPattern = /([a-z]{2})(\d)/g;
@@ -1439,21 +1435,41 @@
                     <div class="price-usd">$${usdPrice}</div>
                     <div class="price-krw">${formattedKrwPrice}</div>
                 </div>`;
+            
+            itemElement.innerHTML = `
+                <div class="result-item-info">Story 2-2 | Guest | Asia(Korea)</div>
+                <div class="item-images-wrapper">
+                    <div class="item-images">${leftSectionHTML}</div>
+                    <div class="scroll-indicator">...</div>
+                </div>
+                <div class="result-info-right">${rightSectionHTML}</div>`;
 
-            return `
-                <div class="result-item" data-item-key="${k}">
-                    <div class="result-item-info">Story 2-2 | Guest | Asia(Korea)</div>
-                    <div class="item-images-wrapper">
-                        <div class="item-images">${leftSectionHTML}</div>
-                        <div class="scroll-indicator">...</div>
-                    </div>
-                    <div class="result-info-right">${rightSectionHTML}</div>
-                </div>`;
+            itemElement.addEventListener('click', (e) => {
+                if (e.target.closest('.extras-box')) {
+                    showExtrasPopup(getExtraCharImages(charValue));
+                    return;
+                }
+                if (e.target.closest('.scroll-indicator')) {
+                    const imagesContainer = itemElement.querySelector('.item-images');
+                    if (imagesContainer) {
+                        imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
+                    }
+                    return;
+                }
+                copyToClipboard(itemElement);
+            });
+            
+            requestAnimationFrame(() => {
+                const imagesContainer = itemElement.querySelector('.item-images');
+                if (imagesContainer && imagesContainer.scrollWidth > imagesContainer.clientWidth) {
+                    const wrapper = itemElement.querySelector('.item-images-wrapper');
+                    wrapper.classList.add('has-scroll');
+                }
+            });
+
+            return itemElement;
         }
 
-        /**
-         * Extras 팝업에 필요한 이미지 데이터를 추출하는 헬퍼 함수
-         */
         function getExtraCharImages(charValue) {
             const extraCharImages = [];
             const charPattern = /([a-z]{2})(\d)/g;
@@ -1474,58 +1490,7 @@
             extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', engName: 'papasha' });
             return extraCharImages;
         }
-
-        // ========================================================================
-        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ [수정/신규] 가상 스크롤링 핵심 함수들 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-        // ========================================================================
-
-
-		function setupScrollIndicators() {
-			const resultItems = document.querySelectorAll('#results .result-item');
-			resultItems.forEach(item => {
-				const wrapper = item.querySelector('.item-images-wrapper');
-				const imagesContainer = item.querySelector('.item-images');
-                const scrollIndicator = item.querySelector('.scroll-indicator');
-				if (!wrapper || !imagesContainer || !scrollIndicator) return;
-				requestAnimationFrame(() => {
-					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
-					if (hasScroll) {
-						wrapper.classList.add('has-scroll');
-                        scrollIndicator.onclick = (e) => {
-                            e.stopPropagation();
-                            imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
-                        };
-						imagesContainer.onscroll = () => {
-							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
-							if (isAtEnd) wrapper.classList.add('scrolled-to-end');
-							else wrapper.classList.remove('scrolled-to-end');
-						};
-					} else {
-						wrapper.classList.remove('has-scroll');
-					}
-				});
-			});
-		}
         
-		function resetAllScrolledItems() {
-		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
-		        if (container.scrollLeft > 0) {
-		            container.scroll({ left: 0, behavior: 'smooth' });
-		        }
-		    });
-		}
-
-        function resetOtherScrolledItems(currentItem) {
-            document.querySelectorAll('.result-item').forEach(item => {
-                if (item !== currentItem) {
-                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
-                    if (container && container.scrollLeft > 0) {
-                        container.scroll({ left: 0, behavior: 'smooth' });
-                    }
-                }
-            });
-        }
-
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1667,24 +1632,12 @@
 					hideExtrasPopup();
 				}
 			});
-
-            const resultsContainer = document.getElementById('results');
-            if (resultsContainer) {
-                resultsContainer.addEventListener('scroll', resetAllScrolledItems);
-            }
-            document.body.addEventListener('click', (e) => {
-                if (!e.target.closest('.result-item')) {
-                    resetAllScrolledItems();
-                }
-            });
-			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
-			
-            // [수정됨] 리사이즈 시 아이템 높이를 다시 계산하고, 렌더링을 다시 트리거
+            
             const debouncedResizeHandler = debounce(() => {
-                determineItemHeight();
-                // 이미 필터링된 데이터가 있다면 다시 렌더링
-                if (sortedItemKeys.length > 0) {
-                    setupVirtualScroll(sortedItemKeys);
+                if (virtualScroller) {
+                    virtualScroller.destroy();
+                    virtualScroller = new VirtualScroller(resultsContainer, sortedItemKeys, createResultItemElement);
+                    virtualScroller.loadMore();
                 }
             }, 200);
             window.addEventListener('resize', debouncedResizeHandler);
