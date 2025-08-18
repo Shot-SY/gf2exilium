@@ -1469,27 +1469,46 @@
             return gemsBox;
         }
 
-        function setupItemObserver() {
-            if (itemObserver) {
-                itemObserver.disconnect();
-            }
-            const options = {
-                root: document.getElementById('results'),
-                rootMargin: '400px 0px', // 뷰포트 위아래 400px 영역을 미리 감지
-                threshold: 0
-            };
-            itemObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        renderFullItem(entry.target);
-                    } else {
-                        revertToLazyItem(entry.target);
-                    }
-                });
-            }, options);
-            const lazyItems = document.querySelectorAll('.lazy-load-item');
-            lazyItems.forEach(item => itemObserver.observe(item));
-        }
+		function setupItemObserver() {
+		    if (itemObserver) {
+		        itemObserver.disconnect();
+		    }
+		    const options = {
+		        root: document.getElementById('results'),
+		        rootMargin: '400px 0px',
+		        threshold: 0
+		    };
+		
+		    itemObserver = new IntersectionObserver((entries, observer) => {
+		        entries.forEach(entry => {
+		            const item = entry.target;
+		
+		            if (entry.isIntersecting) {
+		                // 시야에 들어옴
+		                // 1. 되돌리기(revert) 타이머가 있다면 취소
+		                clearTimeout(item.revertTimer);
+		                
+		                // 2. 150ms 후에 전체 렌더링을 실행하도록 타이머 설정
+		                item.renderTimer = setTimeout(() => {
+		                    renderFullItem(item);
+		                }, 150);
+		
+		            } else {
+		                // 시야에서 벗어남
+		                // 1. 렌더링 타이머가 있다면 취소 (불필요한 렌더링 방지)
+		                clearTimeout(item.renderTimer);
+		
+		                // 2. 150ms 후에 최소 상태로 되돌리도록 타이머 설정
+		                item.revertTimer = setTimeout(() => {
+		                    revertToLazyItem(item);
+		                }, 150);
+		            }
+		        });
+		    }, options);
+		
+		    const lazyItems = document.querySelectorAll('.lazy-load-item');
+		    lazyItems.forEach(item => itemObserver.observe(item));
+		}
 
         function renderFullItem(item) {
             if (item.querySelector('.js-lazy-loaded')) return; // 이미 렌더링된 경우 중복 실행 방지
