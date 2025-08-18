@@ -799,18 +799,20 @@
 			}
 	    }
 
-        /* ▼▼▼▼▼ [NEW] LAZY LOAD STYLES ▼▼▼▼▼ */
+        /* ▼▼▼▼▼ [MODIFIED] LAZY LOAD STYLES ▼▼▼▼▼ */
         .result-item.lazy-load {
-            /* PC 고정 높이 - 레이아웃 쉬프트 방지 */
-            min-height: 112px;
+            /* [FIXED] PC 고정 높이를 실제 렌더링 높이와 일치시킴 */
+            min-height: 121px; 
+            box-sizing: border-box;
             transition: background-color 0.3s;
-            padding-top: 14px; /* 내부 요소가 없을 때의 패딩 */
-            padding-bottom: 14px;
+            /* 내용물이 없으므로 패딩을 0으로 설정하여 높이를 정확히 제어 */
+            padding-top: 0;
+            padding-bottom: 0;
         }
         @media (max-width: 768px) {
             .result-item.lazy-load {
-                /* 모바일 고정 높이 (2줄) */
-                min-height: 168px;
+                /* [FIXED] 모바일 고정 높이를 실제 렌더링 높이와 일치시킴 */
+                min-height: 170px; 
             }
         }
 
@@ -830,11 +832,11 @@
             opacity: 1;
             transform: translateY(0);
         }
-        /* ▲▲▲▲▲ [NEW] LAZY LOAD STYLES ▲▲▲▲▲ */
+        /* ▲▲▲▲▲ [MODIFIED] LAZY LOAD STYLES ▲▲▲▲▲ */
 	</style>
 </head>
 <body>
-    <!-- (body content remains the same until script tag) -->
+    <!-- HTML Body (No changes) -->
     <div id="loader">
         <div class="spinner"></div>
     </div>
@@ -880,7 +882,7 @@
 	</div>
 
     <script>
-        // (script content is same until `optimizeImages` function)
+        // JavaScript (No changes from the previous version)
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -1249,7 +1251,7 @@
                     const chars = v.match(/.{1,3}/g) || [];
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
-                currentFilteredData = filtered; // 전역 변수에 필터링된 데이터 저장
+                currentFilteredData = filtered;
 
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
@@ -1279,7 +1281,7 @@
                     return primarySort;
                 });
                 
-                displayResults(sortedKeys); // 정렬된 키만 전달
+                displayResults(sortedKeys);
                 
                 resultsDiv.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
@@ -1332,8 +1334,6 @@
             });
         }
 		
-		// ▼▼▼▼▼ [MODIFIED] SCRIPT LOGIC FOR LAZY RENDERING ▼▼▼▼▼
-
         let itemObserver;
 
         function displayResults(sortedKeys) {
@@ -1350,7 +1350,7 @@
 
             sortedKeys.forEach(k => {
                 const item = document.createElement('div');
-                item.className = 'result-item lazy-load'; // Placeholder 상태
+                item.className = 'result-item lazy-load';
                 item.dataset.itemKey = k;
                 container.appendChild(item);
             });
@@ -1366,7 +1366,7 @@
         function setupLazyRender() {
             const options = {
                 root: document.getElementById('results'),
-                rootMargin: '0px 0px 300px 0px', // 뷰포트 하단 300px 전에 미리 로딩
+                rootMargin: '0px 0px 300px 0px',
                 threshold: 0.01
             };
 
@@ -1522,13 +1522,8 @@
             });
         }
         
-		function setupScrollIndicators() {
-            // 이 함수는 이제 각 아이템이 렌더링될 때 개별적으로 처리되므로 비워둡니다.
-		}
+		function setupScrollIndicators() {}
         
-        // ▲▲▲▲▲ [MODIFIED] SCRIPT LOGIC FOR LAZY RENDERING ▲▲▲▲▲
-
-
 		function resetAllScrolledItems() {
 		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
 		        if (container.scrollLeft > 0) {
