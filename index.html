@@ -261,6 +261,7 @@
 	    }
 		.result-item {
 			margin-bottom: 18px;
+			/* MODIFIED PADDING */
 			padding: 35px 24px 14px 24px;
 			background: linear-gradient(135deg, #202228, #1a1c20);
 			cursor: pointer;
@@ -287,6 +288,8 @@
 			opacity: 0.6;
 			transition: opacity 0.3s;
 		}
+
+        /* NEW STYLE FOR ITEM INFO */
         .result-item-info {
             position: absolute;
             top: 12px;
@@ -299,12 +302,14 @@
             opacity: 0.8;
             pointer-events: none;
         }
+
         .item-images-wrapper {
             flex-grow: 1; 
             position: relative; 
             overflow: hidden; 
             display: flex;
         }
+
 		.item-images {
 			display: flex;
 			align-items: center;
@@ -317,6 +322,7 @@
         .item-images::-webkit-scrollbar {
             display: none; 
         }
+
 		.result-info-right {
 			display: flex;
 			align-items: center;
@@ -325,6 +331,7 @@
 			justify-content: flex-end;
             flex-shrink: 0;
 		}
+
 	    .small-character-img {
 			height: 60px;
 			width: auto;
@@ -348,6 +355,7 @@
 			transition: background 0.2s, border-color 0.2s;
             flex-shrink: 0;
 		}
+
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
@@ -397,6 +405,7 @@
             display: inline-block;
             vertical-align: middle;
         }
+
 		.image-count-badge {
 		    position: absolute;
 		    bottom: -5px;
@@ -425,6 +434,7 @@
 		    color: #ff5252;
 		    text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
 		}
+
 		.item-box {
 			display: flex;
 			flex-direction: column;
@@ -452,11 +462,13 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
+		
+		/* [수정됨] PTICKET 박스를 위한 새 스타일 */
 		.pticket-box {
 			background-image: url('Portrait/픽업티켓.png');
-			background-size: 80%;
+			background-size: 80%; /* 수정: 이미지 크기 80%로 조정 */
 			background-position: center;
-			background-repeat: no-repeat;
+			background-repeat: no-repeat; /* 추가: 이미지 반복 방지 */
 			border: 1px solid rgba(255, 193, 7, 0.8);
 			box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
 			flex-direction: row; 
@@ -470,6 +482,8 @@
 			text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
 			margin: 0;
 		}
+
+
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -492,6 +506,7 @@
 			font-size: 14px;
 			color: #bdc3c7;
 		}
+	    
 	    .sort-container {
 	        display: flex;
 	        justify-content: flex-end;
@@ -523,6 +538,7 @@
             outline: none;
 			box-shadow: none;
 	    }
+	    
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -562,6 +578,7 @@
 			opacity: 0;
 			pointer-events: none;
 		}
+
         .item-images-wrapper.has-scroll::after {
             content: '';
             position: absolute;
@@ -575,9 +592,11 @@
             transition: opacity 0.3s;
             opacity: 1;
         }
+
         .item-images-wrapper.scrolled-to-end::after {
             opacity: 0;
         }
+
 	    #loader {
 	        position: fixed;
 	        top: 0;
@@ -727,9 +746,11 @@
 	            padding: 12px;
 	        }
 	        .result-item {
+				/* MODIFIED PADDING FOR MOBILE */
 	            padding: 32px 12px 12px 12px;
 				flex-wrap: wrap;
 	        }
+            /* NEW STYLE FOR ITEM INFO (MOBILE) */
             .result-item-info {
                 top: 10px;
                 left: 12px;
@@ -798,45 +819,10 @@
 				padding: 20px;
 			}
 	    }
-
-        /* ▼▼▼▼▼ [MODIFIED] LAZY LOAD STYLES ▼▼▼▼▼ */
-        .result-item.lazy-load {
-            /* [FIXED] PC 고정 높이를 실제 렌더링 높이와 일치시킴 */
-            min-height: 121px; 
-            box-sizing: border-box;
-            transition: background-color 0.3s;
-            /* 내용물이 없으므로 패딩을 0으로 설정하여 높이를 정확히 제어 */
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-        @media (max-width: 768px) {
-            .result-item.lazy-load {
-                /* [FIXED] 모바일 고정 높이를 실제 렌더링 높이와 일치시킴 */
-                min-height: 170px; 
-            }
-        }
-
-        /* 아이템 내부 컨텐츠 초기 상태 (숨김) */
-        .result-item > .result-item-info,
-        .result-item > .item-images-wrapper,
-        .result-item > .result-info-right {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-        }
-
-        /* loaded 클래스가 추가되면 컨텐츠를 부드럽게 표시 */
-        .result-item.loaded > .result-item-info,
-        .result-item.loaded > .item-images-wrapper,
-        .result-item.loaded > .result-info-right {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* ▲▲▲▲▲ [MODIFIED] LAZY LOAD STYLES ▲▲▲▲▲ */
 	</style>
 </head>
 <body>
-    <!-- HTML Body (No changes) -->
+    <!-- (body content remains the same until script tag) -->
     <div id="loader">
         <div class="spinner"></div>
     </div>
@@ -882,7 +868,7 @@
 	</div>
 
     <script>
-        // JavaScript (No changes from the previous version)
+        // (script content remains the same until displayResults function)
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -1253,9 +1239,10 @@
                 }
                 currentFilteredData = filtered;
 
+                const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
-                const sortedKeys = Object.keys(currentFilteredData).sort((a, b) => {
+                const sortedKeys = Object.keys(data).sort((a, b) => {
                     const itemA = itemDetailsMap[a];
                     const itemB = itemDetailsMap[b];
                     let primarySort = 0;
@@ -1281,7 +1268,7 @@
                     return primarySort;
                 });
                 
-                displayResults(sortedKeys);
+                displayResults(data, sortedKeys);
                 
                 resultsDiv.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
@@ -1334,195 +1321,226 @@
             });
         }
 		
-        let itemObserver;
+		function displayResults(data, sortedKeys) {
+			const res = document.getElementById('results');
+			res.scrollTop = 0;
+			const fragment = document.createDocumentFragment();
+			const container = document.createElement('div');
+			container.className = 'content-container';
+			fragment.appendChild(container);
+			
+			sortedKeys.forEach(k => {
+				const item = document.createElement('div');
+				item.className = 'result-item';
+				item.dataset.itemKey = k;
+                
+                // ▼▼▼▼▼ MODIFICATION START ▼▼▼▼▼
+                const infoBox = document.createElement('div');
+                infoBox.className = 'result-item-info';
+                infoBox.textContent = 'Story 2-2 | Guest | Asia(Korea)';
+                item.appendChild(infoBox);
+                // ▲▲▲▲▲ MODIFICATION END ▲▲▲▲▲
 
-        function displayResults(sortedKeys) {
-            const res = document.getElementById('results');
-            res.scrollTop = 0;
+				item.addEventListener('click', (e) => {
+					if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
+					copyToClipboard(item);
+				});
 
-            if (itemObserver) {
-                itemObserver.disconnect();
-            }
-
-            const fragment = document.createDocumentFragment();
-            const container = document.createElement('div');
-            container.className = 'content-container';
-
-            sortedKeys.forEach(k => {
-                const item = document.createElement('div');
-                item.className = 'result-item lazy-load';
-                item.dataset.itemKey = k;
-                container.appendChild(item);
-            });
-
-            fragment.appendChild(container);
-            res.innerHTML = '';
-            res.appendChild(fragment);
-            document.getElementById('copyInstruction').style.display = 'block';
-
-            setupLazyRender();
-        }
-
-        function setupLazyRender() {
-            const options = {
-                root: document.getElementById('results'),
-                rootMargin: '0px 0px 300px 0px',
-                threshold: 0.01
-            };
-
-            itemObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const itemElement = entry.target;
-                        renderItemContent(itemElement);
-                        observer.unobserve(itemElement);
+                item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
+                
+                item.addEventListener('mouseleave', () => {
+                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+                    if (container && container.scrollLeft > 0) {
+                        container.scroll({ left: 0, behavior: 'smooth' });
                     }
                 });
-            }, options);
-
-            const lazyItems = document.querySelectorAll('.result-item.lazy-load');
-            lazyItems.forEach(item => itemObserver.observe(item));
-        }
-
-        function renderItemContent(item) {
-            const k = item.dataset.itemKey;
-            const itemDetails = itemDetailsMap[k];
-            const charValue = currentFilteredData[k];
-
-            if (!itemDetails || !charValue) return;
-
-            const infoBox = document.createElement('div');
-            infoBox.className = 'result-item-info';
-            infoBox.textContent = 'Story 2-2 | Guest | Asia(Korea)';
-            
-            item.addEventListener('click', (e) => {
-                if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
-                copyToClipboard(item);
-            });
-            item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
-            item.addEventListener('mouseleave', () => {
-                const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
-                if (container && container.scrollLeft > 0) {
-                    container.scroll({ left: 0, behavior: 'smooth' });
-                }
-            });
-            
-            const imagesWrapper = document.createElement('div');
-            imagesWrapper.className = 'item-images-wrapper';
-
-            const leftSection = document.createElement('div');
-            leftSection.className = 'item-images'; 
-
-            const rightSection = document.createElement('div');
-            rightSection.className = 'result-info-right';
-            
-            const allRareCharsData = [];
-            const extraCharImages = []; 
-            const charPattern = /([a-z]{2})(\d)/g;
-            let match;
-
-            while ((match = charPattern.exec(charValue)) !== null) {
-                const code = match[1];
-                const count = parseInt(match[2]);
-                const charInfo = characters.find(([eng]) => eng.startsWith(code));
-                if (charInfo) {
-                    const [engName, korName] = charInfo;
-                    const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-                    const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
-                    const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName: engName, count: count, originalIndex: originalIndex };
-                    if (isGenerallyRare) allRareCharsData.push(imageData);
-                    else for (let i = 0; i < count; i++) extraCharImages.push({ ...imageData });
-                }
-            }
-            allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
-
-            allRareCharsData.forEach(charData => {
-                const container = document.createElement('div');
-                container.className = 'image-with-count-container';
-                const img = document.createElement('img');
-                img.src = charData.src;
-                img.alt = charData.alt;
-                img.className = 'small-character-img';
-                const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
-                img.classList.add(isSuperRare ? 'super-rare' : 'rare');
-                container.appendChild(img);
                 
-                if (charData.count > 1) {
-                    const badge = document.createElement('div');
-                    badge.className = 'image-count-badge';
-                    badge.textContent = `x${charData.count}`;
-                    badge.classList.add(isSuperRare ? 'super-rare-badge' : 'rare-badge');
-                    container.appendChild(badge);
+                const imagesWrapper = document.createElement('div');
+                imagesWrapper.className = 'item-images-wrapper';
+
+				const leftSection = document.createElement('div');
+				leftSection.className = 'item-images'; 
+
+				const rightSection = document.createElement('div');
+				rightSection.className = 'result-info-right';
+
+				const charValue = data[k];
+				const itemDetails = itemDetailsMap[k];
+				
+                const allRareCharsData = [];
+                const extraCharImages = []; 
+                const charPattern = /([a-z]{2})(\d)/g;
+                let match;
+
+                while ((match = charPattern.exec(charValue)) !== null) {
+                    const code = match[1];
+                    const count = parseInt(match[2]);
+                    const charInfo = characters.find(([eng]) => eng.startsWith(code));
+
+                    if (charInfo) {
+                        const [engName, korName] = charInfo;
+                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
+                        
+                        const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
+
+                        const imageData = {
+                            src: `Portrait/${korName}.png`,
+                            alt: korName,
+                            engName: engName,
+                            count: count,
+                            originalIndex: originalIndex 
+                        };
+
+                        if (isGenerallyRare) {
+                            allRareCharsData.push(imageData);
+                        } else {
+                            for (let i = 0; i < count; i++) {
+                                extraCharImages.push({ ...imageData });
+                            }
+                        }
+                    }
                 }
-                leftSection.appendChild(container);
-            });
 
-            extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', isRare: false, engName: 'papasha' });
-            if (extraCharImages.length > 0) {
-                const extrasBox = document.createElement('div');
-                extrasBox.className = 'extras-box'; 
-                extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
-                extrasBox.addEventListener('click', (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); });
-                leftSection.appendChild(extrasBox);
-            }
-            
-            let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
-            if (itemDetails.gemsCount >= 0) {
-                const gemsBox = document.createElement('div');
-                gemsBox.className = 'item-box pticket-box'; 
-                gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
-                rightSection.appendChild(gemsBox);
-            }
-            
-            const priceBox = document.createElement('div');
-            priceBox.className = 'price-box';
-            const usdPrice = itemDetails.price.toFixed(2);
-            const krwPriceRounded = Math.round(itemDetails.price * 1380 / 1000) * 1000;
-            priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
-            rightSection.appendChild(priceBox);
+                allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
 
-            const scrollIndicator = document.createElement('div');
-            scrollIndicator.className = 'scroll-indicator';
-            scrollIndicator.innerHTML = '...';
-            
-            imagesWrapper.appendChild(leftSection);
-            imagesWrapper.appendChild(scrollIndicator);
-            
-            item.appendChild(infoBox);
-            item.appendChild(imagesWrapper);
-            item.appendChild(rightSection);
+                allRareCharsData.forEach(charData => {
+                    const container = document.createElement('div');
+                    container.className = 'image-with-count-container';
 
-            item.classList.remove('lazy-load');
-            item.classList.add('loaded');
+                    const img = document.createElement('img');
+                    img.src = charData.src;
+                    img.alt = charData.alt;
+                    img.className = 'small-character-img';
 
-            setupScrollIndicatorForItem(item);
-        }
+                    const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+                    if (isSuperRare) {
+                        img.classList.add('super-rare');
+                    } else {
+                        img.classList.add('rare');
+                    }
+                    container.appendChild(img);
+                    
+                    if (charData.count > 1) {
+                        const badge = document.createElement('div');
+                        badge.className = 'image-count-badge';
+                        badge.textContent = `x${charData.count}`;
+                        
+                        if (isSuperRare) {
+                            badge.classList.add('super-rare-badge');
+                        } else {
+                            badge.classList.add('rare-badge');
+                        }
+                        container.appendChild(badge);
+                    }
+                    
+                    leftSection.appendChild(container);
+                });
 
-        function setupScrollIndicatorForItem(item) {
-            const wrapper = item.querySelector('.item-images-wrapper');
-            const imagesContainer = item.querySelector('.item-images');
-            const scrollIndicator = item.querySelector('.scroll-indicator');
-            if (!wrapper || !imagesContainer || !scrollIndicator) return;
+				extraCharImages.push({
+					src: 'Portrait/파파샤.png',
+					alt: '파파샤',
+					isRare: false,
+					engName: 'papasha'
+				});
 
-            requestAnimationFrame(() => {
-                const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
-                if (hasScroll) {
-                    wrapper.classList.add('has-scroll');
-                    scrollIndicator.onclick = (e) => {
-                        e.stopPropagation();
-                        imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
-                    };
-                    imagesContainer.onscroll = () => {
-                        const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
-                        wrapper.classList.toggle('scrolled-to-end', isAtEnd);
-                    };
-                } else {
-                    wrapper.classList.remove('has-scroll');
+				if (extraCharImages.length > 0) {
+					const extrasBox = document.createElement('div');
+					extrasBox.className = 'extras-box'; 
+					extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
+					extrasBox.addEventListener('click', (e) => {
+						e.stopPropagation();
+						showExtrasPopup(extraCharImages);
+					});
+					leftSection.appendChild(extrasBox);
+				}
+				
+                // ▼▼▼▼▼ [수정된 로직 시작] ▼▼▼▼▼
+
+                // 'Ready' 박스 로직을 PTicket과 통합
+                let finalGemsCount = itemDetails.gemsCount;
+                if (itemDetails.guaranteed) {
+                    finalGemsCount += 20; // 확정인 경우 티켓 20개 추가
                 }
-            });
-        }
-        
-		function setupScrollIndicators() {}
+
+                // PTicket 박스 생성 (통합된 카운트 사용)
+                if (itemDetails.gemsCount >= 0) { // 기존 아이템에 티켓 정보가 있을 때만 박스 생성
+                    const gemsBox = document.createElement('div');
+                    gemsBox.className = 'item-box pticket-box'; 
+                    gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
+                    rightSection.appendChild(gemsBox);
+                }
+                
+                // ▲▲▲▲▲ [수정된 로직 끝] ▲▲▲▲▲
+                
+				const priceBox = document.createElement('div');
+				priceBox.className = 'price-box';
+				
+                const usdPrice = itemDetails.price.toFixed(2);
+                const krwPriceRaw = itemDetails.price * 1380;
+                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
+                const formattedKrwPrice = '₩ ' + krwPriceRounded.toLocaleString();
+
+                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
+                
+				rightSection.appendChild(priceBox);
+
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'scroll-indicator';
+                scrollIndicator.innerHTML = '...';
+                
+                imagesWrapper.appendChild(leftSection);
+                imagesWrapper.appendChild(scrollIndicator);
+
+				item.appendChild(imagesWrapper);
+				item.appendChild(rightSection);
+				container.appendChild(item);
+			});
+
+			res.innerHTML = '';
+			res.appendChild(fragment);
+			document.getElementById('copyInstruction').style.display = 'block';
+            
+            setupScrollIndicators();
+		}
+
+		function setupScrollIndicators() {
+			const resultItems = document.querySelectorAll('#results .result-item');
+
+			resultItems.forEach(item => {
+				const wrapper = item.querySelector('.item-images-wrapper');
+				const imagesContainer = item.querySelector('.item-images');
+                const scrollIndicator = item.querySelector('.scroll-indicator');
+
+				if (!wrapper || !imagesContainer || !scrollIndicator) return;
+
+				requestAnimationFrame(() => {
+					const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
+					if (hasScroll) {
+						wrapper.classList.add('has-scroll');
+						
+                        scrollIndicator.onclick = (e) => {
+                            e.stopPropagation();
+                            imagesContainer.scroll({
+                                left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
+                                behavior: 'smooth'
+                            });
+                        };
+
+						imagesContainer.onscroll = () => {
+							const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
+							if (isAtEnd) {
+								wrapper.classList.add('scrolled-to-end');
+							} else {
+								wrapper.classList.remove('scrolled-to-end');
+							}
+						};
+
+					} else {
+						wrapper.classList.remove('has-scroll');
+					}
+				});
+			});
+		}
         
 		function resetAllScrolledItems() {
 		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
