@@ -1484,24 +1484,18 @@
 		            const item = entry.target;
 		
 		            if (entry.isIntersecting) {
-		                // 시야에 들어옴
-		                // 1. 되돌리기(revert) 타이머가 있다면 취소
 		                clearTimeout(item.revertTimer);
 		                
-		                // 2. 150ms 후에 전체 렌더링을 실행하도록 타이머 설정
 		                item.renderTimer = setTimeout(() => {
 		                    renderFullItem(item);
-		                }, 150);
+		                }, 100);
 		
 		            } else {
-		                // 시야에서 벗어남
-		                // 1. 렌더링 타이머가 있다면 취소 (불필요한 렌더링 방지)
 		                clearTimeout(item.renderTimer);
 		
-		                // 2. 150ms 후에 최소 상태로 되돌리도록 타이머 설정
 		                item.revertTimer = setTimeout(() => {
 		                    revertToLazyItem(item);
-		                }, 150);
+		                }, 100);
 		            }
 		        });
 		    }, options);
