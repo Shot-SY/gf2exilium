@@ -245,7 +245,6 @@
 		    -webkit-overflow-scrolling: touch;
 		    transform: translateZ(0);
             transition: opacity 0.2s ease-in-out;
-            contain: strict; /* 스크롤 컨테이너 최적화 */
 		}
         #results.sorting {
             opacity: 0;
@@ -276,7 +275,6 @@
 			gap: 18px;
 			position: relative;
 			overflow: hidden;
-            contain: layout paint style; /* 개별 아이템 렌더링 최적화 */
 		}
 		.result-item::before {
 			content: '';
@@ -289,6 +287,7 @@
 			opacity: 0.6;
 			transition: opacity 0.3s;
 		}
+
         .result-item-info {
             position: absolute;
             top: 12px;
@@ -301,12 +300,14 @@
             opacity: 0.8;
             pointer-events: none;
         }
+
         .item-images-wrapper {
             flex-grow: 1; 
             position: relative; 
             overflow: hidden; 
             display: flex;
         }
+
 		.item-images {
 			display: flex;
 			align-items: center;
@@ -319,6 +320,7 @@
         .item-images::-webkit-scrollbar {
             display: none; 
         }
+
 		.result-info-right {
 			display: flex;
 			align-items: center;
@@ -327,6 +329,7 @@
 			justify-content: flex-end;
             flex-shrink: 0;
 		}
+
 	    .small-character-img {
 			height: 60px;
 			width: auto;
@@ -350,6 +353,7 @@
 			transition: background 0.2s, border-color 0.2s;
             flex-shrink: 0;
 		}
+
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
@@ -399,6 +403,7 @@
             display: inline-block;
             vertical-align: middle;
         }
+
 		.image-count-badge {
 		    position: absolute;
 		    bottom: -5px;
@@ -427,6 +432,7 @@
 		    color: #ff5252;
 		    text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
 		}
+
 		.item-box {
 			display: flex;
 			flex-direction: column;
@@ -454,6 +460,7 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
+		
 		.pticket-box {
 			background-image: url('Portrait/픽업티켓.png');
 			background-size: 80%;
@@ -472,6 +479,8 @@
 			text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
 			margin: 0;
 		}
+
+
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -494,6 +503,7 @@
 			font-size: 14px;
 			color: #bdc3c7;
 		}
+	    
 	    .sort-container {
 	        display: flex;
 	        justify-content: flex-end;
@@ -511,7 +521,9 @@
 	        cursor: pointer;
 	        outline: none;
 	        transition: border-color 0.3s, box-shadow 0.3s;
-	        -webkit-appearance: none; -moz-appearance: none; appearance: none;
+	        -webkit-appearance: none;
+	        -moz-appearance: none;
+	        appearance: none;
 	        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 	        background-repeat: no-repeat;
 	        background-position: right 12px center;
@@ -519,161 +531,383 @@
 	        padding-right: 35px;
 	    }
 	    #sortDropdown:focus, #sortDropdown:hover {
-	        border-color: #555; outline: none; box-shadow: none;
+	        border-color: #555;
+            outline: none;
+			box-shadow: none;
 	    }
+	    
 	    #tsparticles {
-	        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        z-index: 0;
+	        pointer-events: none;
 	    }
 		.scroll-indicator {
-			position: absolute; top: 50%; right: 15px; 
-			transform: translateY(-50%); width: 28px; height: 28px;
+			position: absolute;
+			top: 50%;
+            right: 15px; 
+			transform: translateY(-50%);
+			width: 28px;
+			height: 28px;
 			background: linear-gradient(135deg, rgba(40,40,40,0.8), rgba(20,20,20,0.8));
-			backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2);
-			color: #fff; border-radius: 50%; display: none; 
-			align-items: center; justify-content: center;
-			font-size: 18px; line-height: 28px; font-weight: bold;
-			cursor: pointer; z-index: 10; transition: opacity 0.2s;
+			backdrop-filter: blur(5px);
+			border: 1px solid rgba(255,255,255,0.2);
+			color: #fff;
+			border-radius: 50%;
+			display: none; 
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			line-height: 28px;
+			font-weight: bold;
+			cursor: pointer;
+			z-index: 10;
+			transition: opacity 0.2s;
             text-shadow: 0 0 4px rgba(0,0,0,0.5);
 		}
-		.item-images-wrapper.has-scroll .scroll-indicator { display: flex; }
-		.item-images-wrapper.scrolled-to-end .scroll-indicator { opacity: 0; pointer-events: none; }
-        .item-images-wrapper.has-scroll::after {
-            content: ''; position: absolute; top: 0; right: 0;
-            width: 70px; height: 100%;
-            background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20 80%);
-            pointer-events: none; z-index: 5; transition: opacity 0.3s; opacity: 1;
-        }
-        .item-images-wrapper.scrolled-to-end::after { opacity: 0; }
-	    #loader {
-	        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-	        background-color: rgba(18,18,18,0.95);
-	        display: flex; align-items: center; justify-content: center; flex-direction: column;
-	        z-index: 2000; transition: opacity 0.5s ease, visibility 0.5s ease;
-	    }
-	    #loader.hidden { opacity: 0; visibility: hidden; }
-	    .spinner {
-	        border: 8px solid #f3f3f3; border-top: 8px solid #ff4081; border-radius: 50%;
-	        width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px;
-	        transform: translateZ(0);
-	    }
-	    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-	    #skinInfoTrigger { position: relative; }
-	    .skin-tooltip-icon {
-	        display: inline-block; background-color: #ff4081; color: white; border-radius: 50%;
-	        width: 16px; height: 16px; text-align: center; line-height: 16px; font-size: 12px;
-	        font-weight: bold; margin-left: 4px; user-select: none; vertical-align: middle;
-	    }
-	    #skinInfoPopup {
-	        display: none; position: fixed; top: 50%; left: 50%;
-	        transform: translate(-50%, -50%); background-color: rgba(30, 30, 30, 0.95);
-	        border: 2px solid #ff4081; border-radius: 10px; padding: 15px;
-	        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); z-index: 3000;
-	        width: calc(100vw - 40px); max-width: 800px; max-height: 90vh;
-	        box-sizing: border-box; overflow: auto;
-	    }
-	    #skinInfoPopupImage {
-	        display: block; width: 100%; height: auto; max-height: calc(90vh - 34px - 30px);
-	        border-radius: 5px; object-fit: contain;
-	    }
-        .extras-character-border { border: 2px solid #b0b0b0; box-shadow: 0 0 10px rgba(176, 176, 176, 0.3); }
-		#extrasPopup {
-			display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
-			overflow: auto; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center;
+		.item-images-wrapper.has-scroll .scroll-indicator {
+			display: flex;
 		}
-		.extras-popup-content {
-			background-color: #1e1e1e; padding: 25px; border: 2px solid #b0b0b0; border-radius: 15px;
-			width: 80%; max-width: 700px; box-shadow: 0 5px 25px rgba(0,0,0,0.7); position: relative;
-		}
-		.close-button {
-			color: #aaa; position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer;
-		}
-		.close-button:hover, .close-button:focus { color: #fff; }
-		#extras-popup-grid {
-			display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding-top: 10px;
+		.item-images-wrapper.scrolled-to-end .scroll-indicator {
+			opacity: 0;
+			pointer-events: none;
 		}
 
-        /* ▼▼▼▼▼ LAZY LOAD / UNLOAD STYLES START ▼▼▼▼▼ */
-        .result-item.placeholder { background: #1a1c20; }
-        .result-item .image-with-count-container,
-        .result-item .extras-box,
-        .result-item .pticket-box .item-count,
-        .result-item .price-box {
-            opacity: 0;
-            transition: opacity 0.4s ease-out;
+        .item-images-wrapper.has-scroll::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 70px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(26, 28, 32, 0), #1a1c20 80%);
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 0.3s;
+            opacity: 1;
         }
+
+        .item-images-wrapper.scrolled-to-end::after {
+            opacity: 0;
+        }
+
+	    #loader {
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        width: 100%;
+	        height: 100%;
+	        background-color: rgba(18,18,18,0.95);
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        flex-direction: column;
+	        z-index: 2000;
+	        transition: opacity 0.5s ease, visibility 0.5s ease;
+	    }
+	    #loader.hidden {
+	        opacity: 0;
+	        visibility: hidden;
+	    }
+	    .spinner {
+	        border: 8px solid #f3f3f3;
+	        border-top: 8px solid #ff4081;
+	        border-radius: 50%;
+	        width: 60px;
+	        height: 60px;
+	        animation: spin 1s linear infinite;
+	        margin-bottom: 20px;
+	        transform: translateZ(0);
+	    }
+	    @keyframes spin {
+	        0% { transform: rotate(0deg); }
+	        100% { transform: rotate(360deg); }
+	    }
+	    #skinInfoTrigger {
+	        position: relative;
+	    }
+	    .skin-tooltip-icon {
+	        display: inline-block;
+	        background-color: #ff4081;
+	        color: white;
+	        border-radius: 50%;
+	        width: 16px;
+	        height: 16px;
+	        text-align: center;
+	        line-height: 16px;
+	        font-size: 12px;
+	        font-weight: bold;
+	        margin-left: 4px;
+	        user-select: none;
+	        vertical-align: middle;
+	    }
+	    #skinInfoPopup {
+	        display: none;
+	        position: fixed;
+	        top: 50%;
+	        left: 50%;
+	        transform: translate(-50%, -50%);
+	        background-color: rgba(30, 30, 30, 0.95);
+	        border: 2px solid #ff4081;
+	        border-radius: 10px;
+	        padding: 15px;
+	        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+	        z-index: 3000;
+	        width: calc(100vw - 40px);
+	        max-width: 800px;
+	        max-height: 90vh;
+	        box-sizing: border-box;
+	        overflow: auto;
+	    }
+	    #skinInfoPopupImage {
+	        display: block;
+	        width: 100%;
+	        height: auto;
+	        max-height: calc(90vh - 34px - 30px);
+	        border-radius: 5px;
+	        object-fit: contain;
+	    }
+        .extras-character-border {
+            border: 2px solid #b0b0b0;
+            box-shadow: 0 0 10px rgba(176, 176, 176, 0.3);
+        }
+		#extrasPopup {
+			display: none;
+			position: fixed;
+			z-index: 4000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.7);
+			align-items: center;
+			justify-content: center;
+		}
+		.extras-popup-content {
+			background-color: #1e1e1e;
+			padding: 25px;
+			border: 2px solid #b0b0b0;
+			border-radius: 15px;
+			width: 80%;
+			max-width: 700px;
+			box-shadow: 0 5px 25px rgba(0,0,0,0.7);
+			position: relative;
+		}
+		.close-button {
+			color: #aaa;
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		.close-button:hover,
+		.close-button:focus {
+			color: #fff;
+		}
+		#extras-popup-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: center;
+			padding-top: 10px;
+		}
+
+        /* ▼▼▼▼▼ LAZY LOAD STYLES START ▼▼▼▼▼ */
+        .result-item.lazy-load {
+            background: #1a1c20;
+        }
+
+        /* 뼈대 안의 '내용물'들만 처음에는 투명하게 처리 */
+        .result-item.lazy-load .image-with-count-container,
+        .result-item.lazy-load .extras-box,
+        .result-item.lazy-load .pticket-box .item-count,
+        .result-item.lazy-load .price-box {
+            opacity: 0;
+            /* 렌더링 해제 시 애니메이션 없이 바로 사라지도록 */
+            transition: opacity 0.15s ease-out;
+        }
+
+        /* 로드가 완료되면 내용물에 애니메이션 적용하며 표시 */
         .result-item.loaded .image-with-count-container,
         .result-item.loaded .extras-box,
         .result-item.loaded .pticket-box .item-count,
         .result-item.loaded .price-box {
             opacity: 1;
+            /* 개별 딜레이를 주어 순차적으로 나타나는 효과 */
+            transition: opacity 0.4s ease-out;
         }
         .result-item.loaded .image-with-count-container:nth-child(2),
         .result-item.loaded .extras-box { transition-delay: 0.05s; }
         .result-item.loaded .price-box { transition-delay: 0.1s; }
-        /* ▲▲▲▲▲ LAZY LOAD / UNLOAD STYLES END ▲▲▲▲▲ */
+        /* ▲▲▲▲▲ LAZY LOAD STYLES END ▲▲▲▲▲ */
 
 	    @media (max-width: 768px) {
-	        .character-grid { grid-template-columns: repeat(auto-fill, minmax(80px,1fr)); gap: 10px; }
-	        .character-box { height: 125px; padding: 8px; }
-	        .character-box .character-img { width: 60px; height: 70px; margin-bottom: 5px; }
-	        .character-box .character-name { font-size: 14px; }
-	        .spinbox-container input[type="number"] { width: 45px; }
-	        #filterButton { font-size: 16px; padding: 12px; }
-	        .result-item { padding: 32px 12px 12px 12px; flex-wrap: wrap; }
-            .result-item-info { top: 10px; left: 12px; font-size: 11px; }
-            .item-images-wrapper, .result-info-right { flex-basis: 100%; }
-			.result-info-right { justify-content: space-between; }
-			.price-box { flex-grow: 1; align-items: center; background: rgba(39, 174, 96, 0.1); min-width: 0; }
-			.item-box { flex-grow: 1; min-width: 0; max-width: 140px; }
-			.small-character-img, .item-box, .extras-box, .price-box { height: 54px; }
-	        .item-images { gap: 6px; }
-			.scroll-indicator { display: none !important; }
-			.item-images-wrapper.has-scroll::after { width: 60px; }
-	        #copyInstruction { font-size: 1em; }
-	        #copyMessage { font-size: 1em; padding: 15px 20px; }
-			.item-box .item-title, .extras-box .item-title { font-size: 12px; }
-			.item-box .item-count { font-size: 17px; }
-			.price-box .price-usd { font-size: 19px; }
-			.price-box .price-krw { font-size: 12px; }
-	        #skinInfoPopup { padding: 10px; width: calc(100vw - 30px); }
-	        #skinInfoPopupImage { max-height: calc(90vh - 24px - 20px); }
-			.extras-popup-content { width: 90%; padding: 20px; }
+	        .character-grid {
+	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
+	            gap: 10px;
+	        }
+	        .character-box {
+	            height: 125px; 
+	            padding: 8px;
+	        }
+	        .character-box .character-img {
+	            width: 60px;
+	            height: 70px;
+	            margin-bottom: 5px;
+	        }
+	        .character-box .character-name {
+	            font-size: 14px;
+	        }
+	        .spinbox-container input[type="number"] {
+	            width: 45px;
+	        }
+	        #filterButton {
+	            font-size: 16px;
+	            padding: 12px;
+	        }
+	        .result-item {
+				padding: 32px 12px 12px 12px;
+				flex-wrap: wrap;
+	        }
+            .result-item-info {
+                top: 10px;
+                left: 12px;
+                font-size: 11px;
+            }
+            .item-images-wrapper, .result-info-right {
+				flex-basis: 100%;
+			}
+			.result-info-right {
+				justify-content: space-between;
+			}
+			.price-box {
+			    flex-grow: 1;
+			    align-items: center;
+			    background: rgba(39, 174, 96, 0.1);
+			    min-width: 0;
+			}
+			.item-box {
+			    flex-grow: 1;
+			    min-width: 0;
+				max-width: 140px;
+			}
+			.small-character-img, .item-box, .extras-box, .price-box {
+				height: 54px;
+			}
+	        .item-images {
+	            gap: 6px;
+	        }
+			.scroll-indicator {
+				display: none !important;
+			}
+			.item-images-wrapper.has-scroll::after {
+			    width: 60px;
+			}
+	        #copyInstruction {
+	            font-size: 1em;
+	        }
+	        #copyMessage {
+	            font-size: 1em;
+	            padding: 15px 20px;
+	        }
+			.item-box .item-title, .extras-box .item-title {
+				font-size: 12px;
+			}
+			.item-box .item-count {
+				font-size: 17px;
+			}
+			.price-box .price-usd {
+				font-size: 19px;
+			}
+			.price-box .price-krw {
+				font-size: 12px;
+			}
+	        #skinInfoPopup {
+	            padding: 10px;
+	            width: calc(100vw - 30px);
+	        }
+	        #skinInfoPopupImage {
+	            max-height: calc(90vh - 24px - 20px);
+	        }
+			.extras-popup-content {
+				width: 90%;
+				padding: 20px;
+			}
 	    }
 	</style>
 </head>
 <body>
-    <div id="loader"><div class="spinner"></div></div>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
     <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
     <button id="filterButton">Apply Filter</button>
 	<div id="copyInstruction">
-	  All accounts have the <strong style="color: skyblue;"><span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">Klukai skin & Colphne skin <span class="skin-tooltip-icon">?</span></span></strong><br>※ Bittersweet is Makiato's weapon, but Nikita can also equip it, and it's better than Nikita's own weapon<br>※ Click item to copy
+	  All accounts have the
+	  <strong style="color: skyblue;">
+	    <span id="skinInfoTrigger" style="cursor: pointer; text-decoration: underline;" title="스킨 정보 보기">
+	      Klukai skin & Colphne skin <span class="skin-tooltip-icon">?</span>
+	    </span>
+	  </strong><br>※ Bittersweet is Makiato's weapon, but Nikita can also equip it, and it's better than Nikita's own weapon<br>
+	  ※ Click item to copy
 	</div>
     <div class="sort-container">
         <select id="sortDropdown">
-            <option value="price" selected>Price</option> <option value="character">Character</option> <option value="pticket">PTicket</option>
+            <option value="price" selected>Price</option>
+            <option value="character">Character</option>
+            <option value="pticket">PTicket</option>
         </select>
     </div>
     <div id="results"></div>
     <div id="copyMessage">
-        <div class="copy-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="copy-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+        </div>
         <span>Copied</span>
     </div>
-	<div id="skinInfoPopup"><img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지"></div>
-	<div id="extrasPopup"><div class="extras-popup-content"><span class="close-button" id="closeExtrasPopup">×</span><div id="extras-popup-grid"></div></div></div>
+
+	<div id="skinInfoPopup">
+	  <img id="skinInfoPopupImage" src="Portrait/스킨2종.png" alt="스킨 2종 이미지">
+	</div>
+
+	<div id="extrasPopup">
+		<div class="extras-popup-content">
+			<span class="close-button" id="closeExtrasPopup">×</span>
+			<div id="extras-popup-grid"></div>
+		</div>
+	</div>
 
     <script>
         let lastActivityTime = Date.now();
-        const updateActivityTime = () => { lastActivityTime = Date.now(); };
-        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => document.addEventListener(event, updateActivityTime));
+        const updateActivityTime = () => {
+            lastActivityTime = Date.now();
+        };
+        ['click', 'touchstart', 'scroll', 'keypress'].forEach(event => {
+            document.addEventListener(event, updateActivityTime);
+        });
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 const currentTime = Date.now();
-                if ((currentTime - lastActivityTime) > 7200000) { window.location.reload(true); } 
-                else { lastActivityTime = currentTime; }
+                const inactiveTime = currentTime - lastActivityTime;
+                const twoHours = 7200000;
+                if (inactiveTime > twoHours) {
+                    window.location.reload(true);
+                } else {
+                    lastActivityTime = currentTime;
+                }
             }
         });
+
         window.addEventListener('load', () => {
             const lastLoad = localStorage.getItem('lastLoadTime');
             const currentTime = Date.now();
@@ -684,8 +918,8 @@
             }
             const loader = document.getElementById('loader');
             loadCharacters()
-                .then(loadData)
-                .then(applyFiltersAndSort)
+                .then(() => loadData())
+                .then(() => applyFiltersAndSort())
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
                     loader.classList.add('hidden');
@@ -696,13 +930,20 @@
                             results.style.willChange = 'scroll-position';
                             results.style.webkitOverflowScrolling = 'touch';
                             let lastScrollTime = 0;
-                            results.addEventListener('scroll', function() {
+                            const scrollThreshold = 16; 
+                            results.addEventListener('scroll', function(e) {
                                 const now = performance.now();
-                                if (now - lastScrollTime >= 16) {
+                                if (now - lastScrollTime >= scrollThreshold) {
                                     lastScrollTime = now;
-                                    if (!results.isScrolling) { results.isScrolling = true; results.classList.add('scrolling'); }
+                                    if (!results.isScrolling) {
+                                        results.isScrolling = true;
+                                        results.classList.add('scrolling');
+                                    }
                                     clearTimeout(results.scrollEndTimer);
-                                    results.scrollEndTimer = setTimeout(() => { results.isScrolling = false; results.classList.remove('scrolling'); }, 100);
+                                    results.scrollEndTimer = setTimeout(function() {
+                                        results.isScrolling = false;
+                                        results.classList.remove('scrolling');
+                                    }, 100);
                                 }
                             }, { passive: true });
                         }
@@ -716,9 +957,18 @@
                     setTimeout(() => loader.style.display = 'none', 500);
                 });
         });
+
         function optimizeParticles() {
-            const pauseParticles = () => window.tsParticles?.domItem(0)?.pause();
-            const resumeParticles = () => window.tsParticles?.domItem(0)?.play();
+            const pauseParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).pause();
+                }
+            };
+            const resumeParticles = () => {
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
+            };
             const results = document.getElementById('results');
             if (results) {
                 results.addEventListener('scroll', () => {
@@ -726,345 +976,690 @@
                         pauseParticles();
                         results.particlesPaused = true;
                         clearTimeout(results.particlesTimer);
-                        results.particlesTimer = setTimeout(() => { resumeParticles(); results.particlesPaused = false; }, 200); 
+                        results.particlesTimer = setTimeout(() => {
+                            resumeParticles();
+                            results.particlesPaused = false;
+                        }, 200); 
                     }
                 }, { passive: true });
             }
-            document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' ? pauseParticles() : resumeParticles());
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    pauseParticles();
+                } else {
+                    resumeParticles();
+                }
+            });
         }
-        let characters = []; let rareCharacters = []; let superRarePrefixes = new Set(); let currentFilteredData = {};
+
+        let characters = [];
+        let rareCharacters = [];
+        let superRarePrefixes = new Set();
+        let currentFilteredData = {};
+
 		function loadCharacters() {
-            return fetch(`Characters.txt?t=${new Date().getTime()}`).then(r => r.text()).then(text => {
-                characters = []; rareCharacters = []; let foundSabrina = false;
-                text.split('\n').forEach(line => {
-                    const parts = line.trim().split(' ');
-                    if (parts.length >= 2) {
-                        const eng = parts[0]; const kor = parts.slice(1).join(' ');
-                        if (eng === 'sabrina' && kor === '사브리나') foundSabrina = true;
-                        if (eng && kor) {
-                            characters.push([eng, kor]);
-                            if (!foundSabrina) rareCharacters.push([eng, kor]);
+            const ts = new Date().getTime();
+            return fetch(`Characters.txt?t=${ts}`)
+                .then(r => r.text())
+                .then(text => {
+                    characters = [];
+                    rareCharacters = [];
+                    let foundSabrina = false;
+                    text.split('\n').forEach(line => {
+                        const parts = line.trim().split(' ');
+                        if (parts.length >= 2) {
+                            const eng = parts[0];
+                            const kor = parts.slice(1).join(' ');
+                            if (eng === 'sabrina' && kor === '사브리나') {
+                                foundSabrina = true;
+                            }
+                            if (eng && kor) {
+                                characters.push([eng, kor]);
+                                if (!foundSabrina) {
+                                    rareCharacters.push([eng, kor]);
+                                }
+                            }
                         }
-                    }
-                });
-                const normalRarePrefixes = new Set(['gy', 'to', 'st', 'sh']);
-                rareCharacters.forEach(([eng]) => {
-                    if (!normalRarePrefixes.has(eng.slice(0, 2))) superRarePrefixes.add(eng.slice(0, 2));
-                });
-                createCharacterBoxes();
-            }).catch(error => console.error('캐릭터 데이터 로딩 오류:', error));
+                    });
+
+                    const normalRarePrefixes = new Set(['gy', 'to', 'st', 'sh']);
+                    rareCharacters.forEach(([eng]) => {
+                        if (!normalRarePrefixes.has(eng.slice(0, 2))) {
+                            superRarePrefixes.add(eng.slice(0, 2));
+                        }
+                    });
+
+                    createCharacterBoxes();
+                })
+                .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
+
         let luaData = {};
+        
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
-            characterGrid.innerHTML = ''; const fragment = document.createDocumentFragment();
+            characterGrid.innerHTML = '';
+            const fragment = document.createDocumentFragment();
             characters.forEach(([eng, kor]) => {
                 const charBox = document.createElement('div');
-                charBox.className = 'character-box'; charBox.dataset.engName = eng;
+                charBox.className = 'character-box';
+                charBox.dataset.engName = eng;
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
+                
                 if (isGenerallyRare) {
-                    charBox.classList.add((eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) ? 'rare' : 'super-rare');
-                } else { charBox.classList.add('extras-character-border'); }
+                    if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) {
+                        charBox.classList.add('rare');
+                    } else {
+                        charBox.classList.add('super-rare');
+                    }
+                } else {
+                    charBox.classList.add('extras-character-border');
+                }
+
                 const img = document.createElement('img');
-                img.src = `Portrait/${kor}.png`; img.alt = kor; img.className = 'character-img'; img.loading = 'lazy'; img.decoding = 'async';
-                const nameSpan = document.createElement('span'); nameSpan.className = 'character-name'; nameSpan.textContent = eng;
-                const spinboxContainer = document.createElement('div'); spinboxContainer.className = 'spinbox-container';
-                const spinbox = document.createElement('input'); spinbox.type = 'number'; spinbox.id = `${eng}-spin`; spinbox.min = 0; spinbox.max = 8; spinbox.value = 0; spinbox.disabled = true;
-                spinboxContainer.appendChild(spinbox); charBox.append(img, nameSpan, spinboxContainer); fragment.appendChild(charBox);
-                charBox.addEventListener('click', e => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox); });
-                spinbox.addEventListener('click', e => {
+                img.src = `Portrait/${kor}.png`;
+                img.alt = kor;
+                img.className = 'character-img';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'character-name';
+                nameSpan.textContent = eng;
+                const spinboxContainer = document.createElement('div');
+                spinboxContainer.className = 'spinbox-container';
+                const spinbox = document.createElement('input');
+                spinbox.type = 'number';
+                spinbox.id = `${eng}-spin`;
+                spinbox.min = 0;
+                spinbox.max = 8;
+                spinbox.value = 0;
+                spinbox.disabled = true;
+                spinboxContainer.appendChild(spinbox);
+                charBox.append(img, nameSpan, spinboxContainer);
+                fragment.appendChild(charBox);
+                charBox.addEventListener('click', (e) => {
+                    if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox);
+                });
+                spinbox.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if(!charBox.classList.contains('selected')) { charBox.classList.add('selected'); spinbox.disabled = false; if(spinbox.value === '0') spinbox.value = '1'; }
+                    if(!charBox.classList.contains('selected')) {
+                        charBox.classList.add('selected');
+                        spinbox.disabled = false;
+                        if(spinbox.value === '0') spinbox.value = '1';
+                    }
                 });
             });
-            const ticketBox = document.createElement('div'); ticketBox.className = 'character-box gold-border'; ticketBox.dataset.engName = 'PickupTicket';
-            const ticketImg = document.createElement('img'); ticketImg.src = `Portrait/픽업티켓.png`; ticketImg.alt = 'PickupTicket'; ticketImg.className = 'character-img'; ticketImg.loading = 'lazy'; ticketImg.decoding = 'async';
-            const ticketNameSpan = document.createElement('span'); ticketNameSpan.className = 'character-name'; ticketNameSpan.textContent = 'PickupTicket';
-            const ticketSpinboxContainer = document.createElement('div'); ticketSpinboxContainer.className = 'spinbox-container';
-            const ticketSpinbox = document.createElement('input'); ticketSpinbox.type = 'number'; ticketSpinbox.id = 'PickupTicket-spin'; ticketSpinbox.min = 0; ticketSpinbox.value = 0; ticketSpinbox.disabled = true;
-            ticketSpinboxContainer.appendChild(ticketSpinbox); ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer); fragment.appendChild(ticketBox);
-            ticketBox.addEventListener('click', e => { if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox); });
-            ticketSpinbox.addEventListener('click', e => {
+            const ticketBox = document.createElement('div');
+            ticketBox.className = 'character-box gold-border';
+            ticketBox.dataset.engName = 'PickupTicket';
+            const ticketImg = document.createElement('img');
+            ticketImg.src = `Portrait/픽업티켓.png`;
+            ticketImg.alt = 'PickupTicket';
+            ticketImg.className = 'character-img';
+            ticketImg.loading = 'lazy';
+            ticketImg.decoding = 'async';
+            const ticketNameSpan = document.createElement('span');
+            ticketNameSpan.className = 'character-name';
+            ticketNameSpan.textContent = 'PickupTicket';
+            const ticketSpinboxContainer = document.createElement('div');
+            ticketSpinboxContainer.className = 'spinbox-container';
+            const ticketSpinbox = document.createElement('input');
+            ticketSpinbox.type = 'number';
+            ticketSpinbox.id = 'PickupTicket-spin';
+            ticketSpinbox.min = 0;
+            ticketSpinbox.value = 0;
+            ticketSpinbox.disabled = true;
+            ticketSpinboxContainer.appendChild(ticketSpinbox);
+            ticketBox.append(ticketImg, ticketNameSpan, ticketSpinboxContainer);
+            fragment.appendChild(ticketBox);
+            ticketBox.addEventListener('click', (e) => {
+                if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
+            });
+            ticketSpinbox.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if(!ticketBox.classList.contains('selected')) { ticketBox.classList.add('selected'); ticketSpinbox.disabled = false; if(ticketSpinbox.value === '0') ticketSpinbox.value = '1'; }
+                if(!ticketBox.classList.contains('selected')) {
+                    ticketBox.classList.add('selected');
+                    ticketSpinbox.disabled = false;
+                    if(ticketSpinbox.value === '0') ticketSpinbox.value = '1';
+                }
             });
             characterGrid.appendChild(fragment);
         }
+
         function toggleSelection(charBox) {
             const spinbox = charBox.querySelector('input[type="number"]');
-            if(charBox.classList.toggle('selected')) { spinbox.disabled = false; spinbox.value = spinbox.value === '0' ? '1' : spinbox.value; } 
-            else { spinbox.disabled = true; spinbox.value = 0; }
+            if(charBox.classList.toggle('selected')) {
+                spinbox.disabled = false;
+                spinbox.value = spinbox.value === '0' ? '1' : spinbox.value;
+            } else {
+                spinbox.disabled = true;
+                spinbox.value = 0;
+            }
         }
+
         let itemDetailsMap = {};
+
         function loadData() {
-            return fetch(`sorted_data_eng.txt?t=${new Date().getTime()}`).then(r => r.text()).then(text => {
-                luaData = {}; itemDetailsMap = {}; const lines = text.split('\n'); let currentSection = null;
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith('===') && trimmedLine.endsWith('===')) { currentSection = trimmedLine.slice(4, -4).trim(); continue; }
-                    if (trimmedLine && !trimmedLine.startsWith('===') && currentSection !== null) {
-                        const parts = trimmedLine.split(' '); if (parts.length < 2) continue;
-                        const key = parts[0]; let charString = ''; let j = 1;
-                        let itemDetails = { originalText: trimmedLine, price: 0, guaranteed: trimmedLine.includes('GUARANTEED'), gemsCount: 0, superRareCount: 0, uniqueSuperRareCount: 0 };
-                        const priceMatch = trimmedLine.match(/\$(\d+\.\d+)/); if (priceMatch) itemDetails.price = parseFloat(priceMatch[1]);
-                        let superRareCount = 0; const uniqueSuperRares = new Set(); 
-                        while (j < parts.length && !/^\d/.test(parts[j])) {
-                            const match = parts[j].match(/^([a-z]+)(\d+)$/i);
-                            if (match) {
-                                const charName = match[1].toLowerCase(); const numCount = parseInt(match[2]);
-                                const prefix = charName.slice(0, 2); charString += prefix + numCount;
-                                if (superRarePrefixes.has(prefix)) { superRareCount += numCount; uniqueSuperRares.add(prefix); }
-                            } j++;
+            const ts = new Date().getTime();
+            return fetch(`sorted_data_eng.txt?t=${ts}`)
+                .then(r => r.text())
+                .then(text => {
+                    luaData = {};
+                    itemDetailsMap = {};
+                    const lines = text.split('\n');
+                    let currentSection = null;
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (line.startsWith('===') && line.endsWith('===')) {
+                            currentSection = line.slice(4, -4).trim();
+                            continue;
                         }
-                        itemDetails.superRareCount = superRareCount; itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; 
-                        const gemsMatch = trimmedLine.match(/(\d+)PickupTicket/i); if (gemsMatch) itemDetails.gemsCount = parseInt(gemsMatch[1]);
-                        luaData[key] = charString; itemDetailsMap[key] = itemDetails;
+                        if (line && !line.startsWith('===') && currentSection !== null) {
+                            const parts = line.split(' ');
+                            if (parts.length < 2) continue;
+                            const key = parts[0];
+                            let charString = '';
+                            let j = 1;
+                            let itemDetails = {
+                                originalText: line,
+                                price: 0,
+                                guaranteed: line.includes('GUARANTEED'),
+                                gemsCount: 0,
+                                superRareCount: 0,
+                                uniqueSuperRareCount: 0 
+                            };
+                            const priceMatch = line.match(/\$(\d+\.\d+)/);
+                            if (priceMatch) {
+                                itemDetails.price = parseFloat(priceMatch[1]);
+                            }
+
+                            let superRareCount = 0;
+                            const uniqueSuperRares = new Set(); 
+
+                            while (j < parts.length && !/^\d/.test(parts[j])) {
+                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                                if (match) {
+                                    const charName = match[1].toLowerCase();
+                                    const numCount = parseInt(match[2]);
+                                    const prefix = charName.slice(0, 2);
+                                    charString += prefix + numCount;
+                                    
+                                    if (superRarePrefixes.has(prefix)) {
+                                        superRareCount += numCount;
+                                        uniqueSuperRares.add(prefix); 
+                                    }
+                                }
+                                j++;
+                            }
+                            itemDetails.superRareCount = superRareCount;
+                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; 
+
+                            const gemsMatch = line.match(/(\d+)PickupTicket/i);
+                            if (gemsMatch) {
+                                itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                            }
+                            luaData[key] = charString;
+                            itemDetailsMap[key] = itemDetails;
+                        }
                     }
-                }
-            }).catch(error => console.error('데이터 로딩 오류:', error));
+                }).catch(error => { console.error('데이터 로딩 오류:', error); });
         }
+
         function applyFiltersAndSort() {
-            const resultsDiv = document.getElementById('results'); resultsDiv.classList.add('sorting'); 
-            window.tsParticles?.domItem(0)?.pause();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.classList.add('sorting'); 
+            
+            if (window.tsParticles && window.tsParticles.domItem(0)) {
+                window.tsParticles.domItem(0).pause();
+            }
+
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
-                    if(checkConditions(v.match(/.{1,3}/g) || [], k)) filtered[k] = v;
+                    const chars = v.match(/.{1,3}/g) || [];
+                    if(checkConditions(chars, k)) filtered[k] = v;
                 }
                 currentFilteredData = filtered;
+
+                const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
-                const sortedKeys = Object.keys(currentFilteredData).sort((a, b) => {
-                    const itemA = itemDetailsMap[a]; const itemB = itemDetailsMap[b];
+                
+                const sortedKeys = Object.keys(data).sort((a, b) => {
+                    const itemA = itemDetailsMap[a];
+                    const itemB = itemDetailsMap[b];
                     let primarySort = 0;
+
                     switch (sortKey) {
-                        case 'character': primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0); break;
-                        case 'pticket': primarySort = (itemB.gemsCount + (itemB.guaranteed ? 20 : 0)) - (itemA.gemsCount + (itemA.guaranteed ? 20 : 0)); break;
-                        default: primarySort = itemB.price - itemA.price; break;
+                        case 'character':
+                            primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
+                            break;
+                        case 'pticket':
+                            let countA = itemA.gemsCount + (itemA.guaranteed ? 20 : 0);
+                            let countB = itemB.gemsCount + (itemB.guaranteed ? 20 : 0);
+                            primarySort = countB - countA;
+                            break;
+                        case 'price':
+                        default:
+                            primarySort = itemB.price - itemA.price;
+                            break;
                     }
-                    if (primarySort === 0 && sortKey !== 'price') return itemB.price - itemA.price;
+
+                    if (primarySort === 0 && sortKey !== 'price') {
+                        return itemB.price - itemA.price;
+                    }
                     return primarySort;
                 });
-                displayResults(currentFilteredData, sortedKeys);
+                
+                displayResults(data, sortedKeys);
+                
                 resultsDiv.classList.remove('sorting');
-                window.tsParticles?.domItem(0)?.play();
+                if (window.tsParticles && window.tsParticles.domItem(0)) {
+                    window.tsParticles.domItem(0).play();
+                }
             }, 200);
         }
+
         function checkConditions(chars, itemKey) {
-            const count = {}; chars.forEach(c => { const name = c.slice(0,2); count[name] = (count[name]||0) + parseInt(c[2]); });
-            const characterCondition = characters.every(([eng]) => {
-                const box = document.querySelector(`.character-box[data-eng-name="${eng}"]`);
-                return !box?.classList.contains('selected') || (count[eng.slice(0,2)] || 0) >= parseInt(box.querySelector('input').value);
+            const count = {};
+            chars.forEach(c => {
+                const name = c.slice(0,2);
+                const num = parseInt(c[2]);
+                count[name] = (count[name]||0)+num;
             });
-            if (!characterCondition) return false;
+            const characterCondition = characters.every(([eng, kor]) => {
+                const box = [...document.getElementsByClassName('character-box')]
+                    .find(b => b.dataset.engName === eng);
+                if(box && box.classList.contains('selected')){
+                    return (count[eng.slice(0,2)] || 0) >=
+                        parseInt(box.querySelector('input').value);
+                }
+                return true;
+            });
+            if (!characterCondition) {
+                return false;
+            }
             const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
-            if (pickupTicketBox?.classList.contains('selected')) {
+            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
                 const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
                 const itemDetails = itemDetailsMap[itemKey];
-                return (itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0)) >= requiredTickets;
-            } return true;
+                
+                let hasTickets = itemDetails.gemsCount || 0;
+                if (itemDetails.guaranteed) {
+                    hasTickets += 20;
+                }
+
+                if (hasTickets < requiredTickets) {
+                    return false;
+                }
+            }
+            return true;
         }
-        function optimizeImages() { document.querySelectorAll('img').forEach(img => { if (!img.hasAttribute('loading')) img.loading = 'lazy'; if (!img.hasAttribute('decoding')) img.decoding = 'async'; }); }
+
+        function optimizeImages() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.hasAttribute('loading')) img.loading = 'lazy';
+                if (!img.hasAttribute('decoding')) img.decoding = 'async';
+            });
+        }
 		
-        // ▼▼▼▼▼ LAZY RENDER & UNRENDER IMPLEMENTATION ▼▼▼▼▼
-        let renderObserver; let unrenderObserver;
+        // ▼▼▼▼▼ LAZY LOAD & UNLOAD IMPLEMENTATION ▼▼▼▼▼
+
+        let itemObserver;
+
         function displayResults(data, sortedKeys) {
-            const res = document.getElementById('results'); res.scrollTop = 0;
-            if (renderObserver) renderObserver.disconnect();
-            if (unrenderObserver) unrenderObserver.disconnect();
+            const res = document.getElementById('results');
+            res.scrollTop = 0;
+            if (itemObserver) {
+                itemObserver.disconnect();
+            }
             
-            const fragment = document.createDocumentFragment();
-            const container = document.createElement('div'); container.className = 'content-container';
+            const container = document.createElement('div');
+            container.className = 'content-container';
 
             sortedKeys.forEach(k => {
                 const item = document.createElement('div');
-                item.className = 'result-item placeholder';
-                item.dataset.itemKey = k; item.dataset.rendered = 'false';
-                
-                const infoBox = document.createElement('div'); infoBox.className = 'result-item-info'; infoBox.textContent = 'Story 2-2 | Guest | Asia(Korea)';
-                const imagesWrapper = document.createElement('div'); imagesWrapper.className = 'item-images-wrapper';
-                const leftSection = document.createElement('div'); leftSection.className = 'item-images';
-                const rightSection = document.createElement('div'); rightSection.className = 'result-info-right';
-                const gemsBox = document.createElement('div'); gemsBox.className = 'item-box pticket-box';
-                const priceBox = document.createElement('div'); priceBox.className = 'price-box';
-                const scrollIndicator = document.createElement('div'); scrollIndicator.className = 'scroll-indicator'; scrollIndicator.innerHTML = '...';
-                
-                rightSection.append(gemsBox, priceBox);
-                imagesWrapper.append(leftSection, scrollIndicator);
-                item.append(infoBox, imagesWrapper, rightSection);
+                item.className = 'result-item lazy-load';
+                item.dataset.itemKey = k;
+                item.innerHTML = `
+                    <div class="result-item-info">Story 2-2 | Guest | Asia(Korea)</div>
+                    <div class="item-images-wrapper">
+                        <div class="item-images"></div>
+                        <div class="scroll-indicator">...</div>
+                    </div>
+                    <div class="result-info-right">
+                        <div class="item-box pticket-box"></div>
+                        <div class="price-box"></div>
+                    </div>
+                `;
                 container.appendChild(item);
             });
 
-            res.innerHTML = ''; res.appendChild(fragment);
+            res.innerHTML = '';
+            res.appendChild(container);
             document.getElementById('copyInstruction').style.display = 'block';
-            setupIntersectionObservers();
-        }
-        function setupIntersectionObservers() {
-            const root = document.getElementById('results');
-            renderObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && entry.target.dataset.rendered === 'false') renderItemContent(entry.target);
-                });
-            }, { root, rootMargin: '0px 0px 300px 0px' });
-            unrenderObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting && entry.target.dataset.rendered === 'true') unrenderItemContent(entry.target);
-                });
-            }, { root, rootMargin: '150% 0px 150% 0px' });
-            document.querySelectorAll('.result-item').forEach(item => {
-                renderObserver.observe(item); unrenderObserver.observe(item);
-            });
-        }
-        function renderItemContent(item) {
-            if (item.dataset.rendered === 'true') return;
-            item.dataset.rendered = 'true';
 
+            setupItemObserver();
+        }
+
+        function setupItemObserver() {
+            const options = {
+                root: document.getElementById('results'),
+                rootMargin: '200px 0px 200px 0px', // 뷰포트 위아래 200px까지의 아이템을 처리 대상으로 함
+            };
+
+            itemObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    const itemElement = entry.target;
+                    if (entry.isIntersecting) {
+                        // 화면에 들어왔을 때, 아직 로드되지 않았다면 렌더링
+                        if (!itemElement.classList.contains('loaded')) {
+                            renderItemContent(itemElement);
+                        }
+                    } else {
+                        // 화면 밖으로 나갔을 때, 로드된 상태라면 렌더링 해제
+                        if (itemElement.classList.contains('loaded')) {
+                            unrenderItemContent(itemElement);
+                        }
+                    }
+                });
+            }, options);
+
+            const allItems = document.querySelectorAll('.result-item');
+            allItems.forEach(item => itemObserver.observe(item));
+        }
+        
+        function renderItemContent(item) {
             const k = item.dataset.itemKey;
             const itemDetails = itemDetailsMap[k];
             const charValue = currentFilteredData[k];
-            if (!itemDetails || !charValue) return;
-
-            const leftSection = item.querySelector('.item-images');
-            const gemsBox = item.querySelector('.pticket-box');
-            const priceBox = item.querySelector('.price-box');
-
+            if (!itemDetails || !charValue || item.classList.contains('loaded')) {
+                return;
+            }
+            
+            // 이벤트 리스너는 한 번만 등록
             if (!item.dataset.eventsAttached) {
-                item.addEventListener('click', e => { if (!e.target.closest('.extras-box') && !e.target.classList.contains('scroll-indicator')) copyToClipboard(item); });
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
+                    copyToClipboard(item);
+                });
                 item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
-                item.addEventListener('mouseleave', () => { const c = item.querySelector('.item-images'); if (c?.scrollLeft > 0) c.scroll({ left: 0, behavior: 'smooth' }); });
+                item.addEventListener('mouseleave', () => {
+                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+                    if (container && container.scrollLeft > 0) {
+                        container.scroll({ left: 0, behavior: 'smooth' });
+                    }
+                });
                 item.dataset.eventsAttached = 'true';
             }
-            const allRareCharsData = []; const extraCharImages = [];
+
+            // 내용물 채우기
+            const leftSection = item.querySelector('.item-images');
+            const rightSection = item.querySelector('.result-info-right');
+            const gemsBox = rightSection.querySelector('.pticket-box');
+            const priceBox = rightSection.querySelector('.price-box');
+
+            const allRareCharsData = [];
+            const extraCharImages = [];
             const charPattern = /([a-z]{2})(\d)/g;
             let match;
             while ((match = charPattern.exec(charValue)) !== null) {
-                const [code, count] = [match[1], parseInt(match[2])];
+                const code = match[1];
+                const count = parseInt(match[2]);
                 const charInfo = characters.find(([eng]) => eng.startsWith(code));
                 if (charInfo) {
                     const [engName, korName] = charInfo;
                     const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
                     const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
-                    const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName, count, originalIndex };
-                    if (isGenerallyRare) allRareCharsData.push(imageData);
-                    else for (let i = 0; i < count; i++) extraCharImages.push({ ...imageData });
+                    const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName: engName, count: count, originalIndex: originalIndex };
+                    if (isGenerallyRare) {
+                        allRareCharsData.push(imageData);
+                    } else {
+                        for (let i = 0; i < count; i++) {
+                            extraCharImages.push({ ...imageData });
+                        }
+                    }
                 }
             }
             allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
-            leftSection.innerHTML = '';
+
+            let leftHTML = '';
             allRareCharsData.forEach(charData => {
-                const container = document.createElement('div'); container.className = 'image-with-count-container';
-                const img = document.createElement('img'); img.src = charData.src; img.alt = charData.alt; img.className = 'small-character-img';
                 const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
-                img.classList.add(isSuperRare ? 'super-rare' : 'rare');
-                container.appendChild(img);
-                if (charData.count > 1) {
-                    const badge = document.createElement('div'); badge.className = 'image-count-badge'; badge.textContent = `x${charData.count}`;
-                    badge.classList.add(isSuperRare ? 'super-rare-badge' : 'rare-badge');
-                    container.appendChild(badge);
-                }
-                leftSection.appendChild(container);
+                leftHTML += `
+                    <div class="image-with-count-container">
+                        <img src="${charData.src}" alt="${charData.alt}" class="small-character-img ${isSuperRare ? 'super-rare' : 'rare'}">
+                        ${charData.count > 1 ? `<div class="image-count-badge ${isSuperRare ? 'super-rare-badge' : 'rare-badge'}">x${charData.count}</div>` : ''}
+                    </div>
+                `;
             });
+
             extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', isRare: false, engName: 'papasha' });
             if (extraCharImages.length > 0) {
-                const extrasBox = document.createElement('div'); extrasBox.className = 'extras-box';
-                extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
-                extrasBox.addEventListener('click', e => { e.stopPropagation(); showExtrasPopup(extraCharImages); });
-                leftSection.appendChild(extrasBox);
+                leftHTML += `<div class="extras-box"><div class="item-title">Extras</div></div>`;
             }
-            
-            const finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
+            leftSection.innerHTML = leftHTML;
+
+            // extras-box에 이벤트 리스너 동적 할당
+            const extrasBoxElement = leftSection.querySelector('.extras-box');
+            if (extrasBoxElement) {
+                extrasBoxElement.onclick = (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); };
+            }
+
+            let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
             if (itemDetails.gemsCount >= 0) {
-                gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`; gemsBox.style.display = 'flex';
-            } else { gemsBox.style.display = 'none'; }
+                gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
+                gemsBox.style.display = '';
+            } else {
+                gemsBox.style.display = 'none';
+            }
             
             const usdPrice = itemDetails.price.toFixed(2);
             const krwPriceRounded = Math.round(itemDetails.price * 1380 / 1000) * 1000;
             priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
 
-            item.classList.remove('placeholder'); item.classList.add('loaded');
+            // 상태 변경 및 애니메이션
+            item.classList.remove('lazy-load');
+            requestAnimationFrame(() => item.classList.add('loaded'));
             setupScrollIndicatorForItem(item);
         }
+
         function unrenderItemContent(item) {
-            if (item.dataset.rendered === 'false') return;
-            item.dataset.rendered = 'false';
-            item.querySelector('.item-images').innerHTML = '';
-            item.querySelector('.pticket-box').innerHTML = '';
-            item.querySelector('.price-box').innerHTML = '';
-            item.classList.remove('loaded'); item.classList.add('placeholder');
+            if (!item.classList.contains('loaded')) {
+                return;
+            }
+
+            item.classList.remove('loaded');
+            item.classList.add('lazy-load');
+
+            // 내용물을 비워서 DOM 부담 줄이기
+            const leftSection = item.querySelector('.item-images');
+            if (leftSection) leftSection.innerHTML = '';
+            
+            const gemsBox = item.querySelector('.pticket-box');
+            if(gemsBox) gemsBox.innerHTML = '';
+            
+            const priceBox = item.querySelector('.price-box');
+            if(priceBox) priceBox.innerHTML = '';
         }
+
         function setupScrollIndicatorForItem(item) {
             const wrapper = item.querySelector('.item-images-wrapper');
             const imagesContainer = item.querySelector('.item-images');
-            if (!wrapper || !imagesContainer) return;
+            const scrollIndicator = item.querySelector('.scroll-indicator');
+            if (!wrapper || !imagesContainer || !scrollIndicator) return;
+
             requestAnimationFrame(() => {
                 const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
                 wrapper.classList.toggle('has-scroll', hasScroll);
                 if (hasScroll) {
-                    const scrollIndicator = wrapper.querySelector('.scroll-indicator');
-                    scrollIndicator.onclick = e => { e.stopPropagation(); imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' }); };
-                    imagesContainer.onscroll = () => wrapper.classList.toggle('scrolled-to-end', imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5);
+                    scrollIndicator.onclick = (e) => {
+                        e.stopPropagation();
+                        imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
+                    };
+                    imagesContainer.onscroll = () => {
+                        const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
+                        wrapper.classList.toggle('scrolled-to-end', isAtEnd);
+                    };
                 }
             });
         }
+		
         // ▲▲▲▲▲ END OF IMPLEMENTATION ▲▲▲▲▲
 
 		function resetAllScrolledItems() {
-		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(c => { if (c.scrollLeft > 0) c.scroll({ left: 0, behavior: 'smooth' }); });
+		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
+		        if (container.scrollLeft > 0) {
+		            container.scroll({ left: 0, behavior: 'smooth' });
+		        }
+		    });
 		}
         function resetOtherScrolledItems(currentItem) {
             document.querySelectorAll('.result-item').forEach(item => {
-                if (item !== currentItem) { const c = item.querySelector('.item-images'); if (c?.scrollLeft > 0) c.scroll({ left: 0, behavior: 'smooth' }); }
+                if (item !== currentItem) {
+                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+                    if (container && container.scrollLeft > 0) {
+                        container.scroll({ left: 0, behavior: 'smooth' });
+                    }
+                }
             });
         }
 		function showExtrasPopup(images) {
-			const popup = document.getElementById('extrasPopup'); const grid = document.getElementById('extras-popup-grid'); grid.innerHTML = '';
+			const popup = document.getElementById('extrasPopup');
+			const grid = document.getElementById('extras-popup-grid');
+			grid.innerHTML = '';
+
 			const groupedExtras = images.reduce((acc, imgData) => {
-				const key = imgData.engName; if (!acc[key]) acc[key] = { ...imgData, count: 0 }; acc[key].count++; return acc;
+				const key = imgData.engName;
+				if (!acc[key]) {
+					acc[key] = { ...imgData, count: 0 };
+				}
+				acc[key].count++;
+				return acc;
 			}, {});
+
 			Object.values(groupedExtras).forEach(charData => {
-				const container = document.createElement('div'); container.className = 'image-with-count-container';
-				const img = document.createElement('img'); img.src = charData.src; img.alt = charData.alt; img.className = 'small-character-img extras-character-border'; img.loading = 'lazy'; img.decoding = 'async';
+				const container = document.createElement('div');
+				container.className = 'image-with-count-container';
+				const img = document.createElement('img');
+				img.src = charData.src;
+				img.alt = charData.alt;
+				img.className = 'small-character-img extras-character-border';
+				img.loading = 'lazy';
+				img.decoding = 'async';
 				container.appendChild(img);
-				if (charData.count > 1) { const badge = document.createElement('div'); badge.className = 'image-count-badge'; badge.textContent = `x${charData.count}`; container.appendChild(badge); }
+				if (charData.count > 1) {
+					const badge = document.createElement('div');
+					badge.className = 'image-count-badge';
+					badge.textContent = `x${charData.count}`;
+					container.appendChild(badge);
+				}
 				grid.appendChild(container);
 			});
 			popup.style.display = 'flex';
 		}
         function copyToClipboard(el) {
-            const itemKey = el.dataset.itemKey; const itemDetails = itemDetailsMap[itemKey]; if (!itemDetails) return;
-            navigator.clipboard.writeText(itemDetails.originalText).then(showCopyMessage, err => console.error('Copy failed: ', err));
+            const itemKey = el.dataset.itemKey;
+            const itemDetails = itemDetailsMap[itemKey];
+            if (!itemDetails) return;
+            navigator.clipboard.writeText(itemDetails.originalText).then(
+                () => showCopyMessage(),
+                err => console.error('Copy failed: ', err)
+            );
         }
         function showCopyMessage(){
-            const msg = document.getElementById('copyMessage'); msg.classList.add('show');
-            setTimeout(() => msg.classList.remove('show'), 2000);
+            const msg = document.getElementById('copyMessage');
+            msg.classList.add('show');
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 2000);
         }
 		function getSelectedCharacters(){
-		    return [...document.querySelectorAll('.character-box.selected')]
-		        .map(b => `${b.dataset.engName === 'PickupTicket' ? 'PT' : b.dataset.engName.slice(0, 2)}:${b.querySelector('input').value}`).join(',');
+		    return [...document.getElementsByClassName('character-box')]
+		        .filter(b => b.classList.contains('selected'))
+		        .map(b => {
+		            const engName = b.dataset.engName;
+		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
+		            return `${shortName}:${b.querySelector('input').value}`;
+		        })
+		        .join(',');
 		}
-        const throttle = (func, delay) => { let lastCall = 0; return (...args) => { const now = Date.now(); if (now - lastCall >= delay) { lastCall = now; func.apply(this, args); } }; };
-        const debounce = (func, delay) => { let timeoutId; return (...args) => { clearTimeout(timeoutId); timeoutId = setTimeout(() => func.apply(this, args), delay); }; };
-		const throttledFilterHandler = throttle(() => {
+        function throttle(func, delay) {
+            let lastCall = 0;
+            return function(...args) {
+                const now = Date.now();
+                if (now - lastCall >= delay) {
+                    lastCall = now;
+                    return func.apply(this, args);
+                }
+            };
+        }
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
+		const throttledFilterHandler = throttle(function() {
 		    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-		    applyFiltersAndSort();
-		    const selectedCharsString = getSelectedCharacters();
-		    if (selectedCharsString) gtag('event', 'apply_filter', { 'selected_characters': selectedCharsString });
+		    loadData().then(() => {
+		        applyFiltersAndSort();
+		        const selectedCharsString = getSelectedCharacters();
+		        if (selectedCharsString) {
+		            gtag('event', 'apply_filter', {
+		                'selected_characters': selectedCharsString
+		            });
+		        }
+		    })
+		    .catch(error => {
+		        console.error('필터 적용 에러:', error);
+		    });
 		}, 300);
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
-        document.getElementById('sortDropdown').addEventListener('change', function() { applyFiltersAndSort(); this.blur(); });
+        document.getElementById('sortDropdown').addEventListener('change', function() {
+            applyFiltersAndSort();
+            this.blur(); 
+        });
 		document.addEventListener('DOMContentLoaded', () => {
-		    const skinTrigger = document.getElementById('skinInfoTrigger'); const skinPopup = document.getElementById('skinInfoPopup');
-		    if (skinTrigger && skinPopup) {
-		        const showPopup = () => skinPopup.style.display = 'block'; const hidePopup = () => skinPopup.style.display = 'none';
-		        skinTrigger.addEventListener('click', e => { e.stopPropagation(); skinPopup.style.display === 'block' ? hidePopup() : showPopup(); });
-		        document.addEventListener('click', e => { if (skinPopup.style.display === 'block' && !skinPopup.contains(e.target) && e.target !== skinTrigger && !skinTrigger.contains(e.target)) hidePopup(); });
+		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
+		    const skinPopupElement = document.getElementById('skinInfoPopup');
+		    if (skinTriggerElement && skinPopupElement) {
+		        const showPopup = () => { skinPopupElement.style.display = 'block'; };
+		        const hidePopup = () => { skinPopupElement.style.display = 'none'; };
+		        skinTriggerElement.addEventListener('click', (event) => {
+		            event.stopPropagation();
+		            if (skinPopupElement.style.display === 'block') { hidePopup(); } else { showPopup(); }
+		        });
+		        document.addEventListener('click', (event) => {
+		            if (skinPopupElement.style.display === 'block' &&
+		                !skinPopupElement.contains(event.target) &&
+		                event.target !== skinTriggerElement &&
+		                !skinTriggerElement.contains(event.target)) {
+		                hidePopup();
+		            }
+		        });
 		    }
-			const extrasPopup = document.getElementById('extrasPopup'); const closeExtrasBtn = document.getElementById('closeExtrasPopup');
-			const hideExtrasPopup = () => extrasPopup.style.display = 'none';
+			const extrasPopup = document.getElementById('extrasPopup');
+			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
+			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
 			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
-			window.addEventListener('click', e => { if (e.target == extrasPopup) hideExtrasPopup(); });
+			window.addEventListener('click', (event) => {
+				if (event.target == extrasPopup) {
+					hideExtrasPopup();
+				}
+			});
             const resultsContainer = document.getElementById('results');
-            if (resultsContainer) resultsContainer.addEventListener('scroll', resetAllScrolledItems);
-            document.body.addEventListener('click', e => { if (!e.target.closest('.result-item')) resetAllScrolledItems(); });
+            if (resultsContainer) {
+                resultsContainer.addEventListener('scroll', resetAllScrolledItems);
+            }
+            document.body.addEventListener('click', (e) => {
+                if (!e.target.closest('.result-item')) {
+                    resetAllScrolledItems();
+                }
+            });
 			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
 		});
     </script>
