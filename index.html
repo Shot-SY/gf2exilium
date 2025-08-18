@@ -287,7 +287,6 @@
 			opacity: 0.6;
 			transition: opacity 0.3s;
 		}
-
         .result-item-info {
             position: absolute;
             top: 12px;
@@ -300,14 +299,12 @@
             opacity: 0.8;
             pointer-events: none;
         }
-
         .item-images-wrapper {
             flex-grow: 1; 
             position: relative; 
             overflow: hidden; 
             display: flex;
         }
-
 		.item-images {
 			display: flex;
 			align-items: center;
@@ -320,7 +317,6 @@
         .item-images::-webkit-scrollbar {
             display: none; 
         }
-
 		.result-info-right {
 			display: flex;
 			align-items: center;
@@ -329,7 +325,6 @@
 			justify-content: flex-end;
             flex-shrink: 0;
 		}
-
 	    .small-character-img {
 			height: 60px;
 			width: auto;
@@ -353,7 +348,6 @@
 			transition: background 0.2s, border-color 0.2s;
             flex-shrink: 0;
 		}
-
 	    .small-character-img.rare {
 	        border: 2px solid #ff9800;
 	        box-shadow: 0 0 8px rgba(255,152,0,0.6);
@@ -403,7 +397,6 @@
             display: inline-block;
             vertical-align: middle;
         }
-
 		.image-count-badge {
 		    position: absolute;
 		    bottom: -5px;
@@ -432,7 +425,6 @@
 		    color: #ff5252;
 		    text-shadow: 0 0 5px rgba(255, 82, 82, 0.7);
 		}
-
 		.item-box {
 			display: flex;
 			flex-direction: column;
@@ -460,7 +452,6 @@
 			font-family: 'Poppins', sans-serif;
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
-		
 		.pticket-box {
 			background-image: url('Portrait/픽업티켓.png');
 			background-size: 80%;
@@ -479,8 +470,6 @@
 			text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.8);
 			margin: 0;
 		}
-
-
 		.price-box {
 			display: flex;
 			flex-direction: column;
@@ -503,7 +492,6 @@
 			font-size: 14px;
 			color: #bdc3c7;
 		}
-	    
 	    .sort-container {
 	        display: flex;
 	        justify-content: flex-end;
@@ -535,7 +523,6 @@
             outline: none;
 			box-shadow: none;
 	    }
-	    
 	    #tsparticles {
 	        position: fixed;
 	        top: 0;
@@ -575,7 +562,6 @@
 			opacity: 0;
 			pointer-events: none;
 		}
-
         .item-images-wrapper.has-scroll::after {
             content: '';
             position: absolute;
@@ -589,11 +575,9 @@
             transition: opacity 0.3s;
             opacity: 1;
         }
-
         .item-images-wrapper.scrolled-to-end::after {
             opacity: 0;
         }
-
 	    #loader {
 	        position: fixed;
 	        top: 0;
@@ -718,35 +702,6 @@
 			padding-top: 10px;
 		}
 
-        /* ▼▼▼▼▼ LAZY LOAD STYLES START ▼▼▼▼▼ */
-        .result-item.lazy-load {
-            background: #1a1c20;
-        }
-
-        /* 뼈대 안의 '내용물'들만 처음에는 투명하게 처리 */
-        .result-item.lazy-load .image-with-count-container,
-        .result-item.lazy-load .extras-box,
-        .result-item.lazy-load .pticket-box .item-count,
-        .result-item.lazy-load .price-box {
-            opacity: 0;
-            /* 렌더링 해제 시 애니메이션 없이 바로 사라지도록 */
-            transition: opacity 0.15s ease-out;
-        }
-
-        /* 로드가 완료되면 내용물에 애니메이션 적용하며 표시 */
-        .result-item.loaded .image-with-count-container,
-        .result-item.loaded .extras-box,
-        .result-item.loaded .pticket-box .item-count,
-        .result-item.loaded .price-box {
-            opacity: 1;
-            /* 개별 딜레이를 주어 순차적으로 나타나는 효과 */
-            transition: opacity 0.4s ease-out;
-        }
-        .result-item.loaded .image-with-count-container:nth-child(2),
-        .result-item.loaded .extras-box { transition-delay: 0.05s; }
-        .result-item.loaded .price-box { transition-delay: 0.1s; }
-        /* ▲▲▲▲▲ LAZY LOAD STYLES END ▲▲▲▲▲ */
-
 	    @media (max-width: 768px) {
 	        .character-grid {
 	            grid-template-columns: repeat(auto-fill, minmax(80px,1fr));
@@ -772,7 +727,7 @@
 	            padding: 12px;
 	        }
 	        .result-item {
-				padding: 32px 12px 12px 12px;
+	            padding: 32px 12px 12px 12px;
 				flex-wrap: wrap;
 	        }
             .result-item-info {
@@ -816,7 +771,10 @@
 	            font-size: 1em;
 	            padding: 15px 20px;
 	        }
-			.item-box .item-title, .extras-box .item-title {
+			.item-box .item-title {
+				font-size: 12px;
+			}
+			.extras-box .item-title {
 				font-size: 12px;
 			}
 			.item-box .item-count {
@@ -840,9 +798,43 @@
 				padding: 20px;
 			}
 	    }
+
+        /* ▼▼▼▼▼ [NEW] LAZY LOAD STYLES ▼▼▼▼▼ */
+        .result-item.lazy-load {
+            /* PC 고정 높이 - 레이아웃 쉬프트 방지 */
+            min-height: 112px;
+            transition: background-color 0.3s;
+            padding-top: 14px; /* 내부 요소가 없을 때의 패딩 */
+            padding-bottom: 14px;
+        }
+        @media (max-width: 768px) {
+            .result-item.lazy-load {
+                /* 모바일 고정 높이 (2줄) */
+                min-height: 168px;
+            }
+        }
+
+        /* 아이템 내부 컨텐츠 초기 상태 (숨김) */
+        .result-item > .result-item-info,
+        .result-item > .item-images-wrapper,
+        .result-item > .result-info-right {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        /* loaded 클래스가 추가되면 컨텐츠를 부드럽게 표시 */
+        .result-item.loaded > .result-item-info,
+        .result-item.loaded > .item-images-wrapper,
+        .result-item.loaded > .result-info-right {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* ▲▲▲▲▲ [NEW] LAZY LOAD STYLES ▲▲▲▲▲ */
 	</style>
 </head>
 <body>
+    <!-- (body content remains the same until script tag) -->
     <div id="loader">
         <div class="spinner"></div>
     </div>
@@ -888,6 +880,7 @@
 	</div>
 
     <script>
+        // (script content is same until `optimizeImages` function)
         let lastActivityTime = Date.now();
         const updateActivityTime = () => {
             lastActivityTime = Date.now();
@@ -938,13 +931,25 @@
                                     if (!results.isScrolling) {
                                         results.isScrolling = true;
                                         results.classList.add('scrolling');
+                                        document.body.classList.add('is-scrolling');
                                     }
                                     clearTimeout(results.scrollEndTimer);
                                     results.scrollEndTimer = setTimeout(function() {
                                         results.isScrolling = false;
                                         results.classList.remove('scrolling');
+                                        document.body.classList.remove('is-scrolling');
                                     }, 100);
                                 }
+                            }, { passive: true });
+                            results.addEventListener('touchstart', function() {
+                                results.classList.add('scrolling');
+                                document.body.classList.add('is-scrolling');
+                            }, { passive: true });
+                            results.addEventListener('touchend', function() {
+                                setTimeout(function() {
+                                    results.classList.remove('scrolling');
+                                    document.body.classList.remove('is-scrolling');
+                                }, 100);
                             }, { passive: true });
                         }
                         optimizeImages();
@@ -981,6 +986,19 @@
                             results.particlesPaused = false;
                         }, 200); 
                     }
+                }, { passive: true });
+                results.addEventListener('touchstart', () => {
+                    if (!results.particlesPaused) {
+                        pauseParticles();
+                        results.particlesPaused = true;
+                    }
+                }, { passive: true });
+                results.addEventListener('touchend', () => {
+                    clearTimeout(results.particlesTimer);
+                    results.particlesTimer = setTimeout(() => {
+                        resumeParticles();
+                        results.particlesPaused = false;
+                    }, 200);
                 }, { passive: true });
             }
             document.addEventListener('visibilitychange', () => {
@@ -1029,13 +1047,22 @@
                         }
                     });
 
+                    const rareEngNames = new Set(rareCharacters.map(([eng]) => eng));
+                    characters.forEach(([eng, kor]) => {
+                        if (!rareEngNames.has(eng)) {
+                            new Image().src = `Portrait/${kor}.png`;
+                        }
+                    });
+                    new Image().src = 'Portrait/파파샤.png';
+
                     createCharacterBoxes();
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
 
         let luaData = {};
-        
+        const characterGrid = document.getElementById('characterGrid');
+
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
@@ -1164,6 +1191,7 @@
                                 originalText: line,
                                 price: 0,
                                 guaranteed: line.includes('GUARANTEED'),
+                                displayText: '',
                                 gemsCount: 0,
                                 superRareCount: 0,
                                 uniqueSuperRareCount: 0 
@@ -1197,7 +1225,9 @@
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
                                 itemDetails.gemsCount = parseInt(gemsMatch[1]);
+                                itemDetails.gemsText = gemsMatch[0];
                             }
+                            itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
                             luaData[key] = charString;
                             itemDetailsMap[key] = itemDetails;
                         }
@@ -1219,12 +1249,11 @@
                     const chars = v.match(/.{1,3}/g) || [];
                     if(checkConditions(chars, k)) filtered[k] = v;
                 }
-                currentFilteredData = filtered;
+                currentFilteredData = filtered; // 전역 변수에 필터링된 데이터 저장
 
-                const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
                 
-                const sortedKeys = Object.keys(data).sort((a, b) => {
+                const sortedKeys = Object.keys(currentFilteredData).sort((a, b) => {
                     const itemA = itemDetailsMap[a];
                     const itemB = itemDetailsMap[b];
                     let primarySort = 0;
@@ -1250,7 +1279,7 @@
                     return primarySort;
                 });
                 
-                displayResults(data, sortedKeys);
+                displayResults(sortedKeys); // 정렬된 키만 전달
                 
                 resultsDiv.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
@@ -1303,106 +1332,95 @@
             });
         }
 		
-        // ▼▼▼▼▼ LAZY LOAD & UNLOAD IMPLEMENTATION ▼▼▼▼▼
+		// ▼▼▼▼▼ [MODIFIED] SCRIPT LOGIC FOR LAZY RENDERING ▼▼▼▼▼
 
         let itemObserver;
 
-        function displayResults(data, sortedKeys) {
+        function displayResults(sortedKeys) {
             const res = document.getElementById('results');
             res.scrollTop = 0;
+
             if (itemObserver) {
                 itemObserver.disconnect();
             }
-            
+
+            const fragment = document.createDocumentFragment();
             const container = document.createElement('div');
             container.className = 'content-container';
 
             sortedKeys.forEach(k => {
                 const item = document.createElement('div');
-                item.className = 'result-item lazy-load';
+                item.className = 'result-item lazy-load'; // Placeholder 상태
                 item.dataset.itemKey = k;
-                item.innerHTML = `
-                    <div class="result-item-info">Story 2-2 | Guest | Asia(Korea)</div>
-                    <div class="item-images-wrapper">
-                        <div class="item-images"></div>
-                        <div class="scroll-indicator">...</div>
-                    </div>
-                    <div class="result-info-right">
-                        <div class="item-box pticket-box"></div>
-                        <div class="price-box"></div>
-                    </div>
-                `;
                 container.appendChild(item);
             });
 
+            fragment.appendChild(container);
             res.innerHTML = '';
-            res.appendChild(container);
+            res.appendChild(fragment);
             document.getElementById('copyInstruction').style.display = 'block';
 
-            setupItemObserver();
+            setupLazyRender();
         }
 
-        function setupItemObserver() {
+        function setupLazyRender() {
             const options = {
                 root: document.getElementById('results'),
-                rootMargin: '200px 0px 200px 0px', // 뷰포트 위아래 200px까지의 아이템을 처리 대상으로 함
+                rootMargin: '0px 0px 300px 0px', // 뷰포트 하단 300px 전에 미리 로딩
+                threshold: 0.01
             };
 
             itemObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
-                    const itemElement = entry.target;
                     if (entry.isIntersecting) {
-                        // 화면에 들어왔을 때, 아직 로드되지 않았다면 렌더링
-                        if (!itemElement.classList.contains('loaded')) {
-                            renderItemContent(itemElement);
-                        }
-                    } else {
-                        // 화면 밖으로 나갔을 때, 로드된 상태라면 렌더링 해제
-                        if (itemElement.classList.contains('loaded')) {
-                            unrenderItemContent(itemElement);
-                        }
+                        const itemElement = entry.target;
+                        renderItemContent(itemElement);
+                        observer.unobserve(itemElement);
                     }
                 });
             }, options);
 
-            const allItems = document.querySelectorAll('.result-item');
-            allItems.forEach(item => itemObserver.observe(item));
+            const lazyItems = document.querySelectorAll('.result-item.lazy-load');
+            lazyItems.forEach(item => itemObserver.observe(item));
         }
-        
+
         function renderItemContent(item) {
             const k = item.dataset.itemKey;
             const itemDetails = itemDetailsMap[k];
             const charValue = currentFilteredData[k];
-            if (!itemDetails || !charValue || item.classList.contains('loaded')) {
-                return;
-            }
+
+            if (!itemDetails || !charValue) return;
+
+            const infoBox = document.createElement('div');
+            infoBox.className = 'result-item-info';
+            infoBox.textContent = 'Story 2-2 | Guest | Asia(Korea)';
             
-            // 이벤트 리스너는 한 번만 등록
-            if (!item.dataset.eventsAttached) {
-                item.addEventListener('click', (e) => {
-                    if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
-                    copyToClipboard(item);
-                });
-                item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
-                item.addEventListener('mouseleave', () => {
-                    const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
-                    if (container && container.scrollLeft > 0) {
-                        container.scroll({ left: 0, behavior: 'smooth' });
-                    }
-                });
-                item.dataset.eventsAttached = 'true';
-            }
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.extras-box') || e.target.classList.contains('scroll-indicator')) return;
+                copyToClipboard(item);
+            });
+            item.addEventListener('mouseenter', () => resetOtherScrolledItems(item));
+            item.addEventListener('mouseleave', () => {
+                const container = item.querySelector('.item-images-wrapper.has-scroll .item-images');
+                if (container && container.scrollLeft > 0) {
+                    container.scroll({ left: 0, behavior: 'smooth' });
+                }
+            });
+            
+            const imagesWrapper = document.createElement('div');
+            imagesWrapper.className = 'item-images-wrapper';
 
-            // 내용물 채우기
-            const leftSection = item.querySelector('.item-images');
-            const rightSection = item.querySelector('.result-info-right');
-            const gemsBox = rightSection.querySelector('.pticket-box');
-            const priceBox = rightSection.querySelector('.price-box');
+            const leftSection = document.createElement('div');
+            leftSection.className = 'item-images'; 
 
+            const rightSection = document.createElement('div');
+            rightSection.className = 'result-info-right';
+            
             const allRareCharsData = [];
-            const extraCharImages = [];
+            const extraCharImages = []; 
             const charPattern = /([a-z]{2})(\d)/g;
             let match;
+
             while ((match = charPattern.exec(charValue)) !== null) {
                 const code = match[1];
                 const count = parseInt(match[2]);
@@ -1412,75 +1430,72 @@
                     const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
                     const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
                     const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName: engName, count: count, originalIndex: originalIndex };
-                    if (isGenerallyRare) {
-                        allRareCharsData.push(imageData);
-                    } else {
-                        for (let i = 0; i < count; i++) {
-                            extraCharImages.push({ ...imageData });
-                        }
-                    }
+                    if (isGenerallyRare) allRareCharsData.push(imageData);
+                    else for (let i = 0; i < count; i++) extraCharImages.push({ ...imageData });
                 }
             }
             allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
 
-            let leftHTML = '';
             allRareCharsData.forEach(charData => {
+                const container = document.createElement('div');
+                container.className = 'image-with-count-container';
+                const img = document.createElement('img');
+                img.src = charData.src;
+                img.alt = charData.alt;
+                img.className = 'small-character-img';
                 const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
-                leftHTML += `
-                    <div class="image-with-count-container">
-                        <img src="${charData.src}" alt="${charData.alt}" class="small-character-img ${isSuperRare ? 'super-rare' : 'rare'}">
-                        ${charData.count > 1 ? `<div class="image-count-badge ${isSuperRare ? 'super-rare-badge' : 'rare-badge'}">x${charData.count}</div>` : ''}
-                    </div>
-                `;
+                img.classList.add(isSuperRare ? 'super-rare' : 'rare');
+                container.appendChild(img);
+                
+                if (charData.count > 1) {
+                    const badge = document.createElement('div');
+                    badge.className = 'image-count-badge';
+                    badge.textContent = `x${charData.count}`;
+                    badge.classList.add(isSuperRare ? 'super-rare-badge' : 'rare-badge');
+                    container.appendChild(badge);
+                }
+                leftSection.appendChild(container);
             });
 
             extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', isRare: false, engName: 'papasha' });
             if (extraCharImages.length > 0) {
-                leftHTML += `<div class="extras-box"><div class="item-title">Extras</div></div>`;
-            }
-            leftSection.innerHTML = leftHTML;
-
-            // extras-box에 이벤트 리스너 동적 할당
-            const extrasBoxElement = leftSection.querySelector('.extras-box');
-            if (extrasBoxElement) {
-                extrasBoxElement.onclick = (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); };
-            }
-
-            let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
-            if (itemDetails.gemsCount >= 0) {
-                gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
-                gemsBox.style.display = '';
-            } else {
-                gemsBox.style.display = 'none';
+                const extrasBox = document.createElement('div');
+                extrasBox.className = 'extras-box'; 
+                extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
+                extrasBox.addEventListener('click', (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); });
+                leftSection.appendChild(extrasBox);
             }
             
+            let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
+            if (itemDetails.gemsCount >= 0) {
+                const gemsBox = document.createElement('div');
+                gemsBox.className = 'item-box pticket-box'; 
+                gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
+                rightSection.appendChild(gemsBox);
+            }
+            
+            const priceBox = document.createElement('div');
+            priceBox.className = 'price-box';
             const usdPrice = itemDetails.price.toFixed(2);
             const krwPriceRounded = Math.round(itemDetails.price * 1380 / 1000) * 1000;
             priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
+            rightSection.appendChild(priceBox);
 
-            // 상태 변경 및 애니메이션
+            const scrollIndicator = document.createElement('div');
+            scrollIndicator.className = 'scroll-indicator';
+            scrollIndicator.innerHTML = '...';
+            
+            imagesWrapper.appendChild(leftSection);
+            imagesWrapper.appendChild(scrollIndicator);
+            
+            item.appendChild(infoBox);
+            item.appendChild(imagesWrapper);
+            item.appendChild(rightSection);
+
             item.classList.remove('lazy-load');
-            requestAnimationFrame(() => item.classList.add('loaded'));
+            item.classList.add('loaded');
+
             setupScrollIndicatorForItem(item);
-        }
-
-        function unrenderItemContent(item) {
-            if (!item.classList.contains('loaded')) {
-                return;
-            }
-
-            item.classList.remove('loaded');
-            item.classList.add('lazy-load');
-
-            // 내용물을 비워서 DOM 부담 줄이기
-            const leftSection = item.querySelector('.item-images');
-            if (leftSection) leftSection.innerHTML = '';
-            
-            const gemsBox = item.querySelector('.pticket-box');
-            if(gemsBox) gemsBox.innerHTML = '';
-            
-            const priceBox = item.querySelector('.price-box');
-            if(priceBox) priceBox.innerHTML = '';
         }
 
         function setupScrollIndicatorForItem(item) {
@@ -1491,8 +1506,8 @@
 
             requestAnimationFrame(() => {
                 const hasScroll = imagesContainer.scrollWidth > imagesContainer.clientWidth;
-                wrapper.classList.toggle('has-scroll', hasScroll);
                 if (hasScroll) {
+                    wrapper.classList.add('has-scroll');
                     scrollIndicator.onclick = (e) => {
                         e.stopPropagation();
                         imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
@@ -1501,11 +1516,18 @@
                         const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
                         wrapper.classList.toggle('scrolled-to-end', isAtEnd);
                     };
+                } else {
+                    wrapper.classList.remove('has-scroll');
                 }
             });
         }
-		
-        // ▲▲▲▲▲ END OF IMPLEMENTATION ▲▲▲▲▲
+        
+		function setupScrollIndicators() {
+            // 이 함수는 이제 각 아이템이 렌더링될 때 개별적으로 처리되므로 비워둡니다.
+		}
+        
+        // ▲▲▲▲▲ [MODIFIED] SCRIPT LOGIC FOR LAZY RENDERING ▲▲▲▲▲
+
 
 		function resetAllScrolledItems() {
 		    document.querySelectorAll('.item-images-wrapper.has-scroll .item-images').forEach(container => {
@@ -1514,6 +1536,7 @@
 		        }
 		    });
 		}
+
         function resetOtherScrolledItems(currentItem) {
             document.querySelectorAll('.result-item').forEach(item => {
                 if (item !== currentItem) {
@@ -1524,6 +1547,7 @@
                 }
             });
         }
+
 		function showExtrasPopup(images) {
 			const popup = document.getElementById('extrasPopup');
 			const grid = document.getElementById('extras-popup-grid');
@@ -1541,6 +1565,7 @@
 			Object.values(groupedExtras).forEach(charData => {
 				const container = document.createElement('div');
 				container.className = 'image-with-count-container';
+
 				const img = document.createElement('img');
 				img.src = charData.src;
 				img.alt = charData.alt;
@@ -1548,16 +1573,20 @@
 				img.loading = 'lazy';
 				img.decoding = 'async';
 				container.appendChild(img);
+
 				if (charData.count > 1) {
 					const badge = document.createElement('div');
 					badge.className = 'image-count-badge';
 					badge.textContent = `x${charData.count}`;
 					container.appendChild(badge);
 				}
+				
 				grid.appendChild(container);
 			});
+
 			popup.style.display = 'flex';
 		}
+
         function copyToClipboard(el) {
             const itemKey = el.dataset.itemKey;
             const itemDetails = itemDetailsMap[itemKey];
@@ -1567,6 +1596,7 @@
                 err => console.error('Copy failed: ', err)
             );
         }
+
         function showCopyMessage(){
             const msg = document.getElementById('copyMessage');
             msg.classList.add('show');
@@ -1574,6 +1604,7 @@
                 msg.classList.remove('show');
             }, 2000);
         }
+
 		function getSelectedCharacters(){
 		    return [...document.getElementsByClassName('character-box')]
 		        .filter(b => b.classList.contains('selected'))
@@ -1584,6 +1615,7 @@
 		        })
 		        .join(',');
 		}
+
         function throttle(func, delay) {
             let lastCall = 0;
             return function(...args) {
@@ -1594,6 +1626,7 @@
                 }
             };
         }
+
         function debounce(func, delay) {
             let timeoutId;
             return function(...args) {
@@ -1603,6 +1636,7 @@
                 }, delay);
             };
         }
+
 		const throttledFilterHandler = throttle(function() {
 		    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 		    loadData().then(() => {
@@ -1618,11 +1652,14 @@
 		        console.error('필터 적용 에러:', error);
 		    });
 		}, 300);
+
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
+        
         document.getElementById('sortDropdown').addEventListener('change', function() {
             applyFiltersAndSort();
             this.blur(); 
         });
+
 		document.addEventListener('DOMContentLoaded', () => {
 		    const skinTriggerElement = document.getElementById('skinInfoTrigger');
 		    const skinPopupElement = document.getElementById('skinInfoPopup');
@@ -1642,15 +1679,20 @@
 		            }
 		        });
 		    }
+
 			const extrasPopup = document.getElementById('extrasPopup');
 			const closeExtrasBtn = document.getElementById('closeExtrasPopup');
+
 			const hideExtrasPopup = () => { extrasPopup.style.display = 'none'; };
+			
 			closeExtrasBtn.addEventListener('click', hideExtrasPopup);
+
 			window.addEventListener('click', (event) => {
 				if (event.target == extrasPopup) {
 					hideExtrasPopup();
 				}
 			});
+
             const resultsContainer = document.getElementById('results');
             if (resultsContainer) {
                 resultsContainer.addEventListener('scroll', resetAllScrolledItems);
@@ -1661,6 +1703,9 @@
                 }
             });
 			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
+			
+            const debouncedScrollSetup = debounce(setupScrollIndicators, 50);
+            window.addEventListener('resize', debouncedScrollSetup);
 		});
     </script>
 </body>
