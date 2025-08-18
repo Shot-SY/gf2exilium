@@ -261,7 +261,6 @@
 	    }
 		.result-item {
 			margin-bottom: 18px;
-			/* MODIFIED PADDING */
 			padding: 35px 24px 14px 24px;
 			background: linear-gradient(135deg, #202228, #1a1c20);
 			cursor: pointer;
@@ -289,7 +288,6 @@
 			transition: opacity 0.3s;
 		}
 
-        /* NEW STYLE FOR ITEM INFO */
         .result-item-info {
             position: absolute;
             top: 12px;
@@ -463,12 +461,11 @@
 			text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
 		}
 		
-		/* [수정됨] PTICKET 박스를 위한 새 스타일 */
 		.pticket-box {
 			background-image: url('Portrait/픽업티켓.png');
-			background-size: 80%; /* 수정: 이미지 크기 80%로 조정 */
+			background-size: 80%;
 			background-position: center;
-			background-repeat: no-repeat; /* 추가: 이미지 반복 방지 */
+			background-repeat: no-repeat;
 			border: 1px solid rgba(255, 193, 7, 0.8);
 			box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
 			flex-direction: row; 
@@ -746,11 +743,9 @@
 	            padding: 12px;
 	        }
 	        .result-item {
-				/* MODIFIED PADDING FOR MOBILE */
 	            padding: 32px 12px 12px 12px;
 				flex-wrap: wrap;
 	        }
-            /* NEW STYLE FOR ITEM INFO (MOBILE) */
             .result-item-info {
                 top: 10px;
                 left: 12px;
@@ -1000,7 +995,7 @@
         let rareCharacters = [];
         let superRarePrefixes = new Set();
         let currentFilteredData = {};
-        let imageObserver;
+        let itemObserver;
 
 		function loadCharacters() {
             const ts = new Date().getTime();
@@ -1363,6 +1358,7 @@
                 const extraCharImages = [];
                 const charPattern = /([a-z]{2})(\d)/g;
                 let match;
+
                 while ((match = charPattern.exec(charValue)) !== null) {
                     const code = match[1];
                     const count = parseInt(match[2]);
@@ -1382,57 +1378,51 @@
                     }
                 }
                 allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
+                
+                let needsLazyLoad = false;
 
+                // 1. 왼쪽 이미지 영역 최소 렌더링
                 if (allRareCharsData.length > 0) {
-                    // 1. 첫 번째 이미지만 즉시 렌더링
                     const firstCharData = allRareCharsData[0];
-                    const firstImageElement = createCharacterImageElement(firstCharData);
-                    leftSection.appendChild(firstImageElement);
+                    leftSection.appendChild(createCharacterImageElement(firstCharData));
 
-                    // 2. 나머지 이미지가 있다면, 데이터를 저장하고 클래스 추가
                     const remainingCharsData = allRareCharsData.slice(1);
                     if (remainingCharsData.length > 0) {
-                        item.classList.add('lazy-load-images');
                         item.dataset.remainingChars = JSON.stringify(remainingCharsData);
+                        needsLazyLoad = true;
                     }
                 }
-
                 extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', isRare: false, engName: 'papasha' });
                 if (extraCharImages.length > 0) {
                     const extrasBox = document.createElement('div');
                     extrasBox.className = 'extras-box';
                     extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
-                    extrasBox.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showExtrasPopup(extraCharImages);
-                    });
+                    extrasBox.addEventListener('click', (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); });
                     leftSection.appendChild(extrasBox);
                 }
 
-                let finalGemsCount = itemDetails.gemsCount;
-                if (itemDetails.guaranteed) {
-                    finalGemsCount += 20;
-                }
-                if (itemDetails.gemsCount >= 0) {
-                    const gemsBox = document.createElement('div');
-                    gemsBox.className = 'item-box pticket-box';
-                    gemsBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
-                    rightSection.appendChild(gemsBox);
-                }
-
+                // 2. 오른쪽 정보 영역 최소 렌더링 (가격 박스만)
                 const priceBox = document.createElement('div');
                 priceBox.className = 'price-box';
                 const usdPrice = itemDetails.price.toFixed(2);
-                const krwPriceRaw = itemDetails.price * 1380;
-                const krwPriceRounded = Math.round(krwPriceRaw / 1000) * 1000;
-                const formattedKrwPrice = '₩ ' + krwPriceRounded.toLocaleString();
-                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">${formattedKrwPrice}</div>`;
+                const krwPriceRounded = Math.round(itemDetails.price * 1380 / 1000) * 1000;
+                priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
                 rightSection.appendChild(priceBox);
+                
+                let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
+                if (itemDetails.gemsCount >= 0) {
+                    item.dataset.lazyBox = finalGemsCount;
+                    needsLazyLoad = true;
+                }
+
+                // 3. 지연 로딩이 필요한 경우 클래스 추가
+                if (needsLazyLoad) {
+                    item.classList.add('lazy-load-item');
+                }
 
                 const scrollIndicator = document.createElement('div');
                 scrollIndicator.className = 'scroll-indicator';
                 scrollIndicator.innerHTML = '...';
-
                 imagesWrapper.appendChild(leftSection);
                 imagesWrapper.appendChild(scrollIndicator);
                 item.appendChild(imagesWrapper);
@@ -1445,12 +1435,13 @@
             document.getElementById('copyInstruction').style.display = 'block';
 
             setupScrollIndicators();
-            setupImageObserver();
+            setupItemObserver();
         }
 
-        function createCharacterImageElement(charData) {
+        function createCharacterImageElement(charData, isLazy=false) {
             const container = document.createElement('div');
             container.className = 'image-with-count-container';
+            if (isLazy) container.classList.add('js-lazy-loaded');
 
             const img = document.createElement('img');
             img.src = charData.src;
@@ -1458,73 +1449,81 @@
             img.className = 'small-character-img';
 
             const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
-            if (isSuperRare) {
-                img.classList.add('super-rare');
-            } else {
-                img.classList.add('rare');
-            }
+            img.classList.add(isSuperRare ? 'super-rare' : 'rare');
             container.appendChild(img);
 
             if (charData.count > 1) {
                 const badge = document.createElement('div');
                 badge.className = 'image-count-badge';
                 badge.textContent = `x${charData.count}`;
-                if (isSuperRare) {
-                    badge.classList.add('super-rare-badge');
-                } else {
-                    badge.classList.add('rare-badge');
-                }
+                badge.classList.add(isSuperRare ? 'super-rare-badge' : 'rare-badge');
                 container.appendChild(badge);
             }
             return container;
         }
 
-        function setupImageObserver() {
-            if (imageObserver) {
-                imageObserver.disconnect();
-            }
+        function createTicketBoxElement(count) {
+            const gemsBox = document.createElement('div');
+            gemsBox.className = 'item-box pticket-box js-lazy-loaded';
+            gemsBox.innerHTML = `<div class="item-count">${count}</div>`;
+            return gemsBox;
+        }
 
+        function setupItemObserver() {
+            if (itemObserver) {
+                itemObserver.disconnect();
+            }
             const options = {
                 root: document.getElementById('results'),
-                rootMargin: '300px 0px',
-                threshold: 0.01
+                rootMargin: '400px 0px', // 뷰포트 위아래 400px 영역을 미리 감지
+                threshold: 0
             };
-
-            imageObserver = new IntersectionObserver((entries, observer) => {
+            itemObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        renderRemainingImages(entry.target);
-                        observer.unobserve(entry.target);
+                        renderFullItem(entry.target);
+                    } else {
+                        revertToLazyItem(entry.target);
                     }
                 });
             }, options);
-
-            const lazyItems = document.querySelectorAll('.lazy-load-images');
-            lazyItems.forEach(item => imageObserver.observe(item));
+            const lazyItems = document.querySelectorAll('.lazy-load-item');
+            lazyItems.forEach(item => itemObserver.observe(item));
         }
 
-        function renderRemainingImages(item) {
+        function renderFullItem(item) {
+            if (item.querySelector('.js-lazy-loaded')) return; // 이미 렌더링된 경우 중복 실행 방지
+
+            // 1. 나머지 캐릭터 이미지 렌더링
             const remainingCharsData = item.dataset.remainingChars;
-            if (!remainingCharsData) return;
-
-            const remainingChars = JSON.parse(remainingCharsData);
-            const leftSection = item.querySelector('.item-images');
-            if (!leftSection) return;
-
-            const extrasBox = leftSection.querySelector('.extras-box');
-
-            remainingChars.forEach(charData => {
-                const imageElement = createCharacterImageElement(charData);
-                if (extrasBox) {
+            if (remainingCharsData) {
+                const remainingChars = JSON.parse(remainingCharsData);
+                const leftSection = item.querySelector('.item-images');
+                const extrasBox = leftSection.querySelector('.extras-box');
+                remainingChars.forEach(charData => {
+                    const imageElement = createCharacterImageElement(charData, true); // isLazy=true
                     leftSection.insertBefore(imageElement, extrasBox);
-                } else {
-                    leftSection.appendChild(imageElement);
-                }
-            });
+                });
+            }
 
-            item.classList.remove('lazy-load-images');
-            delete item.dataset.remainingChars;
+            // 2. 티켓 박스 렌더링
+            const lazyBoxData = item.dataset.lazyBox;
+            if (lazyBoxData) {
+                const rightSection = item.querySelector('.result-info-right');
+                const priceBox = rightSection.querySelector('.price-box');
+                const ticketBox = createTicketBoxElement(lazyBoxData);
+                rightSection.insertBefore(ticketBox, priceBox);
+            }
+            
+            setupScrollIndicatorForItem(item);
+        }
 
+        function revertToLazyItem(item) {
+            const lazyElements = item.querySelectorAll('.js-lazy-loaded');
+            if (lazyElements.length === 0) return; // 되돌릴 요소가 없으면 종료
+            
+            lazyElements.forEach(el => el.remove());
+            
             setupScrollIndicatorForItem(item);
         }
 
@@ -1549,19 +1548,12 @@
                     
                     scrollIndicator.onclick = (e) => {
                         e.stopPropagation();
-                        imagesContainer.scroll({
-                            left: imagesContainer.scrollWidth - imagesContainer.clientWidth,
-                            behavior: 'smooth'
-                        });
+                        imagesContainer.scroll({ left: imagesContainer.scrollWidth - imagesContainer.clientWidth, behavior: 'smooth' });
                     };
 
                     imagesContainer.onscroll = () => {
                         const isAtEnd = imagesContainer.scrollLeft + imagesContainer.clientWidth >= imagesContainer.scrollWidth - 5;
-                        if (isAtEnd) {
-                            wrapper.classList.add('scrolled-to-end');
-                        } else {
-                            wrapper.classList.remove('scrolled-to-end');
-                        }
+                        wrapper.classList.toggle('scrolled-to-end', isAtEnd);
                     };
                     imagesContainer.dispatchEvent(new Event('scroll'));
                 } else {
