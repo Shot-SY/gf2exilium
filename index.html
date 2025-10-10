@@ -1405,7 +1405,7 @@
                 const priceBox = document.createElement('div');
                 priceBox.className = 'price-box';
                 const usdPrice = itemDetails.price.toFixed(2);
-                const krwPriceRounded = Math.round(itemDetails.price * 1380 / 1000) * 1000;
+                const krwPriceRounded = Math.round(itemDetails.price * 1400 / 1000) * 1000;
                 priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
                 rightSection.appendChild(priceBox);
                 
