@@ -982,7 +982,7 @@
             <div class="item-detail-popup-footer">
                 <div class="popup-info-box">
                     <div class="footer-value" id="popup-total-count-value"></div>
-                    <div class="footer-label">Total Characters</div>
+                    <div class="footer-label">Items</div>
                 </div>
                 <div class="popup-info-box">
                     <div class="footer-value" id="popup-pticket-value"></div>
@@ -1524,7 +1524,7 @@
 
                 if (needsLazyLoad) {
                     item.classList.add('lazy-load-item');
-                } else if (finalGemsCount > 0) { // lazy load 필요 없어도 티켓 있으면 바로 렌더링
+                } else if (finalGemsCount > 0) { 
                     const ticketBox = createTicketBoxElement(finalGemsCount);
                     rightSection.insertBefore(ticketBox, priceBox);
                 }
@@ -1722,45 +1722,55 @@
             const itemDetails = itemDetailsMap[itemKey];
             const charPattern = /([a-z]{2})(\d)/g;
             let match;
-            let totalCharCount = 0;
+            let totalItemCount = 0;
+            let allItemsData = [];
 
+            // 1. Parse all characters into a structured array
             while ((match = charPattern.exec(charValue)) !== null) {
                 const code = match[1];
                 const count = parseInt(match[2]);
                 const charInfo = characters.find(([eng]) => eng.startsWith(code));
                 if (charInfo) {
                     const [engName, korName] = charInfo;
-                    const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-                    totalCharCount += count;
-                    for (let i = 0; i < count; i++) {
-                        const img = document.createElement('img');
-                        img.src = `Portrait/${korName}.png`;
-                        img.alt = korName;
-                        img.className = 'detail-popup-img';
-                        img.loading = 'lazy';
-                        img.decoding = 'async';
-                        img.onerror = function() { handleImageError(this) };
-                        
-                        if (isGenerallyRare) {
-                            const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => engName.startsWith(prefix));
-                            img.classList.add(isSuperRare ? 'super-rare' : 'rare');
-                        } else {
-                            img.classList.add('extras-character-border');
-                        }
-                        grid.appendChild(img);
-                    }
+                    const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
+                    totalItemCount += count;
+                    allItemsData.push({
+                        korName,
+                        engName,
+                        count,
+                        originalIndex,
+                        isGenerallyRare: rareCharacters.some(([rareEng]) => rareEng.startsWith(code))
+                    });
                 }
             }
+
+            // 2. Sort the array based on the original character order
+            allItemsData.sort((a, b) => a.originalIndex - b.originalIndex);
+
+            // 3. Create and append sorted character images to the grid
+            allItemsData.forEach(charData => {
+                for (let i = 0; i < charData.count; i++) {
+                    const img = document.createElement('img');
+                    img.src = `Portrait/${charData.korName}.png`;
+                    img.alt = charData.korName;
+                    img.className = 'detail-popup-img';
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                    img.onerror = function() { handleImageError(this) };
+                    
+                    if (charData.isGenerallyRare) {
+                        const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+                        img.classList.add(isSuperRare ? 'super-rare' : 'rare');
+                    } else {
+                        img.classList.add('extras-character-border');
+                    }
+                    grid.appendChild(img);
+                }
+            });
             
             let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
-            if(finalGemsCount > 0) {
-                const ticketBox = document.createElement('div');
-                ticketBox.className = 'item-box pticket-box';
-                ticketBox.innerHTML = `<div class="item-count">${finalGemsCount}</div>`;
-                grid.appendChild(ticketBox);
-            }
-
-            document.getElementById('popup-total-count-value').textContent = totalCharCount;
+            
+            document.getElementById('popup-total-count-value').textContent = totalItemCount;
             document.getElementById('popup-pticket-value').textContent = finalGemsCount;
             
             const usdPrice = itemDetails.price.toFixed(2);
