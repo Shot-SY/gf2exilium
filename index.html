@@ -813,9 +813,10 @@
         #popup-total-count-value {
             color: #ff9800; text-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
         }
-        #popup-pticket-value {
-            color: #ffc107; text-shadow: 0 0 8px rgba(255, 193, 7, 0.7);
-        }
+		#popup-pticket-value {
+		    color: #ff5252;
+		    text-shadow: 0 0 8px rgba(255, 82, 82, 0.6);
+		}
         #popup-price-usd {
 			font-size: 22px; font-weight: 700; color: #2ecc71;
             text-shadow: 0 0 8px rgba(46, 204, 113, 0.5); margin-bottom: 4px;
@@ -1771,7 +1772,7 @@
             let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
             
             document.getElementById('popup-total-count-value').textContent = totalItemCount;
-            document.getElementById('popup-pticket-value').textContent = finalGemsCount;
+            document.getElementById('popup-pticket-value').textContent = finalGemsCount + '+';
             
             const usdPrice = itemDetails.price.toFixed(2);
             const krwPriceRounded = Math.round(itemDetails.price * 1400 / 1000) * 1000;
