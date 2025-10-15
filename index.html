@@ -950,8 +950,9 @@
 	</div>
     <div class="sort-container">
         <select id="sortDropdown">
-            <option value="price" selected>Price</option>
-            <option value="character">Character</option>
+            <option value="price-desc" selected>Price (High to Low)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="variety">Variety</option>
             <option value="pticket">PTicket</option>
         </select>
     </div>
@@ -1328,7 +1329,7 @@
                 currentFilteredData = filtered;
 
                 const data = currentFilteredData;
-                const sortKey = document.getElementById('sortDropdown')?.value || 'price';
+                const sortKey = document.getElementById('sortDropdown')?.value || 'price-desc';
 
                 const sortedKeys = Object.keys(data).sort((a, b) => {
                     const itemA = itemDetailsMap[a];
@@ -1336,7 +1337,7 @@
                     let primarySort = 0;
 
                     switch (sortKey) {
-                        case 'character':
+                        case 'variety':
                             primarySort = (itemB.uniqueSuperRareCount || 0) - (itemA.uniqueSuperRareCount || 0);
                             break;
                         case 'pticket':
@@ -1344,13 +1345,16 @@
                             let countB = itemB.gemsCount + (itemB.guaranteed ? 20 : 0);
                             primarySort = countB - countA;
                             break;
-                        case 'price':
+                        case 'price-asc':
+                            primarySort = itemA.price - itemB.price;
+                            break;
+                        case 'price-desc':
                         default:
                             primarySort = itemB.price - itemA.price;
                             break;
                     }
 
-                    if (primarySort === 0 && sortKey !== 'price') {
+                    if (primarySort === 0 && sortKey !== 'price-desc' && sortKey !== 'price-asc') {
                         return itemB.price - itemA.price;
                     }
                     return primarySort;
