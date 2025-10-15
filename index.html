@@ -183,7 +183,7 @@
 	        position: fixed;
 	        top: 50%;
 	        left: 50%;
-            --copy-translate-y: -50%; 
+            --copy-translate-y: -50%;
 	        transform: translate(-50%, var(--copy-translate-y)) scale(0.8);
 	        background: linear-gradient(135deg, #232526 0%, #414345 100%);
 	        color: #fff;
@@ -301,9 +301,9 @@
             pointer-events: none;
         }
         .item-images-wrapper {
-            flex-grow: 1; 
-            position: relative; 
-            overflow: hidden; 
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
             display: flex;
         }
 		.item-images {
@@ -316,7 +316,7 @@
             scrollbar-width: none;
 		}
         .item-images::-webkit-scrollbar {
-            display: none; 
+            display: none;
         }
 		.result-info-right {
 			display: flex;
@@ -401,7 +401,7 @@
 		.image-count-badge {
 		    position: absolute;
 		    bottom: -5px;
-		    right: -5px; 
+		    right: -5px;
 		    min-width: 22px;
 		    text-align: center;
 		    background: rgba(0, 0, 0, 0.75);
@@ -409,13 +409,13 @@
 		    -webkit-backdrop-filter: blur(4px);
 		    color: #fff;
 		    padding: 2px 7px;
-		    border-radius: 10px; 
+		    border-radius: 10px;
 		    font-family: 'Poppins', sans-serif;
-		    font-size: 15px; 
+		    font-size: 15px;
 		    font-weight: 600;
 		    line-height: 1.4;
 		    border: 1px solid rgba(255, 255, 255, 0.1);
-		    box-shadow: 0 2px 5px rgba(0,0,0,0.6); 
+		    box-shadow: 0 2px 5px rgba(0,0,0,0.6);
 		    pointer-events: none;
 		}
 		.image-count-badge.rare-badge {
@@ -460,7 +460,7 @@
 			background-repeat: no-repeat;
 			border: 1px solid rgba(255, 193, 7, 0.8);
 			box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
-			flex-direction: row; 
+			flex-direction: row;
 			justify-content: center;
 			align-items: center;
 		}
@@ -536,7 +536,7 @@
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
-            right: 15px; 
+            right: 15px;
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
@@ -545,7 +545,7 @@
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
-			display: none; 
+			display: none;
 			align-items: center;
 			justify-content: center;
 			font-size: 18px;
@@ -830,7 +830,7 @@
 	            gap: 10px;
 	        }
 	        .character-box {
-	            height: 125px; 
+	            height: 125px;
 	            padding: 8px;
 	        }
 	        .character-box .character-img, .character-box .new-character-placeholder {
@@ -1007,7 +1007,7 @@
             placeholder.className = imgElement.className;
             placeholder.classList.add('new-character-placeholder');
             placeholder.classList.remove('character-img', 'small-character-img', 'detail-popup-img');
-            
+
             imgElement.replaceWith(placeholder);
         }
 
@@ -1053,7 +1053,7 @@
                             results.style.willChange = 'scroll-position';
                             results.style.webkitOverflowScrolling = 'touch';
                             let lastScrollTime = 0;
-                            const scrollThreshold = 16; 
+                            const scrollThreshold = 16;
                             results.addEventListener('scroll', function(e) {
                                 const now = performance.now();
                                 if (now - lastScrollTime >= scrollThreshold) {
@@ -1114,7 +1114,7 @@
                         results.particlesTimer = setTimeout(() => {
                             resumeParticles();
                             results.particlesPaused = false;
-                        }, 200); 
+                        }, 200);
                     }
                 }, { passive: true });
                 results.addEventListener('touchstart', () => {
@@ -1195,7 +1195,7 @@
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
-                
+
                 if (isGenerallyRare) {
                     if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) {
                         charBox.classList.add('rare');
@@ -1212,7 +1212,7 @@
                     <div class="spinbox-container">
                         <input type="number" id="${eng}-spin" min="0" max="7" value="0" disabled>
                     </div>`;
-                
+
                 fragment.appendChild(charBox);
                 charBox.addEventListener('click', (e) => {
                     if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(charBox);
@@ -1225,27 +1225,6 @@
                         if(charBox.querySelector('input').value === '0') charBox.querySelector('input').value = '1';
                     }
                 });
-            });
-            const ticketBox = document.createElement('div');
-            ticketBox.className = 'character-box gold-border';
-            ticketBox.dataset.engName = 'PickupTicket';
-            ticketBox.innerHTML = `
-                <img src="Portrait/픽업티켓.png" alt="PickupTicket" class="character-img" loading="lazy" decoding="async" onerror="handleImageError(this)">
-                <span class="character-name">PickupTicket</span>
-                <div class="spinbox-container">
-                    <input type="number" id="PickupTicket-spin" min="0" value="0" disabled>
-                </div>`;
-            fragment.appendChild(ticketBox);
-            ticketBox.addEventListener('click', (e) => {
-                if(e.target.tagName.toLowerCase() !== 'input') toggleSelection(ticketBox);
-            });
-            ticketBox.querySelector('input').addEventListener('click', (e) => {
-                e.stopPropagation();
-                if(!ticketBox.classList.contains('selected')) {
-                    ticketBox.classList.add('selected');
-                    ticketBox.querySelector('input').disabled = false;
-                    if(ticketBox.querySelector('input').value === '0') ticketBox.querySelector('input').value = '1';
-                }
             });
             characterGrid.appendChild(fragment);
         }
@@ -1291,7 +1270,7 @@
                                 displayText: '',
                                 gemsCount: 0,
                                 superRareCount: 0,
-                                uniqueSuperRareCount: 0 
+                                uniqueSuperRareCount: 0
                             };
                             const priceMatch = line.match(/\$(\d+\.\d+)/);
                             if (priceMatch) {
@@ -1299,7 +1278,7 @@
                             }
 
                             let superRareCount = 0;
-                            const uniqueSuperRares = new Set(); 
+                            const uniqueSuperRares = new Set();
 
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
@@ -1308,16 +1287,16 @@
                                     const numCount = parseInt(match[2]);
                                     const prefix = charName.slice(0, 2);
                                     charString += prefix + numCount;
-                                    
+
                                     if (superRarePrefixes.has(prefix)) {
                                         superRareCount += numCount;
-                                        uniqueSuperRares.add(prefix); 
+                                        uniqueSuperRares.add(prefix);
                                     }
                                 }
                                 j++;
                             }
                             itemDetails.superRareCount = superRareCount;
-                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size; 
+                            itemDetails.uniqueSuperRareCount = uniqueSuperRares.size;
 
                             const gemsMatch = line.match(/(\d+)PickupTicket/i);
                             if (gemsMatch) {
@@ -1334,8 +1313,8 @@
 
         function applyFiltersAndSort() {
             const resultsDiv = document.getElementById('results');
-            resultsDiv.classList.add('sorting'); 
-            
+            resultsDiv.classList.add('sorting');
+
             if (window.tsParticles && window.tsParticles.domItem(0)) {
                 window.tsParticles.domItem(0).pause();
             }
@@ -1350,7 +1329,7 @@
 
                 const data = currentFilteredData;
                 const sortKey = document.getElementById('sortDropdown')?.value || 'price';
-                
+
                 const sortedKeys = Object.keys(data).sort((a, b) => {
                     const itemA = itemDetailsMap[a];
                     const itemB = itemDetailsMap[b];
@@ -1376,9 +1355,9 @@
                     }
                     return primarySort;
                 });
-                
+
                 displayResults(data, sortedKeys);
-                
+
                 resultsDiv.classList.remove('sorting');
                 if (window.tsParticles && window.tsParticles.domItem(0)) {
                     window.tsParticles.domItem(0).play();
@@ -1405,20 +1384,6 @@
             if (!characterCondition) {
                 return false;
             }
-            const pickupTicketBox = document.querySelector('.character-box[data-eng-name="PickupTicket"]');
-            if (pickupTicketBox && pickupTicketBox.classList.contains('selected')) {
-                const requiredTickets = parseInt(pickupTicketBox.querySelector('input').value);
-                const itemDetails = itemDetailsMap[itemKey];
-                
-                let hasTickets = itemDetails.gemsCount || 0;
-                if (itemDetails.guaranteed) {
-                    hasTickets += 20;
-                }
-
-                if (hasTickets < requiredTickets) {
-                    return false;
-                }
-            }
             return true;
         }
 
@@ -1429,7 +1394,7 @@
                 if (!img.hasAttribute('decoding')) img.decoding = 'async';
             });
         }
-		
+
 		function displayResults(data, sortedKeys) {
             const res = document.getElementById('results');
             res.scrollTop = 0;
@@ -1493,7 +1458,7 @@
                     }
                 }
                 allRareCharsData.sort((a, b) => a.originalIndex - b.originalIndex);
-                
+
                 let needsLazyLoad = false;
                 if (allRareCharsData.length > 0) {
                     const firstCharData = allRareCharsData[0];
@@ -1509,14 +1474,14 @@
                 extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
                 extrasBox.addEventListener('click', (e) => { e.stopPropagation(); showExtrasPopup(extraCharImages); });
                 leftSection.appendChild(extrasBox);
-                
+
                 const priceBox = document.createElement('div');
                 priceBox.className = 'price-box';
                 const usdPrice = itemDetails.price.toFixed(2);
                 const krwPriceRounded = Math.round(itemDetails.price * 1400 / 1000) * 1000;
                 priceBox.innerHTML = `<div class="price-usd">$${usdPrice}</div><div class="price-krw">₩ ${krwPriceRounded.toLocaleString()}</div>`;
                 rightSection.appendChild(priceBox);
-                
+
                 let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
                 if (finalGemsCount > 0) {
                     item.dataset.lazyBox = finalGemsCount;
@@ -1525,7 +1490,7 @@
 
                 if (needsLazyLoad) {
                     item.classList.add('lazy-load-item');
-                } else if (finalGemsCount > 0) { 
+                } else if (finalGemsCount > 0) {
                     const ticketBox = createTicketBoxElement(finalGemsCount);
                     rightSection.insertBefore(ticketBox, priceBox);
                 }
@@ -1585,7 +1550,7 @@
 		function setupItemObserver() {
 		    if (itemObserver) itemObserver.disconnect();
 		    const options = { root: document.getElementById('results'), rootMargin: '400px 0px', threshold: 0 };
-		
+
 		    itemObserver = new IntersectionObserver((entries, observer) => {
 		        entries.forEach(entry => {
 		            const item = entry.target;
@@ -1598,13 +1563,13 @@
 		            }
 		        });
 		    }, options);
-		
+
 		    const lazyItems = document.querySelectorAll('.lazy-load-item');
 		    lazyItems.forEach(item => itemObserver.observe(item));
 		}
 
         function renderFullItem(item) {
-            if (item.querySelector('.js-lazy-loaded')) return; 
+            if (item.querySelector('.js-lazy-loaded')) return;
 
             const remainingCharsData = item.dataset.remainingChars;
             if (remainingCharsData) {
@@ -1624,13 +1589,13 @@
                 const ticketBox = createTicketBoxElement(lazyBoxData);
                 rightSection.insertBefore(ticketBox, priceBox);
             }
-            
+
             setupScrollIndicatorForItem(item);
         }
 
         function revertToLazyItem(item) {
             const lazyElements = item.querySelectorAll('.js-lazy-loaded');
-            if (lazyElements.length === 0) return; 
+            if (lazyElements.length === 0) return;
             lazyElements.forEach(el => el.remove());
             setupScrollIndicatorForItem(item);
         }
@@ -1638,7 +1603,7 @@
 		function setupScrollIndicators() {
 			document.querySelectorAll('#results .result-item').forEach(setupScrollIndicatorForItem);
 		}
-        
+
         function setupScrollIndicatorForItem(item) {
             const wrapper = item.querySelector('.item-images-wrapper');
             const imagesContainer = item.querySelector('.item-images');
@@ -1707,7 +1672,7 @@
                 container.innerHTML = `
                     <img src="${charData.src}" alt="${charData.alt}" class="small-character-img extras-character-border" loading="lazy" decoding="async" onerror="handleImageError(this)">
                     ${charData.count > 1 ? `<div class="image-count-badge">x${charData.count}</div>` : ''}`;
-				
+
 				grid.appendChild(container);
 			});
 			popup.style.display = 'flex';
@@ -1758,7 +1723,7 @@
                     img.loading = 'lazy';
                     img.decoding = 'async';
                     img.onerror = function() { handleImageError(this) };
-                    
+
                     if (charData.isGenerallyRare) {
                         const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
                         img.classList.add(isSuperRare ? 'super-rare' : 'rare');
@@ -1768,17 +1733,17 @@
                     grid.appendChild(img);
                 }
             });
-            
+
             let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
-            
+
             document.getElementById('popup-total-count-value').textContent = totalItemCount;
             document.getElementById('popup-pticket-value').textContent = finalGemsCount + '+';
-            
+
             const usdPrice = itemDetails.price.toFixed(2);
             const krwPriceRounded = Math.round(itemDetails.price * 1400 / 1000) * 1000;
             document.getElementById('popup-price-usd').textContent = `$${usdPrice}`;
             document.getElementById('popup-price-krw').textContent = `₩ ${krwPriceRounded.toLocaleString()}`;
-            
+
             popup.style.display = 'flex';
             copyToClipboard(itemKey);
         }
@@ -1805,9 +1770,9 @@
                 msg.style.top = '50%';
                 msg.style.setProperty('--copy-translate-y', '-50%');
             }
-            
+
             msg.classList.add('show');
-            
+
             setTimeout(() => {
                 msg.classList.remove('show');
                 setTimeout(() => {
@@ -1822,7 +1787,7 @@
 		        .filter(b => b.classList.contains('selected'))
 		        .map(b => {
 		            const engName = b.dataset.engName;
-		            const shortName = engName === 'PickupTicket' ? 'PT' : engName.slice(0, 2);
+		            const shortName = engName.slice(0, 2);
 		            return `${shortName}:${b.querySelector('input').value}`;
 		        })
 		        .join(',');
@@ -1861,10 +1826,10 @@
 		}, 300);
 
         document.getElementById('filterButton').addEventListener('click', throttledFilterHandler);
-        
+
         document.getElementById('sortDropdown').addEventListener('change', function() {
             applyFiltersAndSort();
-            this.blur(); 
+            this.blur();
         });
 
 		document.addEventListener('DOMContentLoaded', () => {
@@ -1919,7 +1884,7 @@
                 }
             });
 			window.addEventListener('scroll', throttle(resetAllScrolledItems, 100));
-			
+
             const debouncedScrollSetup = debounce(setupScrollIndicators, 50);
             window.addEventListener('resize', debouncedScrollSetup);
 		});
