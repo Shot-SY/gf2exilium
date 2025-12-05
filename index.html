@@ -1714,6 +1714,16 @@
                 }
             }
 
+            // 추가: 파파샤(Papasha)를 수동으로 추가하여 상세 팝업 마지막에 표시되도록 설정
+            allItemsData.push({
+                korName: '파파샤',
+                engName: 'papasha',
+                count: 1,
+                originalIndex: 99999, // 마지막에 오도록 매우 높은 인덱스 부여
+                isGenerallyRare: false
+            });
+            totalItemCount += 1;
+
             // 2. Sort the array based on the original character order
             allItemsData.sort((a, b) => a.originalIndex - b.originalIndex);
 
