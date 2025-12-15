@@ -1934,9 +1934,6 @@ A1T0 klukai1 springfield1 florence1 suomi1 makiato2 gyunggu1 tororo3 sabrina2 pe
 === kl1_sp1_le0_li0_ni0_fl1_su1_qi0_ve0_ma2_yo0_me0_ce0_gy3_to1 ===
 1PC klukai1 springfield1 florence1 suomi1 makiato2 gyunggu3 tororo1 sabrina2 faye1 mosinnagang2 bittersweet1 575PickupTicket = $91.00
 
-=== kl1_sp1_le0_li0_ni1_fl0_su1_qi0_ve0_ma2_yo0_me0_ce0_gy1_to3 ===
-A202 klukai1 springfield1 nikita1 suomi1 makiato2 gyunggu1 tororo3 sabrina1 peritia3 faye2 bepri1 mosinnagang2 bittersweet1 508PickupTicket GUARANTEED = $82.80
-
 === kl1_sp1_le0_li0_ni1_fl0_su1_qi0_ve0_ma2_yo0_me0_ce0_gy3_to1 ===
 A23Z klukai1 springfield1 nikita1 suomi1 makiato2 gyunggu3 tororo1 sabrina2 peritia1 faye2 bepri1 mosinnagang1 bittersweet1 652PickupTicket GUARANTEED = $106.90
 A27D klukai1 springfield1 nikita1 suomi1 makiato2 gyunggu3 tororo1 sabrina1 peritia3 faye1 bittersweet1 shootingstar1 608PickupTicket GUARANTEED = $100.70
