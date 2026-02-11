@@ -22,9 +22,6 @@ A1PT klukai7 springfield2 lind1 nikita1 suomi1 makiato1 yoohee1 mechty1 centaure
 === kl1_sp2_za0_lw0_ro7_le0_li0_ni0_fl1_su1_qi0_ve1_ma2_yo1_me0_ce0_gy2_to3 ===
 1GF klukai1 springfield2 robella7 florence1 suomi1 vector1 makiato2 yoohee1 gyunggu2 tororo3 sabrina1 peritia1 faye1 bepri1 mosinnagang1 bittersweet2 239PickupTicket = $162.80
 
-=== kl7_sp2_za0_lw0_ro0_le0_li1_ni1_fl0_su1_qi0_ve0_ma2_yo1_me1_ce0_gy2_to3 ===
-1FX klukai7 springfield2 lind1 nikita1 suomi1 makiato2 yoohee1 mechty1 gyunggu2 tororo3 sabrina2 peritia3 faye1 bepri1 mosinnagang1 bittersweet2 263PickupTicket = $166.90
-
 === kl1_sp2_za0_lw0_ro7_le0_li0_ni1_fl0_su1_qi0_ve0_ma2_yo1_me0_ce1_gy1_to4 ===
 1SE klukai1 springfield2 robella7 nikita1 suomi1 makiato2 yoohee1 centaureissi1 gyunggu1 tororo4 sabrina2 peritia4 faye1 bepri4 mosinnagang1 bittersweet2 231PickupTicket GUARANTEED = $164.80
 
@@ -1860,7 +1857,6 @@ A22E klukai1 springfield2 nikita1 suomi1 makiato1 yoohee1 gyunggu3 tororo2 sabri
 
 === kl1_sp0_za0_lw0_ro0_le0_li1_ni0_fl0_su1_qi0_ve1_ma1_yo2_me0_ce0_gy3_to1 ===
 A25W klukai1 lind1 suomi1 vector1 makiato1 yoohee2 gyunggu3 tororo1 sabrina2 peritia1 faye2 bittersweet2 638PickupTicket = $91.70
-1NR klukai1 lind1 suomi1 vector1 makiato1 yoohee2 gyunggu3 tororo1 sabrina1 peritia3 faye1 bepri3 mosinnagang2 bittersweet2 621PickupTicket = $89.00
 
 === kl1_sp0_za0_lw0_ro0_le0_li0_ni0_fl1_su0_qi0_ve1_ma2_yo2_me0_ce0_gy4_to2 ===
 A1Z5 klukai1 florence1 vector1 makiato2 yoohee2 gyunggu4 tororo2 sabrina2 peritia2 faye2 bepri1 bittersweet2 613PickupTicket GUARANTEED = $91.00
