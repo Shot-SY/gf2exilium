@@ -1472,7 +1472,11 @@
                         needsLazyLoad = true;
                     }
                 }
+                
+                // 파파샤, 바틸다 추가
                 extraCharImages.push({ src: 'Portrait/파파샤.png', alt: '파파샤', isRare: false, engName: 'papasha' });
+                extraCharImages.push({ src: 'Portrait/바틸다.png', alt: '바틸다', isRare: false, engName: 'batilda' });
+                
                 const extrasBox = document.createElement('div');
                 extrasBox.className = 'extras-box';
                 extrasBox.innerHTML = `<div class="item-title">Extras</div>`;
@@ -1720,6 +1724,16 @@
                 engName: 'papasha',
                 count: 1,
                 originalIndex: 99999, // 마지막에 오도록 매우 높은 인덱스 부여
+                isGenerallyRare: false
+            });
+            totalItemCount += 1;
+            
+            // 추가: 바틸다(Batilda)를 수동으로 추가하여 상세 팝업 파파샤 다음에 표시되도록 설정
+            allItemsData.push({
+                korName: '바틸다',
+                engName: 'batilda',
+                count: 1,
+                originalIndex: 100000, // 파파샤 다음으로 오도록 인덱스 부여
                 isGenerallyRare: false
             });
             totalItemCount += 1;
