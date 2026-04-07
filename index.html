@@ -12,7 +12,6 @@
       gtag('js', new Date());
       gtag('config', 'G-6Y21MLG0SJ');
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 	<style>
 	    body {
 	        font-family: 'Roboto', sans-serif;
@@ -44,7 +43,7 @@
 	        transform: translateZ(0);
 	    }
 	    .character-box {
-	        background: rgba(26,26,26,0.2);
+	        background: rgba(26,26,26,0.85);
 	        border: none;
 	        padding: 15px;
 	        text-align: center;
@@ -57,7 +56,6 @@
 	        height: 160px;
 	        border-radius: 15px;
 	        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-	        backdrop-filter: blur(5px);
 	        z-index: 1;
 	        transform: translateZ(0);
 	    }
@@ -404,9 +402,7 @@
 		    right: -5px;
 		    min-width: 22px;
 		    text-align: center;
-		    background: rgba(0, 0, 0, 0.75);
-		    backdrop-filter: blur(4px);
-		    -webkit-backdrop-filter: blur(4px);
+		    background: rgba(0, 0, 0, 0.85);
 		    color: #fff;
 		    padding: 2px 7px;
 		    border-radius: 10px;
@@ -524,15 +520,6 @@
             outline: none;
 			box-shadow: none;
 	    }
-	    #tsparticles {
-	        position: fixed;
-	        top: 0;
-	        left: 0;
-	        width: 100%;
-	        height: 100%;
-	        z-index: 0;
-	        pointer-events: none;
-	    }
 		.scroll-indicator {
 			position: absolute;
 			top: 50%;
@@ -540,8 +527,7 @@
 			transform: translateY(-50%);
 			width: 28px;
 			height: 28px;
-			background: linear-gradient(135deg, rgba(40,40,40,0.8), rgba(20,20,20,0.8));
-			backdrop-filter: blur(5px);
+			background: linear-gradient(135deg, rgba(40,40,40,0.9), rgba(20,20,20,0.9));
 			border: 1px solid rgba(255,255,255,0.2);
 			color: #fff;
 			border-radius: 50%;
@@ -935,7 +921,6 @@
     <div id="loader">
         <div class="spinner"></div>
     </div>
-    <div id="tsparticles"></div>
     <h1>GIRLS FRONTLINE 2: EXILIUM</h1>
     <div class="character-grid" id="characterGrid"></div>
     <button id="filterButton">Apply Filter</button>
@@ -1084,7 +1069,6 @@
                             }, { passive: true });
                         }
                         optimizeImages();
-                        optimizeParticles();
                     }, 500);
                 })
                 .catch(error => {
@@ -1094,52 +1078,6 @@
                 });
         });
 
-        function optimizeParticles() {
-            const pauseParticles = () => {
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).pause();
-                }
-            };
-            const resumeParticles = () => {
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).play();
-                }
-            };
-            const results = document.getElementById('results');
-            if (results) {
-                results.addEventListener('scroll', () => {
-                    if (!results.particlesPaused) {
-                        pauseParticles();
-                        results.particlesPaused = true;
-                        clearTimeout(results.particlesTimer);
-                        results.particlesTimer = setTimeout(() => {
-                            resumeParticles();
-                            results.particlesPaused = false;
-                        }, 200);
-                    }
-                }, { passive: true });
-                results.addEventListener('touchstart', () => {
-                    if (!results.particlesPaused) {
-                        pauseParticles();
-                        results.particlesPaused = true;
-                    }
-                }, { passive: true });
-                results.addEventListener('touchend', () => {
-                    clearTimeout(results.particlesTimer);
-                    results.particlesTimer = setTimeout(() => {
-                        resumeParticles();
-                        results.particlesPaused = false;
-                    }, 200);
-                }, { passive: true });
-            }
-            document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'hidden') {
-                    pauseParticles();
-                } else {
-                    resumeParticles();
-                }
-            });
-        }
 
         let characters = [];
         let rareCharacters = [];
@@ -1316,10 +1254,6 @@
             const resultsDiv = document.getElementById('results');
             resultsDiv.classList.add('sorting');
 
-            if (window.tsParticles && window.tsParticles.domItem(0)) {
-                window.tsParticles.domItem(0).pause();
-            }
-
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
@@ -1363,9 +1297,6 @@
                 displayResults(data, sortedKeys);
 
                 resultsDiv.classList.remove('sorting');
-                if (window.tsParticles && window.tsParticles.domItem(0)) {
-                    window.tsParticles.domItem(0).play();
-                }
             }, 200);
         }
 
