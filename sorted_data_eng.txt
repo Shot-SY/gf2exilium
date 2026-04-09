@@ -522,9 +522,6 @@ A20V voymastina7 klukai1 florence1 suomi1 qiuhua1 vector1 makiato1 yoohee2 gyung
 === vo7_kl1_sp0_za0_lw0_ro0_le0_li1_ni0_fl0_su1_qi0_ve2_ma1_yo2_me0_ce0_gy7_to3 ===
 A21G voymastina7 klukai1 lind1 suomi1 vector2 makiato1 yoohee2 gyunggu7 tororo3 sabrina2 faye1 bepri1 mosinnagang1 bittersweet2 309PickupTicket = $160.70
 
-=== vo7_kl1_sp2_za0_lw0_ro0_le0_li0_ni0_fl1_su1_qi0_ve0_ma1_yo2_me0_ce0_gy7_to3 ===
-1L6 voymastina7 klukai1 springfield2 florence1 suomi1 makiato1 yoohee2 gyunggu7 tororo3 sabrina3 peritia2 faye1 bepri1 bittersweet2 434PickupTicket = $181.40
-
 === vo7_kl1_sp0_za0_lw0_ro0_le0_li0_ni0_fl1_su1_qi0_ve2_ma1_yo2_me0_ce0_gy5_to4 ===
 A1Y1 voymastina7 klukai1 florence1 suomi1 vector2 makiato1 yoohee2 gyunggu5 tororo4 sabrina3 peritia2 faye1 mosinnagang2 bittersweet2 377PickupTicket = $169.70
 
@@ -1390,7 +1387,7 @@ A1YV voymastina1 klukai1 springfield2 nikita1 suomi1 makiato2 yoohee2 gyunggu4 t
 A1T0 voymastina1 klukai1 springfield2 florence1 suomi1 makiato2 yoohee2 gyunggu4 tororo3 sabrina2 peritia3 faye1 bepri1 mosinnagang2 bittersweet2 675PickupTicket = $124.10
 
 === vo1_kl1_sp2_za0_lw0_ro0_le0_li0_ni0_fl1_su1_qi0_ve0_ma2_yo2_me0_ce0_gy2_to3 ===
-A1RZ voymastina1 klukai1 springfield2 florence1 suomi1 makiato2 yoohee2 gyunggu2 tororo3 sabrina1 peritia1 faye2 mosinnagang2 bittersweet2 638PickupTicket = $113.10
+A1RZ voymastina1 klukai1 springfield2 florence1 suomi1 makiato2 yoohee2 gyunggu2 tororo3 sabrina1 peritia1 faye2 mosinnagang2 bittersweet2 639PickupTicket = $113.80
 
 === vo1_kl1_sp0_za0_lw0_ro0_le0_li1_ni1_fl0_su1_qi0_ve1_ma1_yo3_me0_ce0_gy6_to4 ===
 1F1 voymastina1 klukai1 lind1 nikita1 suomi1 vector1 makiato1 yoohee3 gyunggu6 tororo4 sabrina2 peritia2 faye1 bepri1 bittersweet2 662PickupTicket = $137.20
