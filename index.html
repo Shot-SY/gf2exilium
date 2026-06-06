@@ -1028,6 +1028,7 @@
             const loader = document.getElementById('loader');
             loadCharacters()
                 .then(() => loadData())
+                .then(() => createCharacterBoxes())
                 .then(() => applyFiltersAndSort())
                 .then(() => new Promise(r => setTimeout(r, 500)))
                 .then(() => {
@@ -1081,7 +1082,8 @@
 
         let characters = [];
         let rareCharacters = [];
-        let superRarePrefixes = new Set();
+        const NORMAL_RARE_NAMES = new Set(['qiongjiu', 'tololo', 'stonepillar', 'shootingstar']);
+        let superRareNames = new Set();
         let currentFilteredData = {};
         let itemObserver;
 
@@ -1110,14 +1112,12 @@
                         }
                     });
 
-                    const normalRarePrefixes = new Set(['gy', 'to', 'st', 'sh']);
                     rareCharacters.forEach(([eng]) => {
-                        if (!normalRarePrefixes.has(eng.slice(0, 2))) {
-                            superRarePrefixes.add(eng.slice(0, 2));
+                        if (!NORMAL_RARE_NAMES.has(eng)) {
+                            superRareNames.add(eng);
                         }
                     });
-
-                    createCharacterBoxes();
+                    // createCharacterBoxes()는 loadData 후 호출(미보유 박스 숨김 위해)
                 })
                 .catch(error => { console.error('캐릭터 데이터 로딩 오류:', error); });
         }
@@ -1128,15 +1128,21 @@
         function createCharacterBoxes() {
             const characterGrid = document.getElementById('characterGrid');
             characterGrid.innerHTML = '';
+            // 미보유(미출시 등) 캐릭은 박스 미생성 — 전 계정 보유 집합
+            const ownedChars = new Set();
+            Object.values(luaData).forEach(obj => {
+                for (const c in obj) if (obj[c]) ownedChars.add(c);
+            });
             const fragment = document.createDocumentFragment();
             characters.forEach(([eng, kor]) => {
+                if (!ownedChars.has(eng)) return;
                 const charBox = document.createElement('div');
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
                 const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
 
                 if (isGenerallyRare) {
-                    if (eng.startsWith('gy') || eng.startsWith('to') || eng.startsWith('st') || eng.startsWith('sh')) {
+                    if (NORMAL_RARE_NAMES.has(eng)) {
                         charBox.classList.add('rare');
                     } else {
                         charBox.classList.add('super-rare');
@@ -1200,7 +1206,6 @@
                             const parts = line.split(' ');
                             if (parts.length < 2) continue;
                             const key = parts[0];
-                            let charString = '';
                             let j = 1;
                             let itemDetails = {
                                 originalText: line,
@@ -1218,18 +1223,18 @@
 
                             let superRareCount = 0;
                             const uniqueSuperRares = new Set();
+                            const charObj = {};
 
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
                                 if (match) {
                                     const charName = match[1].toLowerCase();
                                     const numCount = parseInt(match[2]);
-                                    const prefix = charName.slice(0, 2);
-                                    charString += prefix + numCount;
+                                    charObj[charName] = (charObj[charName] || 0) + numCount;
 
-                                    if (superRarePrefixes.has(prefix)) {
+                                    if (superRareNames.has(charName)) {
                                         superRareCount += numCount;
-                                        uniqueSuperRares.add(prefix);
+                                        uniqueSuperRares.add(charName);
                                     }
                                 }
                                 j++;
@@ -1243,7 +1248,7 @@
                                 itemDetails.gemsText = gemsMatch[0];
                             }
                             itemDetails.displayText = line.replace(key, '').replace('=', '').trim();
-                            luaData[key] = charString;
+                            luaData[key] = charObj;
                             itemDetailsMap[key] = itemDetails;
                         }
                     }
@@ -1257,8 +1262,7 @@
             setTimeout(() => {
                 let filtered = {};
                 for(const [k, v] of Object.entries(luaData)) {
-                    const chars = v.match(/.{1,3}/g) || [];
-                    if(checkConditions(chars, k)) filtered[k] = v;
+                    if(checkConditions(v, k)) filtered[k] = v;
                 }
                 currentFilteredData = filtered;
 
@@ -1300,18 +1304,13 @@
             }, 200);
         }
 
-        function checkConditions(chars, itemKey) {
-            const count = {};
-            chars.forEach(c => {
-                const name = c.slice(0,2);
-                const num = parseInt(c[2]);
-                count[name] = (count[name]||0)+num;
-            });
+        function checkConditions(count, itemKey) {
+            // count = {engName: count} (풀네임 객체)
             const characterCondition = characters.every(([eng, kor]) => {
                 const box = [...document.getElementsByClassName('character-box')]
                     .find(b => b.dataset.engName === eng);
                 if(box && box.classList.contains('selected')){
-                    return (count[eng.slice(0,2)] || 0) >=
+                    return (count[eng] || 0) >=
                         parseInt(box.querySelector('input').value);
                 }
                 return true;
@@ -1371,17 +1370,13 @@
                 const itemDetails = itemDetailsMap[k];
                 const allRareCharsData = [];
                 const extraCharImages = [];
-                const charPattern = /([a-z]{2})(\d)/g;
-                let match;
 
-                while ((match = charPattern.exec(charValue)) !== null) {
-                    const code = match[1];
-                    const count = parseInt(match[2]);
-                    const charInfo = characters.find(([eng]) => eng.startsWith(code));
+                for (const [engName, count] of Object.entries(charValue || {})) {
+                    const charInfo = characters.find(([eng]) => eng === engName);
                     if (charInfo) {
-                        const [engName, korName] = charInfo;
-                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng.startsWith(code));
-                        const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
+                        const [, korName] = charInfo;
+                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === engName);
+                        const originalIndex = characters.findIndex(([eng]) => eng === engName);
                         const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName: engName, count: count, originalIndex: originalIndex };
                         if (isGenerallyRare) {
                             allRareCharsData.push(imageData);
@@ -1465,7 +1460,7 @@
             img.decoding = 'async';
             img.onerror = function() { handleImageError(this) };
 
-            const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+            const isSuperRare = !NORMAL_RARE_NAMES.has(charData.engName);
             img.classList.add(isSuperRare ? 'super-rare' : 'rare');
             container.appendChild(img);
 
@@ -1625,26 +1620,22 @@
 
             const charValue = luaData[itemKey];
             const itemDetails = itemDetailsMap[itemKey];
-            const charPattern = /([a-z]{2})(\d)/g;
-            let match;
             let totalItemCount = 0;
             let allItemsData = [];
 
             // 1. Parse all characters into a structured array
-            while ((match = charPattern.exec(charValue)) !== null) {
-                const code = match[1];
-                const count = parseInt(match[2]);
-                const charInfo = characters.find(([eng]) => eng.startsWith(code));
+            for (const [engName, count] of Object.entries(charValue || {})) {
+                const charInfo = characters.find(([eng]) => eng === engName);
                 if (charInfo) {
-                    const [engName, korName] = charInfo;
-                    const originalIndex = characters.findIndex(([eng]) => eng.startsWith(code));
+                    const [, korName] = charInfo;
+                    const originalIndex = characters.findIndex(([eng]) => eng === engName);
                     totalItemCount += count;
                     allItemsData.push({
                         korName,
                         engName,
                         count,
                         originalIndex,
-                        isGenerallyRare: rareCharacters.some(([rareEng]) => rareEng.startsWith(code))
+                        isGenerallyRare: rareCharacters.some(([rareEng]) => rareEng === engName)
                     });
                 }
             }
@@ -1684,7 +1675,7 @@
                     img.onerror = function() { handleImageError(this) };
 
                     if (charData.isGenerallyRare) {
-                        const isSuperRare = !['gy', 'to', 'st', 'sh'].some(prefix => charData.engName.startsWith(prefix));
+                        const isSuperRare = !NORMAL_RARE_NAMES.has(charData.engName);
                         img.classList.add(isSuperRare ? 'super-rare' : 'rare');
                     } else {
                         img.classList.add('extras-character-border');
@@ -1746,8 +1737,7 @@
 		        .filter(b => b.classList.contains('selected'))
 		        .map(b => {
 		            const engName = b.dataset.engName;
-		            const shortName = engName.slice(0, 2);
-		            return `${shortName}:${b.querySelector('input').value}`;
+		            return `${engName}:${b.querySelector('input').value}`;
 		        })
 		        .join(',');
 		}
