@@ -1106,9 +1106,16 @@
 
 
         let characters = [];
-        let rareCharacters = [];
-        const NORMAL_RARE_NAMES = new Set(['qiongjiu', 'tololo', 'stonepillar', 'shootingstar']);
-        let superRareNames = new Set();
+        // 캐릭터 영문명 → 레어도. Characters.txt에서 빈 줄로 나뉜 블록 순서대로 부여.
+        //   'super' = 빨강 외곽선 / 'rare' = 주황 / 'extra' = 흰(회)색
+        let rarityMap = {};
+        const isRareTier = (eng) => rarityMap[eng] === 'super' || rarityMap[eng] === 'rare';
+        const rarityClass = (eng) => {
+            const r = rarityMap[eng];
+            if (r === 'super') return 'super-rare';
+            if (r === 'rare') return 'rare';
+            return 'extras-character-border';
+        };
         let currentFilteredData = {};
         let itemObserver;
 
@@ -1118,29 +1125,20 @@
                 .then(r => r.text())
                 .then(text => {
                     characters = [];
-                    rareCharacters = [];
-                    let foundSabrina = false;
-                    text.split('\n').forEach(line => {
-                        const parts = line.trim().split(' ');
-                        if (parts.length >= 2) {
-                            const eng = parts[0];
-                            const kor = parts.slice(1).join(' ');
-                            if (eng === 'sabrina' && kor === '사브리나') {
-                                foundSabrina = true;
-                            }
-                            if (eng && kor) {
-                                characters.push([eng, kor]);
-                                if (!foundSabrina) {
-                                    rareCharacters.push([eng, kor]);
-                                }
-                            }
-                        }
-                    });
-
-                    rareCharacters.forEach(([eng]) => {
-                        if (!NORMAL_RARE_NAMES.has(eng)) {
-                            superRareNames.add(eng);
-                        }
+                    rarityMap = {};
+                    // 빈 줄로 나뉜 블록 순서대로 레어도 부여: 0=빨강, 1=주황, 2 이상=흰색
+                    const TIERS = ['super', 'rare', 'extra'];
+                    let blockIndex = 0;
+                    text.split('\n').forEach(raw => {
+                        const line = raw.trim();
+                        if (!line) { blockIndex++; return; }   // 빈 줄 → 다음 블록으로
+                        const parts = line.split(' ');
+                        if (parts.length < 2) return;
+                        const eng = parts[0];
+                        const kor = parts.slice(1).join(' ');
+                        if (!eng || !kor) return;
+                        characters.push([eng, kor]);
+                        rarityMap[eng] = TIERS[blockIndex] || 'extra';
                     });
                     // createCharacterBoxes()는 loadData 후 호출(미보유 박스 숨김 위해)
                 })
@@ -1181,17 +1179,7 @@
                 const charBox = document.createElement('div');
                 charBox.className = 'character-box';
                 charBox.dataset.engName = eng;
-                const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === eng);
-
-                if (isGenerallyRare) {
-                    if (NORMAL_RARE_NAMES.has(eng)) {
-                        charBox.classList.add('rare');
-                    } else {
-                        charBox.classList.add('super-rare');
-                    }
-                } else {
-                    charBox.classList.add('extras-character-border');
-                }
+                charBox.classList.add(rarityClass(eng));
 
                 charBox.innerHTML = `
                     <img src="Portrait/${kor}.png" alt="${kor}" class="character-img" loading="lazy" decoding="async" onerror="handleImageError(this)">
@@ -1275,7 +1263,7 @@
                                     const numCount = parseInt(match[2]);
                                     charObj[charName] = (charObj[charName] || 0) + numCount;
 
-                                    if (superRareNames.has(charName)) {
+                                    if (rarityMap[charName] === 'super') {
                                         superRareCount += numCount;
                                         uniqueSuperRares.add(charName);
                                     }
@@ -1418,7 +1406,7 @@
                     const charInfo = characters.find(([eng]) => eng === engName);
                     if (charInfo) {
                         const [, korName] = charInfo;
-                        const isGenerallyRare = rareCharacters.some(([rareEng]) => rareEng === engName);
+                        const isGenerallyRare = isRareTier(engName);
                         const originalIndex = characters.findIndex(([eng]) => eng === engName);
                         const imageData = { src: `Portrait/${korName}.png`, alt: korName, engName: engName, count: count, originalIndex: originalIndex };
                         if (isGenerallyRare) {
@@ -1503,7 +1491,7 @@
             img.decoding = 'async';
             img.onerror = function() { handleImageError(this) };
 
-            const isSuperRare = !NORMAL_RARE_NAMES.has(charData.engName);
+            const isSuperRare = rarityMap[charData.engName] === 'super';
             img.classList.add(isSuperRare ? 'super-rare' : 'rare');
             container.appendChild(img);
 
@@ -1678,7 +1666,7 @@
                         engName,
                         count,
                         originalIndex,
-                        isGenerallyRare: rareCharacters.some(([rareEng]) => rareEng === engName)
+                        isGenerallyRare: isRareTier(engName)
                     });
                 }
             }
@@ -1717,12 +1705,7 @@
                     img.decoding = 'async';
                     img.onerror = function() { handleImageError(this) };
 
-                    if (charData.isGenerallyRare) {
-                        const isSuperRare = !NORMAL_RARE_NAMES.has(charData.engName);
-                        img.classList.add(isSuperRare ? 'super-rare' : 'rare');
-                    } else {
-                        img.classList.add('extras-character-border');
-                    }
+                    img.classList.add(rarityClass(charData.engName));
                     grid.appendChild(img);
                 }
             });
