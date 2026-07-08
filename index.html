@@ -783,6 +783,10 @@
         .detail-popup-img {
             height: 55px; width: auto; object-fit: contain; border-radius: 8px;
         }
+        .image-with-count-container { position: relative; display: inline-block; vertical-align: middle; flex-shrink: 0; }
+        .image-count-badge { position: absolute; bottom: -5px; right: -5px; min-width: 19px; text-align: center; background: rgba(0, 0, 0, 0.85); color: #fff; padding: 1px 6px; border-radius: 9px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600; line-height: 1.35; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 2px 5px rgba(0,0,0,0.6); pointer-events: none; }
+        .image-count-badge.rare-badge { color: #ffc107; text-shadow: 0 0 5px rgba(255, 193, 7, 0.7); }
+        .image-count-badge.super-rare-badge { color: #ff5252; text-shadow: 0 0 5px rgba(255, 82, 82, 0.7); }
         .detail-popup-img.rare {
             border: 2px solid #ff9800; box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
         }
@@ -932,6 +936,7 @@
             .item-detail-popup-content { width: 95%; padding: 15px; }
             #item-detail-popup-grid { gap: 5px; padding: 15px 5px; }
             .detail-popup-img, #item-detail-popup-grid .new-character-placeholder { height: 45px; }
+            .image-count-badge { font-size: 13px; line-height: 1.2; padding: 1px 4px; min-width: 14px; border-radius: 8px; bottom: -4px; right: -4px; }
             #item-detail-popup-grid .pticket-box { transform: scale(0.85); }
             .item-detail-popup-footer { gap: 10px; }
             .footer-label { font-size: 12px; }
@@ -1674,20 +1679,32 @@
             // 2. Sort the array based on the original character order
             allItemsData.sort((a, b) => a.originalIndex - b.originalIndex);
 
-            // 3. Create and append sorted character images to the grid
+            // 3. Create and append sorted character images to the grid (stacked with count badge)
             allItemsData.forEach(charData => {
-                for (let i = 0; i < charData.count; i++) {
-                    const img = document.createElement('img');
-                    img.src = `Portrait/${charData.korName}.png`;
-                    img.alt = charData.korName;
-                    img.className = 'detail-popup-img';
-                    img.loading = 'lazy';
-                    img.decoding = 'async';
-                    img.onerror = function() { handleImageError(this) };
+                const container = document.createElement('div');
+                container.className = 'image-with-count-container';
 
-                    img.classList.add(rarityClass(charData.engName));
-                    grid.appendChild(img);
+                const img = document.createElement('img');
+                img.src = `Portrait/${charData.korName}.png`;
+                img.alt = charData.korName;
+                img.className = 'detail-popup-img';
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.onerror = function() { handleImageError(this) };
+
+                const rarity = rarityClass(charData.engName);
+                img.classList.add(rarity);
+                container.appendChild(img);
+
+                if (charData.count > 1) {
+                    const badge = document.createElement('div');
+                    badge.className = 'image-count-badge';
+                    if (rarity === 'super-rare') badge.classList.add('super-rare-badge');
+                    else if (rarity === 'rare') badge.classList.add('rare-badge');
+                    badge.textContent = `x${charData.count}`;
+                    container.appendChild(badge);
                 }
+                grid.appendChild(container);
             });
 
             let finalGemsCount = itemDetails.gemsCount + (itemDetails.guaranteed ? 20 : 0);
