@@ -1230,6 +1230,8 @@
                 .then(text => {
                     luaData = {};
                     itemDetailsMap = {};
+                    // Characters.txt에 없는 캐릭터 토큰은 조용히 버림 (카피본 오염 방지)
+                    const knownCharSet = new Set(characters.map(([eng]) => eng.toLowerCase()));
                     const lines = text.split('\n');
                     let currentSection = null;
                     for (let i = 0; i < lines.length; i++) {
@@ -1260,21 +1262,29 @@
                             let superRareCount = 0;
                             const uniqueSuperRares = new Set();
                             const charObj = {};
+                            const droppedWords = [];
 
                             while (j < parts.length && !/^\d/.test(parts[j])) {
                                 const match = parts[j].match(/^([a-z]+)(\d+)$/i);
                                 if (match) {
                                     const charName = match[1].toLowerCase();
                                     const numCount = parseInt(match[2]);
-                                    charObj[charName] = (charObj[charName] || 0) + numCount;
+                                    if (knownCharSet.has(charName)) {
+                                        charObj[charName] = (charObj[charName] || 0) + numCount;
 
-                                    if (rarityMap[charName] === 'super') {
-                                        superRareCount += numCount;
-                                        uniqueSuperRares.add(charName);
+                                        if (rarityMap[charName] === 'super') {
+                                            superRareCount += numCount;
+                                            uniqueSuperRares.add(charName);
+                                        }
+                                    } else {
+                                        droppedWords.push(parts[j]);
                                     }
                                 }
                                 j++;
                             }
+                            // 버려진 토큰은 카피본에서도 제거 (선행 공백까지 같이 삭제)
+                            droppedWords.forEach(w => { itemDetails.originalText = itemDetails.originalText.replace(new RegExp(`\\s*\\b${w}\\b`), ''); });
+
                             itemDetails.superRareCount = superRareCount;
                             itemDetails.uniqueSuperRareCount = uniqueSuperRares.size;
 
