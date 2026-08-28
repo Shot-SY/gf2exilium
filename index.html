@@ -1223,6 +1223,22 @@
 
         let itemDetailsMap = {};
 
+        // 캐릭터 토큰(코드+보유수) 분리. 코드가 숫자로 끝날 수 있어(ots14 등)
+        // 단순 /^([a-z]+)(\d+)$/ 는 'ots147' → 'ots'+'147' 로 오분할됨.
+        // 뒤에서부터 훑어 knownCharSet 에 있는 '가장 긴 코드' 분할을 우선 채택하고,
+        // 못 찾으면 기존 형태로 폴백(호출부가 미등록 토큰으로 처리 → droppedWords).
+        function splitCharToken(token, knownCharSet) {
+            const t = token.toLowerCase();
+            for (let k = t.length - 1; k >= 1; k--) {
+                const name = t.slice(0, k);
+                const num = t.slice(k);
+                if (!/^\d+$/.test(num)) continue;
+                if (knownCharSet.has(name)) return [name, parseInt(num)];
+            }
+            const m = t.match(/^([a-z][a-z0-9]*)(\d+)$/);
+            return m ? [m[1], parseInt(m[2])] : null;
+        }
+
         function loadData() {
             const ts = new Date().getTime();
             return fetch(`sorted_data_eng.txt?t=${ts}`)
@@ -1265,10 +1281,10 @@
                             const droppedWords = [];
 
                             while (j < parts.length && !/^\d/.test(parts[j])) {
-                                const match = parts[j].match(/^([a-z]+)(\d+)$/i);
+                                const match = splitCharToken(parts[j], knownCharSet);
                                 if (match) {
-                                    const charName = match[1].toLowerCase();
-                                    const numCount = parseInt(match[2]);
+                                    const charName = match[0];
+                                    const numCount = match[1];
                                     if (knownCharSet.has(charName)) {
                                         charObj[charName] = (charObj[charName] || 0) + numCount;
 
